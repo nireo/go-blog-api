@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -32,7 +33,7 @@ type Blog struct {
 	Id        string    `json:"id" binding:"required"`
 }
 
-func getTodos() ([]Blog, error) {
+func getBlogs() ([]Blog, error) {
 	const q = `SELECT author, content, created_at, id FROM blogs ORDER BY created_at DESC LIMIT 100`
 	rows, err := db.Query(q)
 	if err != nil {
@@ -60,7 +61,35 @@ func addBlog(blog Blog) error {
 }
 
 func main() {
+	var err error
 	r := gin.Default()
+
+	r.GET("/blogs", func(context *gin.Context) {
+		results, err := getBlogs()
+		if err != nil {
+			context.JSON(
+				http.StatusInternalServerError,
+				gin.H{"status": "internal error: " + err.Error()})
+			return
+		}
+		context.JSON(http.StatusOK, results)
+	})
+
+	r.POST("/blogs", func(context *gin.Context) {
+		var b Blog
+		if context.Bind(&b) == nil {
+			b.CreatedAt = time.Now()
+			if err := addBlog(b); err != nil {
+				context.JSON(
+					http.StatusInternalServerError,
+					gin.H{"status": "internal error: " + err.Error()})
+				return
+			}
+			// since the binding failed, it doesn't meet the struct structure
+			context.JSON(http.StatusUnprocessableEntity, gin.H{"status": "invalid body"})
+		}
+	})
+
 	dbInfo := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
 		DBHost, DBUser, DBPassword, DBName)
 
