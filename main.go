@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -21,6 +22,42 @@ author text NOT NULL,
 content text NOT NULL,
 created_at timestamp with time zone DEFAULT current_timestamp)`
 )
+
+var db *sql.DB
+
+type Blog struct {
+	Author    string    `json:"author" binding:"required"`
+	Content   string    `json:"content" binding:"required"`
+	CreatedAt time.Time `json:"created_at"`
+	Id        string    `json:"id" binding:"required"`
+}
+
+func getTodos() ([]Blog, error) {
+	const q = `SELECT author, content, created_at, id FROM blogs ORDER BY created_at DESC LIMIT 100`
+	rows, err := db.Query(q)
+	if err != nil {
+		return nil, err
+	}
+	results := make([]Blog, 0)
+	for rows.Next() {
+		var author string
+		var content string
+		var id string
+		var createdAt time.Time
+		err = rows.Scan(&author, &content, &id, &createdAt)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, Blog{author, content, createdAt, id})
+	}
+	return results, nil
+}
+
+func addBlog(blog Blog) error {
+	const q = `INSERT INTO blogs(author, content, created_at) VALUES ($1 $2 $3)`
+	_, err := db.Exec(q, blog.Author, blog.Content, blog.CreatedAt)
+	return err
+}
 
 func main() {
 	r := gin.Default()
