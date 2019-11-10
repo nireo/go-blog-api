@@ -13,7 +13,7 @@ type Post = models.Post
 // User type alias
 type User = models.User
 
-// Json type alias
+// JSON type alias
 type JSON = common.JSON
 
 func create(c *gin.Context) {
@@ -35,7 +35,7 @@ func create(c *gin.Context) {
 	c.JSON(200, post.Serialize())
 }
 
-func lists(c *gin.Context) {
+func list(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	cursor := c.Query("cursor")
 	recent := c.Query("recent")
