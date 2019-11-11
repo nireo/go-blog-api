@@ -139,3 +139,42 @@ func login(c *gin.Context) {
 		"token": token,
 	})
 }
+
+func check(c *gin.Context) {
+	// get the user from request
+	userRaw, ok := c.Get("user")
+
+	if !ok {
+		// user isn't logged in
+		c.AbortWithStatus(401)
+		return
+	}
+
+	user := userRaw.(User)
+	tokenExpire := int64(c.MustGet("token_expire").(float64))
+	now := time.Now().Unix()
+	difference := tokenExpire - now
+	// 60 * 60 * 24 * 2 = 2 days
+	if difference < 60*60*24*2 {
+		// make new token
+		token, err := generateToken(user.Serialize())
+		if err != nil {
+			// failed generating token
+			// return internal server error
+			c.AbortWithStatus(500)
+			return
+		}
+		c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
+		c.JSON(200, common.JSON{
+			"token": token,
+			"user":  user.Serialize(),
+		})
+		return
+	}
+
+	// since the token is less than 2 days old
+	// send a message informing the user
+	c.JSON(200, common.JSON{
+		"error": "Your current token is already less than 2 days old",
+	})
+}
