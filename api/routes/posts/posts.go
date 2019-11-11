@@ -11,5 +11,6 @@ func ApplyRoutes(r *gin.RouterGroup) {
 	{
 		posts.POST("/", middlewares.Authorized, create)
 		posts.GET("/", list)
+		posts.GET("/:id", postFromID)
 	}
 }

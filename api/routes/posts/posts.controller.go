@@ -18,20 +18,25 @@ type JSON = common.JSON
 
 func create(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
+
+	// interface fro request
 	type RequestBody struct {
 		Text string `json:"text" binding:"required"`
 	}
 
 	var requestBody RequestBody
+	// if the body is same as the RequestBody interface
 	if err := c.BindJSON(&requestBody); err != nil {
 		c.AbortWithStatus(400)
 		return
 	}
 
+	// get the user for posts
 	user := c.MustGet("user").(User)
 	post := Post{Text: requestBody.Text, User: user}
 	db.NewRecord(post)
 	db.Create(&post)
+	// send the new post and a success status code
 	c.JSON(200, post.Serialize())
 }
 
@@ -64,4 +69,23 @@ func list(c *gin.Context) {
 	}
 
 	c.JSON(200, serialized)
+}
+
+func postFromID(c *gin.Context) {
+	// get the database from gin context
+	db := c.MustGet("db").(*gorm.DB)
+
+	// get the id parameter
+	id := c.Param("id")
+	var post Post
+
+	// preload related model
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&post).Error; err != nil {
+		// if the has not been found
+		c.AbortWithStatus(404)
+		return
+	}
+
+	// return post json data and successfull data
+	c.JSON(200, post.Serialize())
 }
