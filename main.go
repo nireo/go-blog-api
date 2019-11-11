@@ -1,8 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
+
+	"github.com/nireo/go-blog-api/api"
+	"github.com/nireo/go-blog-api/lib/middlewares"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -16,15 +18,18 @@ func main() {
 	}
 
 	port := os.Getenv("PORT")
+
+	// if the env is not set
 	if port == "" {
 		port = "8080"
 	}
 
+	// start database
 	db, _ := database.Initialize()
-	if db != nil {
-		fmt.Println("testing: this works")
-	}
 
-	app := gin.Default()
-	app.Run(":" + port)
+	app := gin.Default() // create gin app
+	app.Use(database.Inject(db))
+	app.Use(middlewares.JWTMiddleware())
+	api.ApplyRoutes(app) // apply api router
+	app.Run(":" + port)  // listen to given port
 }

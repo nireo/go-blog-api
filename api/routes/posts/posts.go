@@ -7,7 +7,7 @@ import (
 
 // ApplyRoutes adds post routes to gin engine
 func ApplyRoutes(r *gin.RouterGroup) {
-	posts := r.Group("/api/posts")
+	posts := r.Group("/posts")
 	{
 		posts.POST("/", middlewares.Authorized, create)
 		posts.GET("/", list)

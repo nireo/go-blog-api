@@ -6,7 +6,7 @@ import (
 
 // ApplyRoutes adds auth to gin engine
 func ApplyRoutes(r *gin.RouterGroup) {
-	auth := r.Group("/api/auth")
+	auth := r.Group("/auth")
 	{
 		auth.POST("/register", register)
 	}
