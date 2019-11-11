@@ -91,3 +91,51 @@ func register(c *gin.Context) {
 		"token": token,
 	})
 }
+
+func login(c *gin.Context) {
+	// get gin from context
+	db := c.MustGet("db").(*gorm.DB)
+
+	// define request body interface for validation
+	type RequestBody struct {
+		Username string `json:"username" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
+
+	var body RequestBody
+	if err := c.BindJSON(&body); err != nil {
+		// if the body is invalid
+		c.AbortWithStatus(400)
+		return
+	}
+
+	// check if the user even exists
+	var user User
+	if err := db.Where("username = ?", body.Username).First(&user).Error; err != nil {
+		// no user found
+		c.AbortWithStatus(404)
+		return
+	}
+
+	if !checkHash(body.Password, user.PasswordHash) {
+		// invalid credentials
+		c.AbortWithStatus(401)
+		return
+	}
+
+	serialized := user.Serialize()
+	token, err := generateToken(serialized)
+
+	if err != nil {
+		// something went wrong with token creation
+		// return a internal server error
+		c.AbortWithStatus(500)
+		return
+	}
+
+	c.SetCookie("token", token, 60*60*26*7, "/", "", false, true)
+	c.JSON(200, common.JSON{
+		"user":  user.Serialize(),
+		"token": token,
+	})
+}
