@@ -89,3 +89,38 @@ func postFromID(c *gin.Context) {
 	// return post json data and successfull data
 	c.JSON(200, post.Serialize())
 }
+
+func update(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	id := c.Param("id")
+
+	user := c.MustGet("user").(User)
+
+	type RequestBody struct {
+		Text string `json:"text" binding:"required"`
+	}
+
+	var requestBody RequestBody
+
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.AbortWithStatus(400)
+		return
+	}
+
+	var post Post
+	if err := db.Preload("User").Where("id = ?", id).First(&post).Error; err != nil {
+		c.AbortWithStatus(404)
+		return
+	}
+
+	// check if the user owns the post
+	if post.UserID != user.ID {
+		// return status 403 - forbidden
+		c.AbortWithStatus(403)
+		return
+	}
+
+	post.Text = requestBody.Text
+	db.Save(&post)
+	c.JSON(200, post.Serialize())
+}
