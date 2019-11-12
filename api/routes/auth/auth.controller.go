@@ -178,3 +178,37 @@ func check(c *gin.Context) {
 		"error": "Your current token is already less than 2 days old",
 	})
 }
+
+func updateUser(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	userRaw, ok := c.Get("user")
+
+	if !ok {
+		c.AbortWithStatus(401)
+		return
+	}
+
+	type RequestBody struct {
+		Username string `json:"username" binding:"required"`
+	}
+
+	var requestBody RequestBody
+
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.AbortWithStatus(400)
+		return
+	}
+
+	var checkUser User
+	user := userRaw.(User)
+	// check if the user even exists
+	if err := db.Where("username = ?", requestBody.Username).First(&checkUser).Error; err != nil {
+		user.Username = requestBody.Username
+		db.Save(&user)
+		c.JSON(200, user.Serialize())
+	} else {
+		// since someone with the username already exists
+		c.AbortWithStatus(403)
+		return
+	}
+}
