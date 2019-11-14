@@ -18,7 +18,7 @@ var secretKey []byte
 
 func init() {
 	pwd, _ := os.Getwd()
-	keyPath := pwd + "/jwtkey.key"
+	keyPath := pwd + "/jwtsecret.key.pub"
 
 	key, readErr := ioutil.ReadFile(keyPath)
 	if readErr != nil {

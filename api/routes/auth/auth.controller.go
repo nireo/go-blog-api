@@ -38,7 +38,7 @@ func generateToken(data common.JSON) (string, error) {
 
 	// get path from root dir
 	pwd, _ := os.Getwd()
-	keyPath := pwd + "/jwtsecret.key"
+	keyPath := pwd + "/jwtsecret.key.pub"
 
 	key, readErr := ioutil.ReadFile(keyPath)
 	if readErr != nil {
@@ -63,7 +63,7 @@ func register(c *gin.Context) {
 	}
 
 	var exists User
-	if err := db.Where("username = ?", body.Username).First(&exists).Error; err != nil {
+	if err := db.Where("username = ?", body.Username).First(&exists).Error; err == nil {
 		c.AbortWithStatus(409)
 		return
 	}
