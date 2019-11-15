@@ -212,3 +212,18 @@ func updateUser(c *gin.Context) {
 		return
 	}
 }
+
+func remove(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	userRaw, ok := c.Get("user")
+
+	if !ok {
+		// user isn't logged in
+		c.AbortWithStatus(401)
+		return
+	}
+
+	user := userRaw.(User)
+	db.Delete(&user)
+	c.Status(204)
+}
