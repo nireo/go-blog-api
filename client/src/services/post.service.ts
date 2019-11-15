@@ -19,4 +19,8 @@ export default class PostService extends BaseHttpService {
     async createPost(newPost: CreatePost) {
         return this.post(this.postServiceUrl, newPost);
     }
+
+    async removePost(id: string) {
+        return this.post(`${this.postServiceUrl}/:id`);
+    }
 }

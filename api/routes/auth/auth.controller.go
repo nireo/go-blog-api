@@ -224,6 +224,7 @@ func remove(c *gin.Context) {
 	}
 
 	user := userRaw.(User)
+
 	db.Delete(&user)
 	c.Status(204)
 }

@@ -4,7 +4,7 @@ const initialState: UserState = {
     user: null
 };
 
-export const userReducer = (
+const userReducer = (
     state: UserState = initialState,
     action: UserActionTypes
 ): UserState => {
@@ -21,3 +21,5 @@ export const userReducer = (
             return state;
     }
 };
+
+export default userReducer;
