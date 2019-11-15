@@ -12,7 +12,10 @@ const initialState: PostState = {
     posts: []
 };
 
-const postReducer = (state: PostState, action: PostActionTypes): PostState => {
+const postReducer = (
+    state: PostState = initialState,
+    action: PostActionTypes
+): PostState => {
     switch (action.type) {
         case INIT_POSTS:
             return {
