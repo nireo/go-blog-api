@@ -2,7 +2,7 @@ import BaseHttpService from "./base.service";
 import { UpdatePost, CreatePost } from "../interfaces/post.interfaces";
 
 export default class PostService extends BaseHttpService {
-    private postServiceUrl: string = "/api/post";
+    private postServiceUrl: string = "/api/posts/";
 
     async getPosts() {
         return this.get(this.postServiceUrl);
@@ -21,6 +21,6 @@ export default class PostService extends BaseHttpService {
     }
 
     async removePost(id: string) {
-        return this.post(`${this.postServiceUrl}/:id`);
+        return this.post(`${this.postServiceUrl}/${id}`);
     }
 }

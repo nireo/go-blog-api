@@ -5,42 +5,34 @@ export default class BaseHttpService {
 
     async get(endpoint: string, options: object = {}) {
         Object.assign(options, this.getTokenHeaders());
-        axios
+        const response: any = await axios
             .get(endpoint, options)
-            .then(response => {
-                return response.data;
-            })
             .catch(error => this.handleError(error));
+        return response.data;
     }
 
     async post(endpoint: string, options: object = {}) {
         Object.assign(options, this.getTokenHeaders());
-        axios
+        const response: any = await axios
             .post(endpoint, options)
-            .then(response => {
-                return response.data;
-            })
             .catch(error => this.handleError(error));
+        return response.data;
     }
 
     async delete(endpoint: string, options: object = {}) {
         Object.assign(options, this.getTokenHeaders());
-        axios
+        const response: any = await axios
             .delete(endpoint, options)
-            .then(response => {
-                return response.data;
-            })
             .catch(error => this.handleError(error));
+        return response.data;
     }
 
     async patch(endpoint: string, options: object = {}) {
         Object.assign(options, this.getTokenHeaders());
-        axios
+        const response: any = await axios
             .patch(endpoint, options)
-            .then(response => {
-                return response.data;
-            })
             .catch(error => this.handleError(error));
+        return response.data;
     }
 
     getTokenHeaders(): object {

@@ -7,6 +7,7 @@ import {
 } from "./types";
 import { Post, CreatePost, UpdatePost } from "../../interfaces/post.interfaces";
 import PostService from "../../services/post.service";
+import { Dispatch } from "redux";
 
 const postService = new PostService();
 

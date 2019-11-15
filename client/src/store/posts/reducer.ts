@@ -9,7 +9,7 @@ const reducer = (state: Post[] = [], action: any) => {
         case "INIT_POSTS":
             return action.data;
         case "CLEAR_POSTS":
-            return action.data;
+            return [];
         case "CREATE_POST":
             return [...state, action.data];
         case "REMOVE_POST":
@@ -23,7 +23,7 @@ const reducer = (state: Post[] = [], action: any) => {
     }
 };
 
-export const initPosts = async () => {
+export const initPosts = () => {
     return async (dispatch: Dispatch) => {
         const posts = await postService.getPosts();
         dispatch({
@@ -33,7 +33,7 @@ export const initPosts = async () => {
     };
 };
 
-export const createPost = async (post: CreatePost) => {
+export const createPost = (post: CreatePost) => {
     return async (dispatch: Dispatch) => {
         const newPost = await postService.createPost(post);
         dispatch({
@@ -43,7 +43,7 @@ export const createPost = async (post: CreatePost) => {
     };
 };
 
-export const updatePost = async (post: UpdatePost, id: string) => {
+export const updatePost = (post: UpdatePost, id: string) => {
     return async (dispatch: Dispatch) => {
         const updatedPost = await postService.updatePost(post, id);
         dispatch({
@@ -54,7 +54,7 @@ export const updatePost = async (post: UpdatePost, id: string) => {
     };
 };
 
-export const removePost = async (id: string) => {
+export const removePost = (id: string) => {
     return async (dispatch: Dispatch) => {
         await postService.removePost(id);
         dispatch({
