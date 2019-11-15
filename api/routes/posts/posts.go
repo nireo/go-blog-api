@@ -13,5 +13,6 @@ func ApplyRoutes(r *gin.RouterGroup) {
 		posts.GET("/", list)
 		posts.GET("/:id", postFromID)
 		posts.PATCH("/:id", middlewares.Authorized, update)
+		posts.DELETE("/:id", middlewares.Authorized, remove)
 	}
 }

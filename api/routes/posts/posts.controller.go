@@ -124,3 +124,25 @@ func update(c *gin.Context) {
 	db.Save(&post)
 	c.JSON(200, post.Serialize())
 }
+
+func remove(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	id := c.Param("id")
+	user := c.MustGet("user").(User)
+
+	var post Post
+	if err := db.Where("id = ?", id).First(&post).Error; err != nil {
+		// post not found
+		c.AbortWithStatus(404)
+		return
+	}
+
+	if post.UserID != user.ID {
+		// user doesn't own the post
+		c.AbortWithStatus(403)
+		return
+	}
+
+	db.Delete(&post)
+	c.Status(204)
+}
