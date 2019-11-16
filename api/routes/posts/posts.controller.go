@@ -21,7 +21,9 @@ func create(c *gin.Context) {
 
 	// interface fro request
 	type RequestBody struct {
-		Text string `json:"text" binding:"required"`
+		Text        string `json:"text" binding:"required"`
+		Title       string `json:"title" binding:"required"`
+		Description string `json:"description" binding:"required"`
 	}
 
 	var requestBody RequestBody
@@ -33,7 +35,16 @@ func create(c *gin.Context) {
 
 	// get the user for posts
 	user := c.MustGet("user").(User)
-	post := Post{Text: requestBody.Text, User: user}
+
+	// take title, description and text from body, but set likes to 0
+	post := Post{
+		Text:        requestBody.Text,
+		User:        user,
+		Title:       requestBody.Title,
+		Likes:       0,
+		Description: requestBody.Description,
+	}
+
 	db.NewRecord(post)
 	db.Create(&post)
 	// send the new post and a success status code
@@ -97,7 +108,9 @@ func update(c *gin.Context) {
 	user := c.MustGet("user").(User)
 
 	type RequestBody struct {
-		Text string `json:"text" binding:"required"`
+		Text  string `json:"text" binding:"required"`
+		Title string `json:"title" binding:"required"`
+		Likes int    `json:"likes" binding:"required"`
 	}
 
 	var requestBody RequestBody
@@ -120,7 +133,12 @@ func update(c *gin.Context) {
 		return
 	}
 
+	// reassign post values
 	post.Text = requestBody.Text
+	post.Title = requestBody.Title
+	post.Likes = requestBody.Likes
+
+	// save to database
 	db.Save(&post)
 	c.JSON(200, post.Serialize())
 }

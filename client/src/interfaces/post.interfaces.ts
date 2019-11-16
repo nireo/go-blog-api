@@ -10,6 +10,8 @@ export interface CreatePost {
 
 export interface Post {
     text: string;
+    title: string;
+    likes: number;
     user: User;
     ID: number;
 }

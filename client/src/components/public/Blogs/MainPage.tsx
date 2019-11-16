@@ -28,7 +28,7 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
         <div style={{ textAlign: "center" }}>
             {posts.map(post => (
                 <div>
-                    <p>{post.text}</p>
+                    <h3>{post.title}</h3>
                     <p>posted by: {post.user.username}</p>
                 </div>
             ))}

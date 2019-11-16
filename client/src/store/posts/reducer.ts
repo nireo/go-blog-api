@@ -48,7 +48,7 @@ export const updatePost = (post: UpdatePost, id: string) => {
         const updatedPost = await postService.updatePost(post, id);
         dispatch({
             type: "UPDATE_POST",
-            data: updatePost,
+            data: updatedPost,
             id: id
         });
     };
