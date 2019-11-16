@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Post } from "../../../interfaces/post.interfaces";
 import { initPosts } from "../../../store/posts/reducer";
 import { Loading } from "../Misc/Loading";
+import Blog from "./Blog";
 
 const mapStateToProps = (state: AppState) => ({
     posts: state.post
@@ -28,8 +29,13 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
         <div style={{ textAlign: "center" }}>
             {posts.map(post => (
                 <div>
-                    <h3>{post.title}</h3>
-                    <p>posted by: {post.user.username}</p>
+                    <Blog
+                        id={String(post.ID)}
+                        likes={post.likes}
+                        title={post.title}
+                        description={post.description}
+                    />
+                    {post.ID}
                 </div>
             ))}
         </div>

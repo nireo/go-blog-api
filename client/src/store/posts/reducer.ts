@@ -33,6 +33,16 @@ export const initPosts = () => {
     };
 };
 
+export const getPostById = (id: string) => {
+    return async (dispatch: Dispatch) => {
+        const post = await postService.getPostById(id);
+        dispatch({
+            type: "CREATE_POST",
+            data: post
+        });
+    };
+};
+
 export const createPost = (post: CreatePost) => {
     return async (dispatch: Dispatch) => {
         const newPost = await postService.createPost(post);
