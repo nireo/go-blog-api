@@ -15,4 +15,5 @@ export interface Post {
     user: User;
     id: number;
     description: string;
+    created_at: string;
 }

@@ -28,7 +28,7 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
     return (
         <div className="container mt-4">
             {posts.map(post => (
-                <div>
+                <div key={`${post.id}`}>
                     <Blog
                         id={String(post.id)}
                         likes={post.likes}

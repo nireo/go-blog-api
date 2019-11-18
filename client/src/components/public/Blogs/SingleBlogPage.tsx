@@ -48,8 +48,28 @@ const SingleBlogPage: React.FC<Props> = ({ id, posts, getPostById }) => {
             </div>
         );
     }
+    console.log(post);
 
-    return <div></div>;
+    return (
+        <div className="container text-center mt-4">
+            {post !== undefined && (
+                <div>
+                    <h2>{post.title}</h2>
+                    <h6 className="text-muted">{post.description}</h6>
+                    <div className="row">
+                        <div className="col-md-2"></div>
+                        <div className="col-md-8">
+                            <hr />
+                            <p style={{ fontSize: "14px" }}>{post.text}</p>
+                            <hr />
+                        </div>
+                        <div className="col-md-2"></div>
+                    </div>
+                    <p>Posted: {post.created_at}</p>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default connect(mapStateToProps, { getPostById })(SingleBlogPage);
