@@ -54,13 +54,15 @@ const SingleBlogPage: React.FC<Props> = ({ id, posts, getPostById }) => {
         <div className="container text-center mt-4">
             {post !== undefined && (
                 <div>
-                    <h2>{post.title}</h2>
-                    <h6 className="text-muted">{post.description}</h6>
+                    <h2 style={{ fontSize: "36px" }}>{post.title}</h2>
+                    <h6 className="text-muted" style={{ fontSize: "20px" }}>
+                        {post.description}
+                    </h6>
                     <div className="row">
                         <div className="col-md-2"></div>
                         <div className="col-md-8">
                             <hr />
-                            <p style={{ fontSize: "14px" }}>{post.text}</p>
+                            <p style={{ fontSize: "18px" }}>{post.text}</p>
                             <hr />
                         </div>
                         <div className="col-md-2"></div>
