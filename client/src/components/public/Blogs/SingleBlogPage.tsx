@@ -21,13 +21,13 @@ const SingleBlogPage: React.FC<Props> = ({ id, posts, getPostById }) => {
 
     useEffect(() => {
         if (loaded === false) {
-            const checkForPost = posts.find(post => String(post.ID) === id);
+            const checkForPost = posts.find(post => String(post.id) === id);
             if (checkForPost) {
                 setPost(checkForPost);
             } else {
                 getPostById(id).then(() => {
                     const singlePost = posts.find(
-                        post => String(post.ID) === id
+                        post => String(post.id) === id
                     );
                     setPost(singlePost);
                 });

@@ -13,6 +13,6 @@ export interface Post {
     title: string;
     likes: number;
     user: User;
-    ID: number;
+    id: number;
     description: string;
 }

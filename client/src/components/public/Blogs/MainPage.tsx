@@ -26,16 +26,15 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
     }
 
     return (
-        <div style={{ textAlign: "center" }}>
+        <div className="container mt-4">
             {posts.map(post => (
                 <div>
                     <Blog
-                        id={String(post.ID)}
+                        id={String(post.id)}
                         likes={post.likes}
                         title={post.title}
                         description={post.description}
                     />
-                    {post.ID}
                 </div>
             ))}
         </div>

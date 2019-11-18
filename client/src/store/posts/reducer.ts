@@ -13,10 +13,10 @@ const reducer = (state: Post[] = [], action: any) => {
         case "CREATE_POST":
             return [...state, action.data];
         case "REMOVE_POST":
-            return state.filter(post => String(post.ID) === action.id);
+            return state.filter(post => String(post.id) === action.id);
         case "UPDATE_POST":
             return state.map(post =>
-                String(post.ID) === action.id ? action.data : post
+                String(post.id) === action.id ? action.data : post
             );
         default:
             return state;

@@ -23,7 +23,7 @@ const postReducer = (
             };
         case REMOVE_POST:
             const filteredPosts: Post[] = state.posts.filter(
-                post => String(post.ID) !== action.id
+                post => String(post.id) !== action.id
             );
             return {
                 posts: filteredPosts
@@ -34,7 +34,7 @@ const postReducer = (
             };
         case UPDATE_POST:
             const updated: Post[] = state.posts.map(post =>
-                String(post.ID) === action.id ? action.payload : post
+                String(post.id) === action.id ? action.payload : post
             );
             return {
                 posts: updated

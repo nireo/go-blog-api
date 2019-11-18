@@ -20,20 +20,27 @@ const Navbar: React.FC = () => {
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav">
-                        <li className="nav-item active">
-                            <Link className="nav-link" to="/">
-                                Home <span className="sr-only">(current)</span>
-                            </Link>
-                        </li>
+                    <ul className="navbar-nav mr-auto">
                         <li className="nav-item">
                             <Link className="nav-link" to="/create">
-                                Create
+                                create
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link to="/blogs" className="nav-link">
-                                Blogs
+                                blogs
+                            </Link>
+                        </li>
+                    </ul>
+                    <ul className="navbar-nav">
+                        <li>
+                            <Link to="/login" className="nav-link">
+                                login
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="signup" className="nav-link">
+                                register
                             </Link>
                         </li>
                     </ul>
