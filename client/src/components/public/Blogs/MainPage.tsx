@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AppState } from "../../../store/index";
 import { connect } from "react-redux";
 import { Post } from "../../../interfaces/post.interfaces";
@@ -16,11 +16,16 @@ type Props = {
 };
 
 const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
+    const [loaded, setLoaded] = useState<boolean>(false);
     useEffect(() => {
-        if (posts.length < 1) {
+        if (posts.length < 1 && loaded === false) {
+            // added loaded since it continues requesting after first request
+            // if there is no posts.
             initPosts();
+            setLoaded(true);
         }
     }, [posts, initPosts]);
+
     if (posts.length === 0) {
         return <Loading />;
     }
