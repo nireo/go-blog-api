@@ -228,3 +228,42 @@ func remove(c *gin.Context) {
 	db.Delete(&user)
 	c.Status(204)
 }
+
+func changePassword(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	// get the user from request
+	userRaw, _ := c.MustGet("user").(User)
+
+	// define request body interface for validation
+	type RequestBody struct {
+		Password string `json:"password" binding:"required"`
+	}
+
+	var body RequestBody
+	if err := c.BindJSON(&body); err != nil {
+		// if the body is invalid
+		c.AbortWithStatus(400)
+		return
+	}
+
+	var user User
+	// check if the user exists just for good measure might not be needed
+	if err := db.Preload("User").Where("id = ?", userRaw.ID).First(&user).Error; err != nil {
+		c.AbortWithStatus(404)
+		return
+	}
+
+	// generate new hash from the password in the body
+	hash, hashErr := hash(body.Password)
+	if hashErr != nil {
+		c.AbortWithStatus(500)
+		return
+	}
+
+	user.PasswordHash = hash
+	// save new changed user to database
+	db.Save(&user)
+	c.JSON(200, common.JSON{
+		"success": "Password has been updated",
+	})
+}
