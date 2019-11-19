@@ -3,7 +3,6 @@ import Modal from "../Misc/Modal";
 
 const Register: React.FC = () => {
     const [show, setShow] = useState<boolean>(false);
-
     const hideModal = () => {
         setShow(true);
     };

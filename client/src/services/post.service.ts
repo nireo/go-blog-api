@@ -1,5 +1,6 @@
+import { Post } from "../interfaces/post.interfaces";
 import BaseHttpService from "./base.service";
-import { UpdatePost, CreatePost } from "../interfaces/post.interfaces";
+import { CreatePost } from "../interfaces/post.interfaces";
 
 export default class PostService extends BaseHttpService {
     private postServiceUrl: string = "/api/posts/";
@@ -12,7 +13,7 @@ export default class PostService extends BaseHttpService {
         return this.get(`${this.postServiceUrl}/${id}`);
     }
 
-    async updatePost(updated: UpdatePost, id: string) {
+    async updatePost(updated: Post, id: string) {
         return this.patch(`${this.postServiceUrl}/${id}`, updated);
     }
 

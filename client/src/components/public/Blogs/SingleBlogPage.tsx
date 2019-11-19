@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, FormEvent } from "react";
 import { connect } from "react-redux";
 import { AppState } from "../../../store";
-import { getPostById } from "../../../store/posts/reducer";
+import { getPostById, updatePost } from "../../../store/posts/reducer";
 import { Post } from "../../../interfaces/post.interfaces";
 import { Loading } from "../Misc/Loading";
 
@@ -9,13 +9,19 @@ type Props = {
     id: string;
     posts: Post[];
     getPostById: (id: string) => Promise<void>;
+    updatePost: (post: Post, id: string) => Promise<void>;
 };
 
 const mapStateToProps = (state: AppState) => ({
     posts: state.post
 });
 
-const SingleBlogPage: React.FC<Props> = ({ id, posts, getPostById }) => {
+const SingleBlogPage: React.FC<Props> = ({
+    id,
+    posts,
+    getPostById,
+    updatePost
+}) => {
     const [loaded, setLoaded] = useState<boolean>(false);
     const [post, setPost] = useState<undefined | Post>(undefined);
 
@@ -48,7 +54,18 @@ const SingleBlogPage: React.FC<Props> = ({ id, posts, getPostById }) => {
             </div>
         );
     }
-    console.log(post);
+
+    const addLike = (event: FormEvent<HTMLFormElement>) => {
+        // prevent site from reloading when submitting.
+        event.preventDefault();
+        if (!post) {
+            // not necessary, but typescript complains
+            return;
+        }
+
+        const postWithLike = { ...post, likes: post.likes + 1 };
+        updatePost(postWithLike, String(post.id));
+    };
 
     return (
         <div className="container text-center mt-4">
@@ -68,6 +85,10 @@ const SingleBlogPage: React.FC<Props> = ({ id, posts, getPostById }) => {
                         <div className="col-md-2"></div>
                     </div>
                     <p>Posted: {post.created_at}</p>
+                    <p>Likes: {post.likes}</p>
+                    <form onSubmit={addLike}>
+                        <button className="button">Like</button>
+                    </form>
                 </div>
             )}
         </div>

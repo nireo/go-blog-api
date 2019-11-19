@@ -53,7 +53,7 @@ export const createPost = (post: CreatePost) => {
     };
 };
 
-export const updatePost = (post: UpdatePost, id: string) => {
+export const updatePost = (post: Post, id: string) => {
     return async (dispatch: Dispatch) => {
         const updatedPost = await postService.updatePost(post, id);
         dispatch({
