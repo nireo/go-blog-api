@@ -16,9 +16,11 @@ const Modal: React.FC<Props> = ({ handleClose, show, children }) => {
             <section className="modal-main">
                 {children}
                 <div className="container">
-                    <button className="button" onClick={handleClose}>
-                        Close
-                    </button>
+                    <div className="container">
+                        <button className="button" onClick={handleClose}>
+                            Close
+                        </button>
+                    </div>
                 </div>
             </section>
         </div>

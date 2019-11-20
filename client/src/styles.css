@@ -75,7 +75,7 @@ h6 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.75);
 }
 
 .modal-main {
@@ -85,6 +85,7 @@ h6 {
     height: auto;
     top: 50%;
     left: 50%;
+    border-radius: 5px;
     transform: translate(-50%, -50%);
 }
 
@@ -124,4 +125,26 @@ h6 {
         display: block;
         margin: 0.2em auto;
     }
+}
+
+.input {
+    display: block;
+    height: 50px;
+    width: 90%;
+    margin: 0 auto;
+    border: none;
+}
+
+.input::placeholder {
+    -webkit-transform: translateY(0px);
+    transform: translateY(0px);
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.input:focus,
+.input:active:focus {
+    color: #3d9cff;
+    outline: none;
+    border-bottom: 1px solid #3d9cff;
 }
