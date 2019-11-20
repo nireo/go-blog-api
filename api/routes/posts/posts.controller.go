@@ -108,9 +108,9 @@ func update(c *gin.Context) {
 	user := c.MustGet("user").(User)
 
 	type RequestBody struct {
-		Text  string `json:"text" binding:"required"`
-		Title string `json:"title" binding:"required"`
-		Likes int    `json:"likes" binding:"required"`
+		Text        string `json:"text" binding:"required"`
+		Title       string `json:"title" binding:"required"`
+		Description string `json:"description" binding:"required"`
 	}
 
 	var requestBody RequestBody
@@ -136,9 +136,34 @@ func update(c *gin.Context) {
 	// reassign post values
 	post.Text = requestBody.Text
 	post.Title = requestBody.Title
-	post.Likes = requestBody.Likes
+	post.Description = requestBody.Description
 
 	// save to database
+	db.Save(&post)
+	c.JSON(200, post.Serialize())
+}
+
+func handleLike(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	id := c.Param("id")
+
+	type RequestBody struct {
+		Like string `json:"text" binding:"required"`
+	}
+
+	var requestBody RequestBody
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.AbortWithStatus(400)
+		return
+	}
+
+	var post Post
+	if err := db.Preload("User").Where("id = ?", id).First(&post).Error; err != nil {
+		c.AbortWithStatus(403)
+		return
+	}
+
+	post.Likes = post.Likes + 1
 	db.Save(&post)
 	c.JSON(200, post.Serialize())
 }
