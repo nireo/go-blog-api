@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Modal from "../Misc/Modal";
+import Register from "../User/Register";
+import Login from "../User/Login";
 
 const Navbar: React.FC = () => {
+    const [show, setShow] = useState<boolean>(false);
+    const [showRegister, setShowRegister] = useState<boolean>(false);
+    const hideModal = () => {
+        setShow(false);
+    };
+
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -34,18 +43,21 @@ const Navbar: React.FC = () => {
                     </ul>
                     <ul className="navbar-nav">
                         <li>
-                            <Link to="/login" className="nav-link">
+                            <a
+                                onClick={() => setShow(true)}
+                                className="nav-link"
+                            >
                                 login
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="signup" className="nav-link">
-                                register
-                            </Link>
+                            </a>
                         </li>
                     </ul>
                 </div>
             </nav>
+            <Modal show={show} handleClose={hideModal}>
+                <div className="container">
+                    {showRegister === false ? <Register /> : <Login />}
+                </div>
+            </Modal>
         </div>
     );
 };

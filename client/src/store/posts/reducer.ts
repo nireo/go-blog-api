@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 import PostService from "../../services/post.service";
-import { Post, UpdatePost, CreatePost } from "../../interfaces/post.interfaces";
+import { Post, CreatePost } from "../../interfaces/post.interfaces";
 
 const postService = new PostService();
 

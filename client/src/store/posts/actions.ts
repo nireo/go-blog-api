@@ -30,7 +30,7 @@ export const createPost = async (
 };
 
 export const updatePost = async (
-    post: UpdatePost,
+    post: Post,
     id: string
 ): Promise<PostActionTypes> => {
     const updatedPost = await postService.updatePost(post, id);

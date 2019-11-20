@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import Modal from "../Misc/Modal";
 
 const Register: React.FC = () => {
-    const [show, setShow] = useState<boolean>(false);
-    const hideModal = () => {
-        setShow(true);
-    };
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
     return (
-        <Modal show={show} handleClose={hideModal}>
-            {{
-                content: <div className="container">Registeration form</div>
-            }}
-        </Modal>
+        <div>
+            <h2>
+                <strong>Register</strong>
+            </h2>
+        </div>
     );
 };
 

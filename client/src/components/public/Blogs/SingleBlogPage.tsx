@@ -68,13 +68,18 @@ const SingleBlogPage: React.FC<Props> = ({
     };
 
     return (
-        <div className="container text-center mt-4">
+        <div className="container mt-4">
             {post !== undefined && (
                 <div>
-                    <h2 style={{ fontSize: "36px" }}>{post.title}</h2>
-                    <h6 className="text-muted" style={{ fontSize: "20px" }}>
-                        {post.description}
-                    </h6>
+                    <div className="text-center">
+                        <h2 style={{ fontSize: "36px" }}>
+                            <strong>{post.title}</strong>
+                        </h2>
+                        <h6 className="text-muted" style={{ fontSize: "20px" }}>
+                            {post.description}
+                        </h6>
+                    </div>
+
                     <div className="row">
                         <div className="col-md-2"></div>
                         <div className="col-md-8">
@@ -84,15 +89,19 @@ const SingleBlogPage: React.FC<Props> = ({
                         </div>
                         <div className="col-md-2"></div>
                     </div>
-                    <p>Posted: {post.created_at}</p>
-                    <p>Likes: {post.likes}</p>
-                    <form onSubmit={addLike}>
-                        <button className="button">Like</button>
-                    </form>
+                    <div className="text-center">
+                        <p>Posted: {post.created_at}</p>
+                        <p>Likes: {post.likes}</p>
+                        <form onSubmit={addLike}>
+                            <button className="button">Like</button>
+                        </form>
+                    </div>
                 </div>
             )}
         </div>
     );
 };
 
-export default connect(mapStateToProps, { getPostById })(SingleBlogPage);
+export default connect(mapStateToProps, { getPostById, updatePost })(
+    SingleBlogPage
+);

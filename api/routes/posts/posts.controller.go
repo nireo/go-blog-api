@@ -145,7 +145,7 @@ func update(c *gin.Context) {
 
 func handleLike(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	id := c.Param("id")
+	id := c.Param("postId")
 
 	type RequestBody struct {
 		Like string `json:"text" binding:"required"`
