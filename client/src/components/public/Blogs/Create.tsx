@@ -1,10 +1,10 @@
 import React, { useState } from "react";
+import TextEditor from "./TextEditor";
 
 const Create = () => {
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [text, setText] = useState<string>("");
-
     return (
         <div className="container">
             <div>
@@ -29,7 +29,7 @@ const Create = () => {
                         fontFamily: "Raleway sans-serif",
                         color: "#6c757d"
                     }}
-                    placeholder="description"
+                    placeholder="Description..."
                 />
             </div>
             <hr />
@@ -43,10 +43,11 @@ const Create = () => {
                         fontFamily: "Merriweather, serif",
                         width: "100%"
                     }}
-                    placeholder="Text"
+                    placeholder="Text..."
                     rows={50}
                 />
             </div>
+            <TextEditor />
         </div>
     );
 };

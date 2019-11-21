@@ -4,6 +4,7 @@ import { AppState } from "../../../store";
 import { getPostById, updatePost } from "../../../store/posts/reducer";
 import { Post } from "../../../interfaces/post.interfaces";
 import { Loading } from "../Misc/Loading";
+import TextEditor from "./TextEditor";
 
 type Props = {
     id: string;
@@ -98,6 +99,8 @@ const SingleBlogPage: React.FC<Props> = ({
                     </div>
                 </div>
             )}
+            <h2> WRITE HERE </h2>
+            <TextEditor />
         </div>
     );
 };

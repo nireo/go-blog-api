@@ -152,3 +152,14 @@ textarea {
     outline: none;
     border-bottom: 1px solid #3d9cff;
 }
+
+.format-toolbar {
+    display: flex;
+    border-bottom: solid 1.7px rgba(199, 198, 255, 0.15);
+    padding: 10px 0;
+    margin: 0 0 10px 0;
+}
+
+.tooltip-icon-button {
+    border: 0;
+}
