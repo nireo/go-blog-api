@@ -8,90 +8,63 @@ import { italic } from "react-icons-kit/feather/italic";
 import { underline } from "react-icons-kit/feather/underline";
 import { list } from "react-icons-kit/feather/list";
 import { code } from "react-icons-kit/feather/code";
-import { BoldMark } from "./Editor/BoldMark";
-import { ItalicMark } from "./Editor/ItalicMark";
 import { Toolbar } from "./Editor/Toolbar";
+import { isKeyHotkey } from "is-hotkey";
+import initialValue from "./value.json";
 
-const initialValue = Value.fromJSON({
-    document: {
-        nodes: [
-            {
-                object: "block",
-                type: "paragraph",
-                nodes: [
-                    {
-                        object: "text",
-                        leaves: [
-                            {
-                                text: "Start here..."
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-} as any);
+const DEFAULT_NODE = "paragraph";
+const isBoldHotkey: (event: KeyboardEvent) => Boolean = isKeyHotkey("mod+b");
+const isItalicHotkey: (event: KeyboardEvent) => Boolean = isKeyHotkey("mod+i");
+const isUnderlinedHotkey: (event: KeyboardEvent) => Boolean = isKeyHotkey(
+    "mod+u"
+);
+const isCodeHotkey: (event: KeyboardEvent) => Boolean = isKeyHotkey("mod+`");
 
 export default class TextEditor extends Component {
     state = {
-        value: initialValue
+        value: Value.fromJSON(initialValue as any)
     };
 
     onChange = ({ value }: any) => {
         this.setState({ value });
     };
 
-    onKeyDown = (e: any, change: any) => {
-        console.log(change);
-        if (!e.ctrlKey) {
-            console.log(e.key);
-            return;
+    onKeyDown = (event: any, editor: any, next: any) => {
+        let mark;
+        if (isBoldHotkey(event)) {
+            mark = "bold";
+        } else if (isItalicHotkey(event)) {
+            mark = "italic";
+        } else if (isUnderlinedHotkey(event)) {
+            mark = "underlined";
+        } else if (isCodeHotkey(event)) {
+            mark = "code";
+        } else {
+            return next();
         }
-        e.preventDefault();
 
-        switch (e.key) {
-            case "b": {
-                change.toggleMark("bold");
-                return true;
-            }
-            case "i": {
-                change.toggleMark("italic");
-                return true;
-            }
-            case "c": {
-                change.toggleMark("code");
-                return true;
-            }
-            case "l": {
-                change.toggleMark("list");
-                return true;
-            }
-            case "u": {
-                change.toggleMark("underline");
-                return true;
-            }
-            default:
-                return;
-        }
+        event.preventDefault();
+        editor.toggleMark(mark);
     };
 
-    renderMark = (props: any) => {
+    renderMark = (props: any, editor: any, next: any) => {
+        const { children, mark, attributes } = props;
+
         switch (props.mark.type) {
             case "bold":
-                return <BoldMark {...props} />;
+                return <strong {...attributes}>{children}</strong>;
             case "italic":
-                return <ItalicMark {...props} />;
+                return <em {...attributes}>{children}</em>;
             case "code":
-                return <code {...props.attributes}>{props.children}</code>;
+                return <code {...attributes}>{children}</code>;
             case "list":
                 return (
-                    <ul {...props.attributes}>
-                        <li>{props.children}</li>
+                    <ul {...attributes}>
+                        <li>{children}</li>
                     </ul>
                 );
             case "underline":
-                return <u {...props.attributes}>{props.children}</u>;
+                return <u {...attributes}>{children}</u>;
             default:
         }
     };
