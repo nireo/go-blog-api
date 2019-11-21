@@ -166,6 +166,44 @@ export default class TextEditor extends Component {
         }
     };
 
+    renderMarkButton = (type: any, icon: any) => {
+        let iconToRender = null;
+        switch (icon) {
+            case "bold":
+                iconToRender = bold;
+            case "italic":
+                iconToRender = italic;
+            case "list":
+                iconToRender = list;
+            case "underline":
+                iconToRender = underline;
+            case "code":
+                iconToRender = code;
+            default:
+                iconToRender = null;
+        }
+
+        if (iconToRender === null) {
+            return (
+                <button
+                    className="tooltip-icon-button"
+                    onMouseDown={event => this.onClickMark(event, type)}
+                >
+                    {icon}
+                </button>
+            );
+        }
+
+        return (
+            <button
+                className="tooltip-icon-button"
+                onMouseDown={event => this.onClickMark(event, type)}
+            >
+                <Icon icon={iconToRender} />
+            </button>
+        );
+    };
+
     renderBlockButton = (type: string, icon: any) => {
         let isActive = this.hasBlock(type);
 
@@ -200,13 +238,21 @@ export default class TextEditor extends Component {
         }
 
         if (iconToRender === null) {
-            <button onMouseDown={event => this.onClickBlock(event, type)}>
-                {icon}
-            </button>;
+            return (
+                <button
+                    className="tooltip-icon-button"
+                    onMouseDown={event => this.onClickBlock(event, type)}
+                >
+                    {icon}
+                </button>
+            );
         }
 
         return (
-            <button onMouseDown={event => this.onClickBlock(event, type)}>
+            <button
+                className="tooltip-icon-button"
+                onMouseDown={event => this.onClickBlock(event, type)}
+            >
                 <Icon icon={iconToRender} />
             </button>
         );
@@ -216,36 +262,11 @@ export default class TextEditor extends Component {
         return (
             <Fragment>
                 <Toolbar>
-                    <button
-                        className="tooltip-icon-button"
-                        onMouseDown={event => this.onClickBlock(event, "bold")}
-                    >
-                        <Icon icon={bold} />
-                    </button>
-                    <button
-                        className="tooltip-icon-button"
-                        onPointerDown={e => this.onMarkClick(e, "italic")}
-                    >
-                        <Icon icon={italic} />
-                    </button>
-                    <button
-                        className="tooltip-icon-button"
-                        onPointerDown={e => this.onMarkClick(e, "list")}
-                    >
-                        <Icon icon={list} />
-                    </button>
-                    <button
-                        className="tooltip-icon-button"
-                        onPointerDown={e => this.onMarkClick(e, "underline")}
-                    >
-                        <Icon icon={underline} />
-                    </button>
-                    <button
-                        className="tooltip-icon-button"
-                        onPointerDown={e => this.onMarkClick(e, "code")}
-                    >
-                        <Icon icon={code} />
-                    </button>
+                    {this.renderMarkButton("bold", "bold")}
+                    {this.renderMarkButton("italic", "italic")}
+                    {this.renderMarkButton("list", "list")}
+                    {this.renderMarkButton("underline", "underline")}
+                    {this.renderMarkButton("code", "code")}
                 </Toolbar>
                 <Editor
                     placeholder="Write your blog here..."
