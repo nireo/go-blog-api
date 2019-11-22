@@ -267,6 +267,16 @@ export default class TextEditor extends Component {
                     {this.renderMarkButton("list", "list")}
                     {this.renderMarkButton("underline", "underline")}
                     {this.renderMarkButton("code", "code")}
+                    {this.renderBlockButton("heading-one", "looks_one")}
+                    {this.renderBlockButton("heading-two", "looks_two")}
+                    {this.renderBlockButton(
+                        "numbered-list",
+                        "format_list_numbered"
+                    )}
+                    {this.renderBlockButton(
+                        "bulleted-list",
+                        "format_list_bulleted"
+                    )}
                 </Toolbar>
                 <Editor
                     placeholder="Write your blog here..."

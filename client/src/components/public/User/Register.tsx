@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
+import { connect } from "react-redux";
+import { register } from "../../../store/user/reducer";
+import { UserAction } from "../../../interfaces/user.interfaces";
 
-const Register: React.FC = () => {
+type Props = {
+    hideRegisterWindow: () => void;
+    register: (credentials: UserAction) => void;
+};
+
+const Register: React.FC<Props> = ({ hideRegisterWindow }) => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+
+    const handleRegistration = (event: FormEvent<HTMLFormElement>) => {
+        // stop reloading site after submit
+        event.preventDefault();
+        const credentials: UserAction = {
+            username,
+            password
+        };
+        console.log("hello");
+        register(credentials);
+    };
 
     return (
         <div>
@@ -12,7 +31,7 @@ const Register: React.FC = () => {
                 </h2>
             </div>
             <div className="container">
-                <form className="form-signin">
+                <form className="form-signin" onSubmit={handleRegistration}>
                     <div className="form-group">
                         <input
                             style={{ width: "100%", display: "inline-block" }}
@@ -43,9 +62,16 @@ const Register: React.FC = () => {
                         Register
                     </button>
                 </form>
+                <button
+                    style={{ width: "100%" }}
+                    className="button"
+                    onClick={hideRegisterWindow}
+                >
+                    Already a user? Login here.
+                </button>
             </div>
         </div>
     );
 };
 
-export default Register;
+export default connect(null, { register })(Register);

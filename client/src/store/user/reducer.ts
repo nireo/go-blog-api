@@ -31,4 +31,15 @@ export const login = (credentials: UserAction) => {
     };
 };
 
+export const register = (credentials: UserAction) => {
+    return async (dispatch: Dispatch) => {
+        console.log(credentials);
+        const user = await userService.register(credentials);
+        dispatch({
+            type: "LOGIN",
+            data: user
+        });
+    };
+};
+
 export default reducer;

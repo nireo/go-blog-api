@@ -6,6 +6,8 @@ export interface UpdatePost {
 
 export interface CreatePost {
     text: string;
+    description: string;
+    title: string;
 }
 
 export interface Post {

@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-const Login = () => {
+type Props = {
+    showRegisterWindow: () => void;
+};
+
+const Login: React.FC<Props> = ({ showRegisterWindow }) => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
@@ -40,9 +44,16 @@ const Login = () => {
                         className="button"
                         style={{ width: "100%" }}
                     >
-                        Register
+                        Login
                     </button>
                 </form>
+                <button
+                    style={{ width: "100%" }}
+                    onClick={showRegisterWindow}
+                    className="button"
+                >
+                    Don't have an account? Register here.
+                </button>
             </div>
         </div>
     );

@@ -99,8 +99,6 @@ const SingleBlogPage: React.FC<Props> = ({
                     </div>
                 </div>
             )}
-            <h2> WRITE HERE </h2>
-            <TextEditor />
         </div>
     );
 };

@@ -4,7 +4,6 @@ import TextEditor from "./TextEditor";
 const Create = () => {
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
-    const [text, setText] = useState<string>("");
     return (
         <div className="container">
             <div>
@@ -32,7 +31,16 @@ const Create = () => {
                     placeholder="Description..."
                 />
             </div>
+            <div style={{ width: "100%" }}>
+                <TextEditor />
+            </div>
             <hr />
+        </div>
+    );
+};
+
+/*
+
             <div>
                 <textarea
                     value={text}
@@ -47,9 +55,7 @@ const Create = () => {
                     rows={50}
                 />
             </div>
-            <TextEditor />
-        </div>
-    );
-};
+
+*/
 
 export default Create;

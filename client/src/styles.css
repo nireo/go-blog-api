@@ -163,3 +163,16 @@ textarea {
 .tooltip-icon-button {
     border: 0;
 }
+
+.tooltip-icon-button .active {
+    background-color: #7a7a7a;
+}
+
+.close {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    right: 0%;
+    padding: 12px 16px;
+    transform: translate(0%, -50%);
+}

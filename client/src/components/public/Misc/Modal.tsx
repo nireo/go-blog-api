@@ -1,9 +1,11 @@
 import React, { ReactNode } from "react";
+import Icon from "react-icons-kit";
+import { xCircle } from "react-icons-kit/feather/xCircle";
 
 type Props = {
     handleClose: () => void;
     show: boolean;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 const Modal: React.FC<Props> = ({ handleClose, show, children }) => {
@@ -13,8 +15,8 @@ const Modal: React.FC<Props> = ({ handleClose, show, children }) => {
 
     return (
         <div className={showHideClassName}>
-            <section className="modal-main">
-                {children}
+            <div className="modal-main">
+                <div>{children}</div>
                 <div className="container">
                     <div className="container">
                         <button className="button" onClick={handleClose}>
@@ -22,7 +24,7 @@ const Modal: React.FC<Props> = ({ handleClose, show, children }) => {
                         </button>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     );
 };

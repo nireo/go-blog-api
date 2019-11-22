@@ -11,6 +11,14 @@ const Navbar: React.FC = () => {
         setShow(false);
     };
 
+    const showRegisterWindow = () => {
+        setShowRegister(true);
+    };
+
+    const hideRegisterWindow = () => {
+        setShowRegister(false);
+    };
+
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -55,7 +63,11 @@ const Navbar: React.FC = () => {
             </nav>
             <Modal show={show} handleClose={hideModal}>
                 <div className="container">
-                    {showRegister === false ? <Register /> : <Login />}
+                    {showRegister === true ? (
+                        <Register hideRegisterWindow={hideRegisterWindow} />
+                    ) : (
+                        <Login showRegisterWindow={showRegisterWindow} />
+                    )}
                 </div>
             </Modal>
         </div>
