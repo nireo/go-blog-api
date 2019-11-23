@@ -1,12 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
+import { UserAction } from "../../../interfaces/user.interfaces";
+import { login } from "../../../store/user/reducer";
+import { connect } from "react-redux";
 
 type Props = {
     showRegisterWindow: () => void;
+    login: (credentials: UserAction) => void;
 };
 
 const Login: React.FC<Props> = ({ showRegisterWindow }) => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+
+    const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+        // prevent reload
+        event.preventDefault();
+        const credentials: UserAction = {
+            username,
+            password
+        };
+        login(credentials);
+    };
 
     return (
         <div>
@@ -16,7 +30,7 @@ const Login: React.FC<Props> = ({ showRegisterWindow }) => {
                 </h2>
             </div>
             <div className="container">
-                <form className="form-signin">
+                <form className="form-signin" onSubmit={handleLogin}>
                     <div className="form-group">
                         <input
                             style={{ width: "100%", display: "inline-block" }}
@@ -59,4 +73,4 @@ const Login: React.FC<Props> = ({ showRegisterWindow }) => {
     );
 };
 
-export default Login;
+export default connect(null, { login })(Login);

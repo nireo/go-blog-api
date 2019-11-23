@@ -19,7 +19,6 @@ const Register: React.FC<Props> = ({ hideRegisterWindow }) => {
             username,
             password
         };
-        console.log("hello");
         register(credentials);
     };
 
