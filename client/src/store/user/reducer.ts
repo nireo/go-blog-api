@@ -35,6 +35,8 @@ export const register = (credentials: UserAction) => {
     return async (dispatch: Dispatch) => {
         console.log(credentials);
         const user = await userService.register(credentials);
+        console.log("made request");
+        console.log(user);
         dispatch({
             type: "LOGIN",
             data: user

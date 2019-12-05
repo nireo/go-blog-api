@@ -1,18 +1,18 @@
 {
-    "object": "value",
-    "document": {
-        "object": "document",
+  "object": "value",
+  "document": {
+    "object": "document",
+    "nodes": [
+      {
+        "object": "block",
+        "type": "paragraph",
         "nodes": [
-            {
-                "object": "block",
-                "type": "paragraph",
-                "nodes": [
-                    {
-                        "object": "text",
-                        "text": "You can now start typing your blog..."
-                    }
-                ]
-            }
+          {
+            "object": "text",
+            "text": ""
+          }
         ]
-    }
+      }
+    ]
+  }
 }
