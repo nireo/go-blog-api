@@ -171,16 +171,22 @@ export default class TextEditor extends Component<Props> {
     switch (icon) {
       case 'bold':
         iconToRender = bold;
+        break;
       case 'italic':
         iconToRender = italic;
+        break;
       case 'list':
         iconToRender = list;
+        break;
       case 'underline':
         iconToRender = underline;
+        break;
       case 'code':
         iconToRender = code;
+        break;
       default:
         iconToRender = null;
+        break;
     }
 
     if (iconToRender === null) {
@@ -206,7 +212,6 @@ export default class TextEditor extends Component<Props> {
 
   renderBlockButton = (type: string, icon: any) => {
     let isActive = this.hasBlock(type);
-
     if (['numbered-list', 'bulleted-list'].includes(type)) {
       const {
         value: { document, blocks }
@@ -222,16 +227,22 @@ export default class TextEditor extends Component<Props> {
     switch (icon) {
       case 'bold':
         iconToRender = bold;
+        break;
       case 'italic':
         iconToRender = italic;
+        break;
       case 'list':
         iconToRender = list;
+        break;
       case 'underline':
         iconToRender = underline;
+        break;
       case 'code':
         iconToRender = code;
+        break;
       default:
         iconToRender = null;
+        break;
     }
 
     if (iconToRender === null) {

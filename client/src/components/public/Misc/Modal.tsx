@@ -1,32 +1,28 @@
-import React, { ReactNode } from "react";
-import Icon from "react-icons-kit";
-import { xCircle } from "react-icons-kit/feather/xCircle";
+import React, { ReactNode } from 'react';
 
 type Props = {
-    handleClose: () => void;
-    show: boolean;
-    children: ReactNode;
+  handleClose: () => void;
+  show: boolean;
+  children: ReactNode;
 };
 
 const Modal: React.FC<Props> = ({ handleClose, show, children }) => {
-    const showHideClassName = show
-        ? "modal display-block"
-        : "modal display-none";
+  const showHideClassName = show ? 'modal display-block' : 'modal display-none';
 
-    return (
-        <div className={showHideClassName}>
-            <div className="modal-main">
-                <div>{children}</div>
-                <div className="container">
-                    <div className="container">
-                        <button className="button" onClick={handleClose}>
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className={showHideClassName}>
+      <div className="modal-main">
+        <div>{children}</div>
+        <div className="container">
+          <div className="container">
+            <button className="button" onClick={handleClose}>
+              Close
+            </button>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Modal;
