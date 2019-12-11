@@ -1,14 +1,16 @@
 import React, { useState, FormEvent } from 'react';
-import { UserAction } from '../../../interfaces/user.interfaces';
+import { UserAction, User } from '../../../interfaces/user.interfaces';
 import { login } from '../../../store/user/reducer';
 import { connect } from 'react-redux';
+import { AppState } from '../../../store';
 
 type Props = {
   showRegisterWindow: () => void;
   login: (credentials: UserAction) => void;
+  user: User;
 };
 
-const Login: React.FC<Props> = ({ showRegisterWindow }) => {
+const Login: React.FC<Props> = ({ showRegisterWindow, login }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -69,4 +71,8 @@ const Login: React.FC<Props> = ({ showRegisterWindow }) => {
   );
 };
 
-export default connect(null, { login })(Login);
+const mapStateToProps = (state: AppState) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps, { login })(Login);

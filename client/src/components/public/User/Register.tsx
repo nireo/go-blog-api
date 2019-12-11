@@ -1,14 +1,16 @@
 import React, { useState, FormEvent } from 'react';
 import { connect } from 'react-redux';
 import { register } from '../../../store/user/reducer';
-import { UserAction } from '../../../interfaces/user.interfaces';
+import { UserAction, User } from '../../../interfaces/user.interfaces';
+import { AppState } from '../../../store';
 
 type Props = {
   hideRegisterWindow: () => void;
   register: (credentials: UserAction) => void;
+  user: User;
 };
 
-const Register: React.FC<Props> = ({ hideRegisterWindow }) => {
+const Register: React.FC<Props> = ({ hideRegisterWindow, register, user }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -21,6 +23,15 @@ const Register: React.FC<Props> = ({ hideRegisterWindow }) => {
     };
     register(credentials);
   };
+
+  if (user) {
+    return (
+      <div>
+        <h2>You've already logged in.</h2>
+        <p>You're already logged in, so no need to login again.</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -69,4 +80,8 @@ const Register: React.FC<Props> = ({ hideRegisterWindow }) => {
   );
 };
 
-export default connect(null, { register })(Register);
+const mapState = (state: AppState) => ({
+  user: state.user
+});
+
+export default connect(mapState, { register })(Register);
