@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container">
           <Link className="navbar-brand" to="/">
-            gedium
+            <strong>gedium</strong>
           </Link>
           <button
             className="navbar-toggler"

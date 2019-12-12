@@ -1,9 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Modal from '../Misc/Modal';
+import Register from '../User/Register';
+import Login from '../User/Login';
 
 export const Welcome: React.FC = () => {
+  const [show, setShow] = useState<boolean>(false);
+  const [showRegister, setShowRegister] = useState<boolean>(false);
+
+  const hideModal = () => {
+    setShow(false);
+  };
+
+  const showRegisterWindow = () => {
+    setShowRegister(true);
+  };
+
+  const hideRegisterWindow = () => {
+    setShowRegister(false);
+  };
+
   return (
     <div className="container">
+      <Modal show={show} handleClose={hideModal}>
+        <div className="container">
+          {showRegister === true ? (
+            <Register hideRegisterWindow={hideRegisterWindow} />
+          ) : (
+            <Login showRegisterWindow={showRegisterWindow} />
+          )}
+        </div>
+      </Modal>
       <h1
         className="text-center"
         style={{ fontSize: '80px', marginTop: '4rem' }}
@@ -51,11 +78,18 @@ export const Welcome: React.FC = () => {
         </Link>
       </div>
       <div style={{ marginTop: '4rem', textAlign: 'center' }}>
-        <button className="get-started-button-big">Get started</button>
+        <button
+          onClick={() => setShow(true)}
+          className="get-started-button-big"
+        >
+          Get started
+        </button>
       </div>
       <div style={{ marginTop: '1rem' }} className="text-center">
         Already have an account?{' '}
-        <button className="link-styled-button">Sign in.</button>
+        <button onClick={() => setShow(true)} className="link-styled-button">
+          Sign in.
+        </button>
       </div>
     </div>
   );

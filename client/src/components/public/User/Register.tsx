@@ -1,11 +1,11 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, Dispatch } from 'react';
 import { connect } from 'react-redux';
 import { register } from '../../../store/user/reducer';
 import { UserAction, User } from '../../../interfaces/user.interfaces';
 import { AppState } from '../../../store';
 
 type Props = {
-  hideRegisterWindow: () => void;
+  hideRegisterWindow: Dispatch<React.SetStateAction<boolean>>;
   register: (credentials: UserAction) => void;
   user: User;
 };
@@ -64,17 +64,25 @@ const Register: React.FC<Props> = ({ hideRegisterWindow, register, user }) => {
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button type="submit" className="button" style={{ width: '100%' }}>
-            Register
-          </button>
+          <div style={{ marginTop: '3rem' }}>
+            <button
+              type="submit"
+              className="get-started-button-big"
+              style={{ width: '100%' }}
+            >
+              Register
+            </button>
+          </div>
         </form>
-        <button
-          style={{ width: '100%' }}
-          className="button"
-          onClick={hideRegisterWindow}
-        >
-          Already a user? Login here.
-        </button>
+        <div className="text-center" style={{ marginTop: '1rem' }}>
+          Already have an account?{' '}
+          <button
+            className="link-styled-button button-forms"
+            onClick={() => hideRegisterWindow(true)}
+          >
+            Login.
+          </button>
+        </div>
       </div>
     </div>
   );

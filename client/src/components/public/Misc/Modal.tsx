@@ -12,9 +12,12 @@ const Modal: React.FC<Props> = ({ handleClose, show, children }) => {
   return (
     <div className={showHideClassName}>
       <div className="modal-main">
-        <div>{children}</div>
-        <div className="container">
-          <div className="container">
+        <div style={{ padding: '2rem' }}>{children}</div>
+        <div
+          className="container"
+          style={{ paddingTop: '2rem', paddingBottom: '2rem' }}
+        >
+          <div>
             <button className="button" onClick={handleClose}>
               Close
             </button>
