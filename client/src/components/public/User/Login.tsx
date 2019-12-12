@@ -10,7 +10,7 @@ type Props = {
   user: User;
 };
 
-const Login: React.FC<Props> = ({ showRegisterWindow, login }) => {
+const Login: React.FC<Props> = ({ showRegisterWindow, login, user }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -23,6 +23,15 @@ const Login: React.FC<Props> = ({ showRegisterWindow, login }) => {
     };
     login(credentials);
   };
+
+  if (user) {
+    return (
+      <div>
+        <h2>You're already logged in.</h2>
+        <p>You have already logged in, so you don't need to do it again.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

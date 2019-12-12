@@ -1,9 +1,14 @@
 export interface UserAction {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }
 
 export interface User {
-    username: string;
-    id: number;
+  username: string;
+  id: number;
+}
+
+export interface UserToken {
+  token: string;
+  user: User;
 }
