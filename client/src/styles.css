@@ -1,5 +1,5 @@
 p {
-    font-family: "Merriweather", serif;
+  font-family: 'Merriweather', serif;
 }
 
 h1,
@@ -8,253 +8,295 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Raleway", sans-serif;
+  font-family: 'Raleway', sans-serif;
 }
 
 textarea {
-    resize: none;
+  resize: none;
 }
 
 .loading {
-    display: inline-block;
-    position: relative;
-    width: 64px;
-    height: 64px;
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
 }
 
 .loading div {
-    position: absolute;
-    top: 27px;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: #000000;
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  position: absolute;
+  top: 27px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #000000;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 
 .loading div:nth-child(1) {
-    left: 6px;
-    animation: loading1 0.6s infinite;
+  left: 6px;
+  animation: loading1 0.6s infinite;
 }
 .loading div:nth-child(2) {
-    left: 6px;
-    animation: loading2 0.6s infinite;
+  left: 6px;
+  animation: loading2 0.6s infinite;
 }
 .loading div:nth-child(3) {
-    left: 26px;
-    animation: loading2 0.6s infinite;
+  left: 26px;
+  animation: loading2 0.6s infinite;
 }
 .loading div:nth-child(4) {
-    left: 45px;
-    animation: loading3 0.6s infinite;
+  left: 45px;
+  animation: loading3 0.6s infinite;
 }
 @keyframes loading1 {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 @keyframes loading3 {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(0);
-    }
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
 }
 @keyframes loading2 {
-    0% {
-        transform: translate(0, 0);
-    }
-    100% {
-        transform: translate(19px, 0);
-    }
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
 }
 
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.75);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .modal-main {
-    position: fixed;
-    background: white;
-    width: 80%;
-    height: auto;
-    top: 50%;
-    left: 50%;
-    border-radius: 5px;
-    transform: translate(-50%, -50%);
+  position: fixed;
+  background: white;
+  width: 80%;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  border-radius: 5px;
+  transform: translate(-50%, -50%);
 }
 
 .display-block {
-    display: block;
+  display: block;
 }
 
 .display-none {
-    display: none;
+  display: none;
 }
 
 .button {
-    display: inline-block;
-    padding: 0.2em 1.45em;
-    margin: 0.1em;
-    border: 0.15em solid #cccccc;
-    box-sizing: border-box;
-    text-decoration: none;
-    font-family: "Segoe UI", "Roboto", sans-serif;
-    font-weight: 400;
-    color: #000000;
-    background-color: #cccccc;
-    text-align: center;
-    position: relative;
+  display: inline-block;
+  padding: 0.2em 1.45em;
+  margin: 0.1em;
+  border: 0.15em solid #cccccc;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 400;
+  color: #000000;
+  background-color: #cccccc;
+  text-align: center;
+  position: relative;
 }
 
 .button:hover {
-    border-color: #7a7a7a;
+  border-color: #7a7a7a;
 }
 
 .button:active {
-    background-color: #999999;
+  background-color: #999999;
 }
 
 @media all and (max-width: 30em) {
-    .button {
-        display: block;
-        margin: 0.2em auto;
-    }
+  .button {
+    display: block;
+    margin: 0.2em auto;
+  }
 }
 
 .input {
-    display: block;
-    height: 50px;
-    width: 90%;
-    margin: 0 auto;
-    border: none;
+  display: block;
+  height: 50px;
+  width: 90%;
+  margin: 0 auto;
+  border: none;
 }
 
 .input::placeholder {
-    -webkit-transform: translateY(0px);
-    transform: translateY(0px);
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
+  -webkit-transform: translateY(0px);
+  transform: translateY(0px);
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
 }
 
 .input:focus,
 .input:active:focus {
-    color: #3d9cff;
-    outline: none;
-    border-bottom: 1px solid #3d9cff;
+  color: #3d9cff;
+  outline: none;
+  border-bottom: 1px solid #3d9cff;
 }
 
 .format-toolbar {
-    display: flex;
-    border-bottom: solid 1.7px rgba(199, 198, 255, 0.15);
-    padding: 10px 0;
-    margin: 0 0 10px 0;
+  display: flex;
+  border-bottom: solid 1.7px rgba(199, 198, 255, 0.15);
+  padding: 10px 0;
+  margin: 0 0 10px 0;
 }
 
 .tooltip-icon-button {
-    border: 0;
+  border: 0;
 }
 
 .tooltip-icon-button .active {
-    background-color: #7a7a7a;
+  background-color: #7a7a7a;
 }
 
 .close {
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    right: 0%;
-    padding: 12px 16px;
-    transform: translate(0%, -50%);
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  padding: 12px 16px;
+  transform: translate(0%, -50%);
 }
 
 @keyframes moveInRight {
-    0% {
-        opacity: 0;
-        transform: translateX(100px);
-    }
-    80% {
-        transform: translateX(-10px);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(0);
-    }
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  80% {
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
 }
 
 @keyframes moveInLeft {
-    0% {
-        opacity: 0;
-        transform: translateX(-100px);
-    }
-    80% {
-        transform: translateX(10px);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(0);
-    }
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  80% {
+    transform: translateX(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
 }
 
 @keyframes moveInBottom {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(0);
-    }
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
 }
 
 @keyframes straightLeft {
-    0% {
-        opacity: 0;
-        transform: translateX(-100px);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(0);
-    }
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
 }
 
 @keyframes straightRight {
-    0% {
-        opacity: 0;
-        transform: translateX(100px);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(0);
-    }
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
 }
 
 .buttonV2 {
-    text-decoration: none;
-    padding: 8px 25px;
-    display: inline-block;
-    transition: all 0.2s;
-    position: relative;
-    border: none;
-    margin-top: 30px;
-    border-radius: 2px;
+  text-decoration: none;
+  padding: 8px 25px;
+  display: inline-block;
+  transition: all 0.2s;
+  position: relative;
+  border: none;
+  margin-top: 30px;
+  border-radius: 2px;
 }
 
 .button-blue {
-    color: white;
-    background-color: #a8d8ea;
+  color: white;
+  background-color: #a8d8ea;
 }
 
 .button-pink {
-    background-color: #cca8e9;
-    color: white;
+  background-color: #cca8e9;
+  color: white;
+}
+
+.display-tag {
+  font-size: 24px;
+  padding: 6px 10px;
+  margin: 5px;
+  background-color: rgba(0, 0, 0, 0.05);
+  text-align: center;
+  color: rgba(0, 0, 0, 0.54);
+  border-radius: 99em;
+  height: 24px;
+  text-decoration: none;
+}
+
+.display-tag:hover {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.get-started-button-big {
+  width: 340px;
+  height: 64px;
+  line-height: 40px;
+  font-size: 24px;
+  text-decoration: none;
+  text-align: center;
+  padding: 8px 16px;
+  letter-spacing: 0px;
+  display: inline-block;
+  color: rgb(255, 255, 255);
+  border-style: solid;
+  border-width: 1px;
+  border-color: #745c97;
+  background: #745c97 none repeat scroll 0% 0%;
+}
+
+.link-styled-button {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  color: '#745c97';
+  text-decoration: none;
+  cursor: pointer;
 }
