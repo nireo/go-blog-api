@@ -20,14 +20,19 @@ interface Topics {
 
 export const Side: React.FC<Props> = ({ topic }) => {
   // all topic descriptions and names are in the topic.json file.
-  const [topics] = useState<Topics>(topicsJSON);
+  const [topics] = useState<any>(topicsJSON);
   const [searched, setSearched] = useState<boolean>(false);
   const [foundTopic, setFoundTopic] = useState<TopicInfo | null>(null);
 
   useEffect(() => {
     if (searched === false && foundTopic === null) {
-      setFoundTopic(topics.topics.find(t => t.shorthand === topic));
-      setSearched(false);
+      if (topics !== undefined) {
+        setFoundTopic(
+          topics.topics.find((t: TopicInfo) => t.shorthand === topic)
+        );
+        setSearched(true);
+      }
+      setSearched(true);
     }
   }, [topics, topic, foundTopic, searched, setSearched, setFoundTopic]);
 

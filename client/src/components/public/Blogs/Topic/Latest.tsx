@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const Main = () => {
+export const Latest = () => {
   return <div></div>;
 };

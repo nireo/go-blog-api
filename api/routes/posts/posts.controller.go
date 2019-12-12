@@ -7,6 +7,9 @@ import (
 	"github.com/nireo/go-blog-api/lib/common"
 )
 
+// Define topics, so we can check if the topic given in request is valid
+var topics = [5]string{"programming", "ai", "fitness", "self-improvement", "technology"}
+
 // Post type alias
 type Post = models.Post
 
@@ -16,6 +19,17 @@ type User = models.User
 // JSON type alias
 type JSON = common.JSON
 
+// function for checking if topic is valid
+func checkIfValid(topic string) bool {
+	valid := false
+	for _, v := range topics {
+		if v == topic {
+			valid = true
+		}
+	}
+	return valid
+}
+
 func create(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
@@ -24,11 +38,18 @@ func create(c *gin.Context) {
 		Text        string `json:"text" binding:"required"`
 		Title       string `json:"title" binding:"required"`
 		Description string `json:"description" binding:"required"`
+		Topic       string `json:"topic" binding:"required"`
 	}
 
 	var requestBody RequestBody
 	// if the body is same as the RequestBody interface
 	if err := c.BindJSON(&requestBody); err != nil {
+		c.AbortWithStatus(400)
+		return
+	}
+
+	// check if topic is valid
+	if !checkIfValid(requestBody.Topic) {
 		c.AbortWithStatus(400)
 		return
 	}
@@ -43,6 +64,7 @@ func create(c *gin.Context) {
 		Title:       requestBody.Title,
 		Likes:       0,
 		Description: requestBody.Description,
+		Topic:       requestBody.Topic,
 	}
 
 	db.NewRecord(post)
