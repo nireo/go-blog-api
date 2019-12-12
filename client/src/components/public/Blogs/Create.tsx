@@ -62,6 +62,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
           <TextEditor value={value} />
         </div>
         <hr />
+        <button className="get-started-button-big">Create post</button>
       </form>
     </div>
   );
