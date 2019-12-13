@@ -14,6 +14,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [value] = useState(Value.fromJSON(initialValue as any));
+  const [topic, setTopic] = useState<string>('');
 
   const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
     // stop site from reloading
@@ -22,7 +23,8 @@ const Create: React.FC<Props> = ({ createPost }) => {
     const postObject = {
       title,
       description,
-      text: JSON.stringify(value)
+      text: JSON.stringify(value),
+      topic
     };
 
     createPost(postObject);
@@ -62,7 +64,24 @@ const Create: React.FC<Props> = ({ createPost }) => {
           <TextEditor value={value} />
         </div>
         <hr />
-        <button className="get-started-button-big">Create post</button>
+        <label>
+          Select topic{'   '}
+          <select
+            value={topic}
+            onChange={({ target }) => setTopic(target.value)}
+            className="form-control form-control-sm"
+          >
+            <option value="programming">Programming</option>
+            <option value="ai">Artificial intelligence</option>
+            <option value="technology">Technology</option>
+            <option value="self-improvement">Self improvement</option>
+            <option value="fitness">Fitness</option>
+          </select>
+        </label>
+        <hr />
+        <button type="submit" className="get-started-button-big">
+          Create post
+        </button>
       </form>
     </div>
   );

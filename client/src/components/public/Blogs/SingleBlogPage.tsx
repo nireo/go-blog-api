@@ -4,6 +4,7 @@ import { AppState } from '../../../store';
 import { getPostById, updatePost } from '../../../store/posts/reducer';
 import { Post } from '../../../interfaces/post.interfaces';
 import { Loading } from '../Misc/Loading';
+import { Node } from 'slate';
 
 type Props = {
   id: string;
@@ -15,6 +16,10 @@ type Props = {
 const mapStateToProps = (state: AppState) => ({
   posts: state.post
 });
+
+const serialize = (nodes: object[]) => {
+  return nodes.map(n => Node.text(n)).join('\n');
+};
 
 const SingleBlogPage: React.FC<Props> = ({
   id,
@@ -64,6 +69,10 @@ const SingleBlogPage: React.FC<Props> = ({
     const postWithLike = { ...post, likes: post.likes + 1 };
     updatePost(postWithLike, String(post.id));
   };
+
+  if (post !== undefined) {
+    console.log(JSON.parse(post.text));
+  }
 
   return (
     <div className="container mt-4">

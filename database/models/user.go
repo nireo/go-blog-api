@@ -10,7 +10,6 @@ type User struct {
 	gorm.Model
 	Username     string
 	PasswordHash string
-	Following    []string
 }
 
 // Serialize user data

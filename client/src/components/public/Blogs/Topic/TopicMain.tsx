@@ -1,6 +1,6 @@
 import React from 'react';
 import { Side } from './Side';
-import { Main } from './Main';
+import Main from './Main';
 
 type Props = {
   topic: string;

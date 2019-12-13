@@ -38,27 +38,36 @@ const Navbar: React.FC = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link className="nav-link" to="/create">
-                  create
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/blogs" className="nav-link">
-                  blogs
-                </Link>
-              </li>
-            </ul>
+            <ul className="navbar-nav mr-auto"></ul>
             <ul className="navbar-nav">
-              <li>
-                <button
-                  onClick={() => setShow(true)}
-                  className="nav-link link-styled-button"
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  to="/create"
+                  style={{ color: 'black' }}
                 >
-                  login
-                </button>
+                  Write
+                </Link>
               </li>
+              <li
+                className="nav-item"
+                style={{ paddingLeft: '0.75rem', paddingRight: '0.75rem' }}
+              >
+                <Link
+                  to="/blogs"
+                  className="nav-link"
+                  style={{ color: 'black' }}
+                >
+                  Browse
+                </Link>
+              </li>
+              <button
+                onClick={() => setShow(true)}
+                className="nav-link link-styled-button"
+                style={{ color: 'black' }}
+              >
+                Sign in
+              </button>
             </ul>
           </div>
         </div>
