@@ -78,30 +78,47 @@ func list(c *gin.Context) {
 	cursor := c.Query("cursor")
 	recent := c.Query("recent")
 	var posts []Post
-
-	if cursor == "" {
-		if err := db.Preload("User").Limit(10).Order("id desc").Find(&posts).Error; err != nil {
-			c.AbortWithStatus(500)
+	//  get the posts from topic
+	topic := c.DefaultQuery("topic", "none")
+	if topic != "none" {
+		if err := db.Preload("User").Where("topic = ?", topic).Limit(10).Find(&posts).Error; err != nil {
+			// if no posts in category are found
+			c.AbortWithStatus(404)
 			return
 		}
+
+		// serialize data
+		serialized := make([]JSON, len(posts), len(posts))
+		for index := range posts {
+			serialized[index] = posts[index].Serialize()
+		}
+
+		c.JSON(200, serialized)
+
 	} else {
-		condition := "id < ?"
-		if recent == "1" {
-			condition = "id > ?"
+		if cursor == "" {
+			if err := db.Preload("User").Limit(10).Order("id desc").Find(&posts).Error; err != nil {
+				c.AbortWithStatus(500)
+				return
+			}
+		} else {
+			condition := "id < ?"
+			if recent == "1" {
+				condition = "id > ?"
+			}
+			if err := db.Preload("User").Limit(10).Order("id desc").Where(condition, cursor).Find(&posts).Error; err != nil {
+				c.AbortWithStatus(500)
+				return
+			}
 		}
-		if err := db.Preload("User").Limit(10).Order("id desc").Where(condition, cursor).Find(&posts).Error; err != nil {
-			c.AbortWithStatus(500)
-			return
+
+		serialized := make([]JSON, len(posts), len(posts))
+		for index := range posts {
+			serialized[index] = posts[index].Serialize()
 		}
-	}
 
-	length := len(posts)
-	serialized := make([]JSON, length, length)
-	for i := 0; i < length; i++ {
-		serialized[i] = posts[i].Serialize()
+		c.JSON(200, serialized)
 	}
-
-	c.JSON(200, serialized)
 }
 
 func postFromID(c *gin.Context) {

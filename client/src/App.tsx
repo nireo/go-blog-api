@@ -7,6 +7,7 @@ import { NotFound } from './components/public/Misc/NotFound';
 import './styles.css';
 import { Welcome } from './components/public/Home/Welcome';
 import { TopicMain } from './components/public/Blogs/Topic/TopicMain';
+import MainPage from './components/public/Blogs/MainPage';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
       <Navbar />
       <Switch>
         <Route exact path="/" render={() => <Welcome />} />
+        <Route exact path="/all" render={() => <MainPage />} />
         <Route
           exact
           path="/blog/:id"
