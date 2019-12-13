@@ -48,5 +48,19 @@ export const Side: React.FC<Props> = ({ topic }) => {
     return <NotFound />;
   }
 
-  return <div>{foundTopic !== null && <div></div>}</div>;
+  return (
+    <div>
+      {foundTopic !== null && (
+        <div>
+          <h3>
+            <strong>{foundTopic.name}</strong>
+          </h3>
+          <p>{foundTopic.desc}</p>
+          <button className="get-started-button-big button-smaller">
+            Follow
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
