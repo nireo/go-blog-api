@@ -15,6 +15,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const [description, setDescription] = useState<string>('');
   const [value] = useState(Value.fromJSON(initialValue as any));
   const [topic, setTopic] = useState<string>('');
+  const [image, setImage] = useState<string>('');
 
   const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
     // stop site from reloading
@@ -24,7 +25,8 @@ const Create: React.FC<Props> = ({ createPost }) => {
       title,
       description,
       text: JSON.stringify(value),
-      topic
+      topic,
+      imageURL: image
     };
 
     createPost(postObject);
@@ -78,6 +80,13 @@ const Create: React.FC<Props> = ({ createPost }) => {
             <option value="fitness">Fitness</option>
           </select>
         </label>
+        <input
+          className="form-control form-control-sm"
+          value={image}
+          onChange={({ target }) => setImage(target.value)}
+          type="text"
+          placeholder="Image url..."
+        />
         <hr />
         <button type="submit" className="get-started-button-big">
           Create post

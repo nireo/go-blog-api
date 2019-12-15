@@ -27,7 +27,7 @@ export const Welcome: React.FC = () => {
           {showRegister === true ? (
             <Register hideRegisterWindow={hideRegisterWindow} />
           ) : (
-            <Login showRegisterWindow={showRegisterWindow} />
+            <Login showRegisterWindow={setShowRegister} />
           )}
         </div>
       </Modal>

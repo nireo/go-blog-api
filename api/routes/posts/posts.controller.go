@@ -39,6 +39,7 @@ func create(c *gin.Context) {
 		Title       string `json:"title" binding:"required"`
 		Description string `json:"description" binding:"required"`
 		Topic       string `json:"topic" binding:"required"`
+		ImageURL    string `json:"imageURL" binding:"required"`
 	}
 
 	var requestBody RequestBody
@@ -65,6 +66,7 @@ func create(c *gin.Context) {
 		Likes:       0,
 		Description: requestBody.Description,
 		Topic:       requestBody.Topic,
+		ImageURL:    requestBody.ImageURL,
 	}
 
 	db.NewRecord(post)

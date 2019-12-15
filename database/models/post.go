@@ -13,6 +13,7 @@ type Post struct {
 	Likes       int    `sql:"type:int;"`
 	Description string `sql:"type:text;"`
 	Topic       string `sql:"type:text;"`
+	ImageURL    string `sql:"type:text;"`
 	User        User   `gorm:"foreignkey:UserID"`
 	UserID      uint
 }
@@ -28,5 +29,6 @@ func (p Post) Serialize() common.JSON {
 		"user":        p.User.Serialize(),
 		"created_at":  p.CreatedAt,
 		"topic":       p.Topic,
+		"image_url":   p.ImageURL,
 	}
 }
