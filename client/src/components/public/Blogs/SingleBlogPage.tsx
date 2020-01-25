@@ -65,26 +65,28 @@ const SingleBlogPage: React.FC<Props> = ({
     updatePost(postWithLike, String(post.id));
   };
 
-  const addZero = (number: number) => {
-    if (number >= 10) {
-      return number;
-    }
-    return `0${number}`;
-  };
+  const returnSensibleDate = (dateString: string) => {
+    const date = new Date(dateString);
+    var monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
 
-  const returnSensibleDate = (date: string) => {
-    const time = new Date(date);
-    return (
-      time.getHours() +
-      ':' +
-      addZero(time.getMinutes()) +
-      ' ' +
-      time.getDate() +
-      '.' +
-      (time.getMonth() + 1) +
-      '.' +
-      time.getFullYear()
-    );
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+
+    return day + ' ' + monthNames[monthIndex] + ' ' + year;
   };
 
   return (
@@ -99,6 +101,10 @@ const SingleBlogPage: React.FC<Props> = ({
               {post.description}
             </h6>
           </div>
+          <div style={{ marginLeft: '20%' }}>
+            <p style={{ marginBottom: '0' }}>{post.user.username}</p>
+            <p className="text-muted">{returnSensibleDate(post.created_at)}</p>
+          </div>
           <div className="text-center">
             <img src={post.image_url} style={{ width: '50rem' }} />
           </div>
@@ -110,13 +116,6 @@ const SingleBlogPage: React.FC<Props> = ({
               <hr />
             </div>
             <div className="col-md-2"></div>
-          </div>
-          <div className="text-center">
-            <p>Posted: {returnSensibleDate(post.created_at)}</p>
-            <p>Likes: {post.likes}</p>
-            <form onSubmit={addLike}>
-              <button className="button">Like</button>
-            </form>
           </div>
         </div>
       )}

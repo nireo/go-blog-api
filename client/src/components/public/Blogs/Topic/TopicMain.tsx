@@ -11,9 +11,9 @@ export const TopicMain: React.FC<Props> = ({ topic }) => {
     <div className="container">
       <div className="row" style={{ marginTop: '2rem' }}>
         <div className="col-md-9">
-          <Main />
+          <Main topic={topic} />
         </div>
-        <div>
+        <div className="col-md-3">
           <Side topic={topic} />
         </div>
       </div>
