@@ -3,8 +3,15 @@ import { Link } from 'react-router-dom';
 import Modal from '../Misc/Modal';
 import Register from '../User/Register';
 import Login from '../User/Login';
+import { AppState } from '../../../store';
+import { connect } from 'react-redux';
+import { User } from '../../../interfaces/user.interfaces';
 
-const Navbar: React.FC = () => {
+type Props = {
+  user: User;
+};
+
+const Navbar: React.FC<Props> = ({ user }) => {
   const [show, setShow] = useState<boolean>(false);
   const [showRegister, setShowRegister] = useState<boolean>(false);
   const hideModal = () => {
@@ -57,13 +64,15 @@ const Navbar: React.FC = () => {
                   Browse
                 </Link>
               </li>
-              <button
-                onClick={() => setShow(true)}
-                className="nav-link link-styled-button"
-                style={{ color: 'black' }}
-              >
-                Sign in
-              </button>
+              {!user && (
+                <button
+                  onClick={() => setShow(true)}
+                  className="nav-link link-styled-button"
+                  style={{ color: 'black' }}
+                >
+                  Sign in
+                </button>
+              )}
             </ul>
           </div>
         </div>
@@ -81,4 +90,8 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;
+const mapStateToProps = (state: AppState) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps, {})(Navbar);

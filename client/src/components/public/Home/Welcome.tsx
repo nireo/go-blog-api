@@ -3,8 +3,15 @@ import { Link } from 'react-router-dom';
 import Modal from '../Misc/Modal';
 import Register from '../User/Register';
 import Login from '../User/Login';
+import { connect } from 'react-redux';
+import { AppState } from '../../../store';
+import { User } from '../../../interfaces/user.interfaces';
 
-export const Welcome: React.FC = () => {
+type Props = {
+  user: User;
+};
+
+const Welcome: React.FC<Props> = ({ user }) => {
   const [show, setShow] = useState<boolean>(false);
   const [showRegister, setShowRegister] = useState<boolean>(false);
 
@@ -78,19 +85,33 @@ export const Welcome: React.FC = () => {
         </Link>
       </div>
       <div style={{ marginTop: '4rem', textAlign: 'center' }}>
-        <button
-          onClick={() => setShow(true)}
-          className="get-started-button-big"
-        >
-          Get started
-        </button>
+        {!user ? (
+          <button
+            onClick={() => setShow(true)}
+            className="get-started-button-big"
+          >
+            Get started
+          </button>
+        ) : (
+          <Link to="/all">
+            <button className="get-started-button-big">Get started</button>
+          </Link>
+        )}
       </div>
-      <div style={{ marginTop: '1rem' }} className="text-center">
-        Already have an account?{' '}
-        <button onClick={() => setShow(true)} className="link-styled-button">
-          Sign in.
-        </button>
-      </div>
+      {!user && (
+        <div style={{ marginTop: '1rem' }} className="text-center">
+          Already have an account?{' '}
+          <button onClick={() => setShow(true)} className="link-styled-button">
+            Sign in.
+          </button>
+        </div>
+      )}
     </div>
   );
 };
+
+const mapStateToProps = (state: AppState) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps, {})(Welcome);

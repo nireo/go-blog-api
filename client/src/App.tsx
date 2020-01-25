@@ -1,15 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SingleBlogPage from './components/public/Blogs/SingleBlogPage';
 import Create from './components/public/Blogs/Create';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './components/public/Layout/Navbar';
 import { NotFound } from './components/public/Misc/NotFound';
 import './styles.css';
-import { Welcome } from './components/public/Home/Welcome';
+import Welcome from './components/public/Home/Welcome';
 import { TopicMain } from './components/public/Blogs/Topic/TopicMain';
 import MainPage from './components/public/Blogs/MainPage';
+import { User } from './interfaces/user.interfaces';
+import { connect } from 'react-redux';
+import { AppState } from './store';
+import { checkLocalStorage } from './store/user/reducer';
 
-const App: React.FC = () => {
+type Props = {
+  user: User;
+  checkLocalStorage: () => void;
+};
+
+const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
+  useEffect(() => {
+    if (user === null) {
+      checkLocalStorage();
+    }
+  }, []);
+
   return (
     <Router>
       <Navbar />
@@ -33,4 +48,8 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+const mapStateToProps = (state: AppState) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps, { checkLocalStorage })(App);

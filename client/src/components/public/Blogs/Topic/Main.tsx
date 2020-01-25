@@ -5,6 +5,7 @@ import { User } from '../../../../interfaces/user.interfaces';
 import { Post } from '../../../../interfaces/post.interfaces';
 import axios from 'axios';
 import Blog from '../Blog';
+import { Loading } from '../../Misc/Loading';
 
 type Props = {
   user?: User;
@@ -29,16 +30,22 @@ const Main: React.FC<Props> = ({ user, topic }) => {
 
   return (
     <div className="container">
-      {posts.map(post => (
-        <div style={{ marginTop: '2rem' }}>
-          <Blog
-            description={post.description}
-            id={String(post.id)}
-            title={post.title}
-            likes={post.likes}
-          />
+      {loaded === false ? (
+        <Loading />
+      ) : (
+        <div>
+          {posts.map(post => (
+            <div style={{ marginTop: '2rem' }}>
+              <Blog
+                description={post.description}
+                id={String(post.id)}
+                title={post.title}
+                likes={post.likes}
+              />
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 };
