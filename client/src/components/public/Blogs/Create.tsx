@@ -16,6 +16,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const [value] = useState(Value.fromJSON(initialValue as any));
   const [topic, setTopic] = useState<string>('');
   const [image, setImage] = useState<string>('');
+  const [content, setContent] = useState<string>('');
 
   const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
     // stop site from reloading
@@ -24,7 +25,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
     const postObject = {
       title,
       description,
-      text: JSON.stringify(value),
+      text: content,
       topic,
       imageURL: image
     };
@@ -63,7 +64,16 @@ const Create: React.FC<Props> = ({ createPost }) => {
           />
         </div>
         <div style={{ width: '100%' }}>
-          <TextEditor value={value} />
+          <textarea
+            value={content}
+            onChange={({ target }) => setContent(target.value)}
+            placeholder="Content..."
+            style={{
+              border: 'none',
+              width: '100%',
+              fontFamily: 'Merriweather, serif'
+            }}
+          ></textarea>
         </div>
         <hr />
         <label>

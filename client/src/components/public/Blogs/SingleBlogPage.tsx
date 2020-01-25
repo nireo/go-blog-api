@@ -65,9 +65,27 @@ const SingleBlogPage: React.FC<Props> = ({
     updatePost(postWithLike, String(post.id));
   };
 
-  if (post !== undefined) {
-    console.log(JSON.parse(post.text));
-  }
+  const addZero = (number: number) => {
+    if (number >= 10) {
+      return number;
+    }
+    return `0${number}`;
+  };
+
+  const returnSensibleDate = (date: string) => {
+    const time = new Date(date);
+    return (
+      time.getHours() +
+      ':' +
+      addZero(time.getMinutes()) +
+      ' ' +
+      time.getDate() +
+      '.' +
+      (time.getMonth() + 1) +
+      '.' +
+      time.getFullYear()
+    );
+  };
 
   return (
     <div className="container mt-4">
@@ -81,7 +99,9 @@ const SingleBlogPage: React.FC<Props> = ({
               {post.description}
             </h6>
           </div>
-
+          <div className="text-center">
+            <img src={post.image_url} style={{ width: '50rem' }} />
+          </div>
           <div className="row">
             <div className="col-md-2"></div>
             <div className="col-md-8">
@@ -92,7 +112,7 @@ const SingleBlogPage: React.FC<Props> = ({
             <div className="col-md-2"></div>
           </div>
           <div className="text-center">
-            <p>Posted: {post.created_at}</p>
+            <p>Posted: {returnSensibleDate(post.created_at)}</p>
             <p>Likes: {post.likes}</p>
             <form onSubmit={addLike}>
               <button className="button">Like</button>

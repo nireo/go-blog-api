@@ -53,11 +53,7 @@ const Navbar: React.FC = () => {
                 className="nav-item"
                 style={{ paddingLeft: '0.75rem', paddingRight: '0.75rem' }}
               >
-                <Link
-                  to="/blogs"
-                  className="nav-link"
-                  style={{ color: 'black' }}
-                >
+                <Link to="/all" className="nav-link" style={{ color: 'black' }}>
                   Browse
                 </Link>
               </li>

@@ -1,6 +1,8 @@
 package posts
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/nireo/go-blog-api/database/models"
@@ -45,6 +47,7 @@ func create(c *gin.Context) {
 	var requestBody RequestBody
 	// if the body is same as the RequestBody interface
 	if err := c.BindJSON(&requestBody); err != nil {
+		fmt.Println(err)
 		c.AbortWithStatus(400)
 		return
 	}

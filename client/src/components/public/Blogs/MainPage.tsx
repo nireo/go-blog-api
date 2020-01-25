@@ -29,6 +29,7 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
   if (posts.length === 0) {
     return <Loading />;
   }
+  console.log(posts);
 
   return (
     <div className="container mt-4">

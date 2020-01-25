@@ -1,21 +1,22 @@
-import { User } from "./user.interfaces";
+import { User } from './user.interfaces';
 
 export interface UpdatePost {
-    text: string;
+  text: string;
 }
 
 export interface CreatePost {
-    text: string;
-    description: string;
-    title: string;
+  text: string;
+  description: string;
+  title: string;
 }
 
 export interface Post {
-    text: string;
-    title: string;
-    likes: number;
-    user: User;
-    id: number;
-    description: string;
-    created_at: string;
+  text: string;
+  title: string;
+  likes: number;
+  user: User;
+  id: number;
+  description: string;
+  created_at: string;
+  image_url?: string;
 }
