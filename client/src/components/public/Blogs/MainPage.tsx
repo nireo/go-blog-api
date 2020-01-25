@@ -47,6 +47,7 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
             likes={post.likes}
             title={post.title}
             description={post.description}
+            url={post.image_url}
           />
         </div>
       ))}
