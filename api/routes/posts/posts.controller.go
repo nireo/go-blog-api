@@ -233,3 +233,21 @@ func remove(c *gin.Context) {
 	db.Delete(&post)
 	c.Status(204)
 }
+
+func yourBlogs(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
+
+	var posts []Post
+	if err := db.Model(&user).Related(&posts).Error; err != nil {
+		c.AbortWithStatus(404)
+		return
+	}
+
+	serialized := make([]JSON, len(posts), len(posts))
+	for index := range posts {
+		serialized[index] = posts[index].Serialize()
+	}
+
+	c.JSON(200, serialized)
+}
