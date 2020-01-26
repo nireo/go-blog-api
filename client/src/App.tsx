@@ -12,6 +12,7 @@ import { User } from './interfaces/user.interfaces';
 import { connect } from 'react-redux';
 import { AppState } from './store';
 import { checkLocalStorage } from './store/user/reducer';
+import YourBlogs from './components/public/User/YourBlogs';
 
 type Props = {
   user: User;
@@ -42,6 +43,7 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
           render={({ match }) => <TopicMain topic={match.params.term} />}
         />
         <Route exact path="/create" render={() => <Create />} />
+        <Route exact path="/your-blogs" render={() => <YourBlogs />} />
         <Route render={() => <NotFound />} />
       </Switch>
     </Router>

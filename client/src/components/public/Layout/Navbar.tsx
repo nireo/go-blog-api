@@ -64,6 +64,15 @@ const Navbar: React.FC<Props> = ({ user }) => {
                   Browse
                 </Link>
               </li>
+              {user && (
+                <Link
+                  to="/your-blogs"
+                  style={{ color: 'black' }}
+                  className="nav-link"
+                >
+                  Your blogs
+                </Link>
+              )}
               {!user && (
                 <button
                   onClick={() => setShow(true)}
