@@ -1,8 +1,7 @@
 package auth
 
 import (
-	"io/ioutil"
-	"os"
+	"net/http"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -27,8 +26,6 @@ func checkHash(password string, hash string) bool {
 }
 
 func generateToken(data common.JSON) (string, error) {
-
-	//  token is valid for 7days
 	date := time.Now().Add(time.Hour * 24 * 7)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -36,15 +33,7 @@ func generateToken(data common.JSON) (string, error) {
 		"exp":  date.Unix(),
 	})
 
-	// get path from root dir
-	pwd, _ := os.Getwd()
-	keyPath := pwd + "/jwtsecret.key.pub"
-
-	key, readErr := ioutil.ReadFile(keyPath)
-	if readErr != nil {
-		return "", readErr
-	}
-	tokenString, err := token.SignedString(key)
+	tokenString, err := token.SignedString([]byte("temp"))
 	return tokenString, err
 }
 
@@ -58,19 +47,20 @@ func register(c *gin.Context) {
 
 	var body RequestBody
 	if err := c.BindJSON(&body); err != nil {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	var exists User
-	if err := db.Where("username = ?", body.Username).First(&exists).Error; err == nil {
-		c.AbortWithStatus(409)
+	// check if user exists
+	_, ok := models.GetUserWithUsername(body.Username, db)
+	if ok {
+		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
 
 	hash, hashErr := hash(body.Password)
 	if hashErr != nil {
-		c.AbortWithStatus(500)
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
@@ -84,19 +74,16 @@ func register(c *gin.Context) {
 
 	serialized := user.Serialize()
 	token, _ := generateToken(serialized)
-	c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
 
-	c.JSON(200, common.JSON{
+	c.JSON(http.StatusOK, common.JSON{
 		"user":  user.Serialize(),
 		"token": token,
 	})
 }
 
 func login(c *gin.Context) {
-	// get gin from context
 	db := c.MustGet("db").(*gorm.DB)
 
-	// define request body interface for validation
 	type RequestBody struct {
 		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -104,22 +91,18 @@ func login(c *gin.Context) {
 
 	var body RequestBody
 	if err := c.BindJSON(&body); err != nil {
-		// if the body is invalid
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	// check if the user even exists
-	var user User
-	if err := db.Where("username = ?", body.Username).First(&user).Error; err != nil {
-		// no user found
-		c.AbortWithStatus(404)
-		return
+	user, ok := models.GetUserWithUsername(body.Username, db)
+	if !ok {
+		c.AbortWithStatus(http.StatusNotFound)
 	}
 
+	// passwords don't match
 	if !checkHash(body.Password, user.PasswordHash) {
-		// invalid credentials
-		c.AbortWithStatus(401)
+		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 
@@ -127,30 +110,18 @@ func login(c *gin.Context) {
 	token, err := generateToken(serialized)
 
 	if err != nil {
-		// something went wrong with token creation
-		// return a internal server error
-		c.AbortWithStatus(500)
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	c.SetCookie("token", token, 60*60*26*7, "/", "", false, true)
-	c.JSON(200, common.JSON{
+	c.JSON(http.StatusOK, common.JSON{
 		"user":  user.Serialize(),
 		"token": token,
 	})
 }
 
 func check(c *gin.Context) {
-	// get the user from request
-	userRaw, ok := c.Get("user")
-
-	if !ok {
-		// user isn't logged in
-		c.AbortWithStatus(401)
-		return
-	}
-
-	user := userRaw.(User)
+	user := c.MustGet("user").(User)
 	tokenExpire := int64(c.MustGet("token_expire").(float64))
 	now := time.Now().Unix()
 	difference := tokenExpire - now
@@ -159,111 +130,81 @@ func check(c *gin.Context) {
 		// make new token
 		token, err := generateToken(user.Serialize())
 		if err != nil {
-			// failed generating token
-			// return internal server error
-			c.AbortWithStatus(500)
+			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
-		c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
-		c.JSON(200, common.JSON{
+		c.JSON(http.StatusOK, common.JSON{
 			"token": token,
 			"user":  user.Serialize(),
 		})
 		return
 	}
-
 	// since the token is less than 2 days old
 	// send a message informing the user
-	c.JSON(200, common.JSON{
+	c.JSON(http.StatusOK, common.JSON{
 		"error": "Your current token is already less than 2 days old",
 	})
 }
 
 func updateUser(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	userRaw, ok := c.Get("user")
-
-	if !ok {
-		c.AbortWithStatus(401)
-		return
-	}
+	user := c.MustGet("user").(User)
 
 	type RequestBody struct {
 		Username string `json:"username" binding:"required"`
 	}
 
 	var requestBody RequestBody
-
 	if err := c.BindJSON(&requestBody); err != nil {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	var checkUser User
-	user := userRaw.(User)
-	// check if the user even exists
-	if err := db.Where("username = ?", requestBody.Username).First(&checkUser).Error; err != nil {
+	_, ok := models.GetUserWithUsername(requestBody.Username, db)
+	if !ok {
 		user.Username = requestBody.Username
+
 		db.Save(&user)
-		c.JSON(200, user.Serialize())
-	} else {
-		// since someone with the username already exists
-		c.AbortWithStatus(403)
+		c.JSON(http.StatusOK, user.Serialize())
 		return
 	}
+
+	c.AbortWithStatus(http.StatusConflict)
+	return
 }
 
 func remove(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	userRaw, ok := c.Get("user")
-
-	if !ok {
-		// user isn't logged in
-		c.AbortWithStatus(401)
-		return
-	}
-
-	user := userRaw.(User)
+	user := c.MustGet("user").(User)
 
 	db.Delete(&user)
-	c.Status(204)
+	c.Status(http.StatusOK)
 }
 
 func changePassword(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	// get the user from request
-	userRaw, _ := c.MustGet("user").(User)
+	user := c.MustGet("user").(User)
 
-	// define request body interface for validation
 	type RequestBody struct {
 		Password string `json:"password" binding:"required"`
 	}
 
 	var body RequestBody
 	if err := c.BindJSON(&body); err != nil {
-		// if the body is invalid
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusOK)
 		return
 	}
 
-	var user User
-	// check if the user exists just for good measure might not be needed
-	if err := db.Preload("User").Where("id = ?", userRaw.ID).First(&user).Error; err != nil {
-		c.AbortWithStatus(404)
-		return
-	}
-
-	// generate new hash from the password in the body
 	hash, hashErr := hash(body.Password)
 	if hashErr != nil {
-		c.AbortWithStatus(500)
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
 	user.PasswordHash = hash
-	// save new changed user to database
+
 	db.Save(&user)
-	c.JSON(200, common.JSON{
+	c.JSON(http.StatusOK, common.JSON{
 		"success": "Password has been updated",
 	})
 }

@@ -8,14 +8,15 @@ import (
 // Post data model
 type Post struct {
 	gorm.Model
-	Text        string `sql:"type:text;"`
-	Title       string `sql:"type:text;"`
-	Likes       int    `sql:"type:int;"`
-	Description string `sql:"type:text;"`
-	Topic       string `sql:"type:text;"`
-	ImageURL    string `sql:"type:text;"`
-	User        User   `gorm:"foreignkey:UserID"`
+	Text        string
+	Title       string
+	Likes       int
+	Description string
+	Topic       string
+	ImageURL    string
+	User        User
 	UserID      uint
+	UUID        string
 }
 
 // Serialize post data
