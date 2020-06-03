@@ -1,7 +1,7 @@
 package posts
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -34,6 +34,7 @@ func checkIfValid(topic string) bool {
 
 func create(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
 
 	// interface fro request
 	type RequestBody struct {
@@ -45,21 +46,16 @@ func create(c *gin.Context) {
 	}
 
 	var requestBody RequestBody
-	// if the body is same as the RequestBody interface
 	if err := c.BindJSON(&requestBody); err != nil {
-		fmt.Println(err)
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
 	// check if topic is valid
 	if !checkIfValid(requestBody.Topic) {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-
-	// get the user for posts
-	user := c.MustGet("user").(User)
 
 	// take title, description and text from body, but set likes to 0
 	post := Post{
@@ -74,82 +70,59 @@ func create(c *gin.Context) {
 
 	db.NewRecord(post)
 	db.Create(&post)
-	// send the new post and a success status code
-	c.JSON(200, post.Serialize())
+	c.JSON(http.StatusOK, post.Serialize())
 }
 
 func list(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	cursor := c.Query("cursor")
-	recent := c.Query("recent")
 	var posts []Post
-	//  get the posts from topic
 	topic := c.DefaultQuery("topic", "none")
 	if topic != "none" {
 		if err := db.Preload("User").Where("topic = ?", topic).Limit(10).Find(&posts).Error; err != nil {
-			// if no posts in category are found
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 			return
 		}
 
-		// serialize data
 		serialized := make([]JSON, len(posts), len(posts))
 		for index := range posts {
 			serialized[index] = posts[index].Serialize()
 		}
 
-		c.JSON(200, serialized)
-
-	} else {
-		if cursor == "" {
-			if err := db.Preload("User").Limit(10).Order("id desc").Find(&posts).Error; err != nil {
-				c.AbortWithStatus(500)
-				return
-			}
-		} else {
-			condition := "id < ?"
-			if recent == "1" {
-				condition = "id > ?"
-			}
-			if err := db.Preload("User").Limit(10).Order("id desc").Where(condition, cursor).Find(&posts).Error; err != nil {
-				c.AbortWithStatus(500)
-				return
-			}
-		}
-
-		serialized := make([]JSON, len(posts), len(posts))
-		for index := range posts {
-			serialized[index] = posts[index].Serialize()
-		}
-
-		c.JSON(200, serialized)
-	}
-}
-
-func postFromID(c *gin.Context) {
-	// get the database from gin context
-	db := c.MustGet("db").(*gorm.DB)
-
-	// get the id parameter
-	id := c.Param("id")
-	var post Post
-
-	// preload related model
-	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&post).Error; err != nil {
-		// if the has not been found
-		c.AbortWithStatus(404)
+		c.JSON(http.StatusOK, serialized)
 		return
 	}
 
-	// return post json data and successfull data
-	c.JSON(200, post.Serialize())
+	serialized := make([]JSON, len(posts), len(posts))
+	for index := range posts {
+		serialized[index] = posts[index].Serialize()
+	}
+
+	c.JSON(http.StatusOK, serialized)
+	return
+}
+
+func postFromID(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	id := c.Param("id")
+
+	var post Post
+	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&post).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	c.JSON(http.StatusOK, post.Serialize())
 }
 
 func update(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	id := c.Param("id")
-
 	user := c.MustGet("user").(User)
+
+	if id == "" {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 
 	type RequestBody struct {
 		Text        string `json:"text" binding:"required"`
@@ -158,58 +131,43 @@ func update(c *gin.Context) {
 	}
 
 	var requestBody RequestBody
-
 	if err := c.BindJSON(&requestBody); err != nil {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
 	var post Post
 	if err := db.Preload("User").Where("id = ?", id).First(&post).Error; err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	// check if the user owns the post
 	if post.UserID != user.ID {
-		// return status 403 - forbidden
-		c.AbortWithStatus(403)
+		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 
-	// reassign post values
 	post.Text = requestBody.Text
 	post.Title = requestBody.Title
 	post.Description = requestBody.Description
 
-	// save to database
 	db.Save(&post)
-	c.JSON(200, post.Serialize())
+	c.JSON(http.StatusOK, post.Serialize())
 }
 
 func handleLike(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	id := c.Param("postId")
 
-	type RequestBody struct {
-		Like string `json:"text" binding:"required"`
-	}
-
-	var requestBody RequestBody
-	if err := c.BindJSON(&requestBody); err != nil {
-		c.AbortWithStatus(400)
-		return
-	}
-
 	var post Post
 	if err := db.Preload("User").Where("id = ?", id).First(&post).Error; err != nil {
-		c.AbortWithStatus(403)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
 	post.Likes = post.Likes + 1
 	db.Save(&post)
-	c.JSON(200, post.Serialize())
+	c.JSON(http.StatusOK, post.Serialize())
 }
 
 func remove(c *gin.Context) {
@@ -219,19 +177,17 @@ func remove(c *gin.Context) {
 
 	var post Post
 	if err := db.Where("id = ?", id).First(&post).Error; err != nil {
-		// post not found
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
 	if post.UserID != user.ID {
-		// user doesn't own the post
-		c.AbortWithStatus(403)
+		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 
 	db.Delete(&post)
-	c.Status(204)
+	c.Status(http.StatusForbidden)
 }
 
 func yourBlogs(c *gin.Context) {
@@ -240,7 +196,7 @@ func yourBlogs(c *gin.Context) {
 
 	var posts []Post
 	if err := db.Model(&user).Related(&posts).Error; err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 
@@ -249,5 +205,5 @@ func yourBlogs(c *gin.Context) {
 		serialized[index] = posts[index].Serialize()
 	}
 
-	c.JSON(200, serialized)
+	c.JSON(http.StatusOK, serialized)
 }
