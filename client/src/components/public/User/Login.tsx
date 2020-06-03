@@ -3,6 +3,7 @@ import { UserAction, User } from '../../../interfaces/user.interfaces';
 import { login } from '../../../store/user/reducer';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
+import { Link } from 'react-router-dom';
 
 type Props = {
   showRegisterWindow?: Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +36,10 @@ const Login: React.FC<Props> = ({ showRegisterWindow, login, user }) => {
 
   return (
     <div style={{ margin: 'auto', width: '50%', marginTop: '6rem' }}>
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+      >
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
@@ -75,12 +79,12 @@ const Login: React.FC<Props> = ({ showRegisterWindow, login, user }) => {
           >
             Login
           </button>
-          <a
+          <Link
             className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-            href="#"
+            to="/register"
           >
-            Forgot Password?
-          </a>
+            Don't have an account
+          </Link>
         </div>
       </form>
       <p className="text-center text-gray-500 text-xs">

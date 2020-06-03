@@ -19,20 +19,12 @@ const Welcome: React.FC<Props> = ({ user }) => {
     setShow(false);
   };
 
-  const showRegisterWindow = () => {
-    setShowRegister(true);
-  };
-
-  const hideRegisterWindow = () => {
-    setShowRegister(false);
-  };
-
   return (
     <div className="container">
       <Modal show={show} handleClose={hideModal}>
         <div className="container">
           {showRegister === true ? (
-            <Register hideRegisterWindow={hideRegisterWindow} />
+            <Register />
           ) : (
             <Login showRegisterWindow={setShowRegister} />
           )}
@@ -111,7 +103,7 @@ const Welcome: React.FC<Props> = ({ user }) => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-  user: state.user
+  user: state.user,
 });
 
 export default connect(mapStateToProps, {})(Welcome);
