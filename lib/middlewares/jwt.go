@@ -3,8 +3,6 @@ package middlewares
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -17,14 +15,7 @@ import (
 var secretKey []byte
 
 func init() {
-	pwd, _ := os.Getwd()
-	keyPath := pwd + "/jwtsecret.key.pub"
-
-	key, readErr := ioutil.ReadFile(keyPath)
-	if readErr != nil {
-		panic("failed to load secret key file")
-	}
-	secretKey = key
+	secretKey = []byte("temp")
 }
 
 func validateToken(tokenString string) (common.JSON, error) {

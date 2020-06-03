@@ -11,7 +11,7 @@ func ApplyRoutes(r *gin.RouterGroup) {
 	{
 		posts.POST("/", middlewares.Authorized, create)
 		posts.GET("/", list)
-		posts.GET("/:id", postFromID)
+		posts.GET("/single/:id", postFromID)
 		posts.PATCH("/:id", middlewares.Authorized, update)
 		posts.DELETE("/:id", middlewares.Authorized, remove)
 		posts.GET("/your-blogs", middlewares.Authorized, yourBlogs)
