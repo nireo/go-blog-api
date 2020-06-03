@@ -67,6 +67,7 @@ func register(c *gin.Context) {
 	user := User{
 		Username:     body.Username,
 		PasswordHash: hash,
+		UUID:         common.CreateUUID(),
 	}
 
 	db.NewRecord(user)

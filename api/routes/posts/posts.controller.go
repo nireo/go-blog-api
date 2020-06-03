@@ -66,6 +66,7 @@ func create(c *gin.Context) {
 		Description: requestBody.Description,
 		Topic:       requestBody.Topic,
 		ImageURL:    requestBody.ImageURL,
+		UUID:        common.CreateUUID(),
 	}
 
 	db.NewRecord(post)
@@ -137,7 +138,7 @@ func update(c *gin.Context) {
 	}
 
 	var post Post
-	if err := db.Preload("User").Where("id = ?", id).First(&post).Error; err != nil {
+	if err := db.Preload("User").Where("uuid = ?", id).First(&post).Error; err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -160,7 +161,7 @@ func handleLike(c *gin.Context) {
 	id := c.Param("postId")
 
 	var post Post
-	if err := db.Preload("User").Where("id = ?", id).First(&post).Error; err != nil {
+	if err := db.Preload("User").Where("uuid = ?", id).First(&post).Error; err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -176,7 +177,7 @@ func remove(c *gin.Context) {
 	user := c.MustGet("user").(User)
 
 	var post Post
-	if err := db.Where("id = ?", id).First(&post).Error; err != nil {
+	if err := db.Where("uuid = ?", id).First(&post).Error; err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
