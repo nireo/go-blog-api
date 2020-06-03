@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Modal from '../Misc/Modal';
-import Register from '../User/Register';
-import Login from '../User/Login';
 import { AppState } from '../../../store';
 import { connect } from 'react-redux';
 import { User } from '../../../interfaces/user.interfaces';
@@ -27,7 +24,7 @@ const Navbar: React.FC<Props> = ({ user }) => {
   };
 
   return (
-    <nav className="flex items-center justify-between flex-wrap bg-teal-500 p-6">
+    <nav className="flex items-center justify-between flex-wrap bg-blue-500 p-6">
       <div className="flex items-center flex-shrink-0 text-white mr-6">
         <svg
           className="fill-current h-8 w-8 mr-2"
@@ -52,26 +49,32 @@ const Navbar: React.FC<Props> = ({ user }) => {
           </svg>
         </button>
       </div>
-      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+      <div
+        className="w-full block flex-grow lg:flex lg:items-center lg:w-auto"
+        style={{ margin: 0 }}
+      >
         <div className="text-sm lg:flex-grow">
-          <a
-            href="#responsive-header"
+          <Link
+            to="/all"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            style={{ textDecoration: 'none' }}
           >
-            Docs
-          </a>
-          <a
-            href="#responsive-header"
+            Read
+          </Link>
+          <Link
+            to="/create"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            style={{ textDecoration: 'none' }}
           >
-            Examples
-          </a>
-          <a
-            href="#responsive-header"
+            Write
+          </Link>
+          <Link
+            to="/about"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+            style={{ textDecoration: 'none' }}
           >
-            Blog
-          </a>
+            About
+          </Link>
         </div>
         <div>
           <a

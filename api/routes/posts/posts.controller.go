@@ -1,6 +1,7 @@
 package posts
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -47,12 +48,7 @@ func create(c *gin.Context) {
 
 	var requestBody RequestBody
 	if err := c.BindJSON(&requestBody); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-
-	// check if topic is valid
-	if !checkIfValid(requestBody.Topic) {
+		fmt.Println(err)
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}

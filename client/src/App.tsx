@@ -30,7 +30,9 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
 
   return (
     <Router>
-      <Navbar />
+      <div>
+        <Navbar />
+      </div>
       <Switch>
         <Route exact path="/" render={() => <Welcome />} />
         <Route exact path="/login" render={() => <Login />} />

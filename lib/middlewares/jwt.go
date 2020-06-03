@@ -44,8 +44,9 @@ func JWTMiddleware() gin.HandlerFunc {
 				c.Next()
 				return
 			}
-			sp := strings.Split(authorization, "Bearer ")
+			sp := strings.Split(authorization, "bearer ")
 			if len(sp) < 1 {
+				fmt.Println("?")
 				c.Next()
 				return
 			}
@@ -54,6 +55,7 @@ func JWTMiddleware() gin.HandlerFunc {
 
 		tokenData, err := validateToken(tokenString)
 		if err != nil {
+			fmt.Println("??")
 			c.Next()
 			return
 		}

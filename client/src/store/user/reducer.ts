@@ -3,6 +3,7 @@ import { User, UserAction } from '../../interfaces/user.interfaces';
 import { Dispatch } from 'redux';
 import UserService from '../../services/user.service';
 import BaseService from '../../services/base.service';
+import { setTokens } from '../../utils/setTokens';
 
 const userService = new UserService();
 const baseService = new BaseService();
@@ -20,20 +21,18 @@ const reducer = (state: User | null = null, action: any) => {
 
 export const clearUser = () => {
   return {
-    type: 'CLEAR_USER'
+    type: 'CLEAR_USER',
   };
 };
 
 export const login = (credentials: UserAction) => {
   return async (dispatch: Dispatch) => {
     const user: UserToken = await userService.login(credentials);
-    // since other services extends the base http service
-    // we only need to set the token once.
-    baseService.saveToken(user.token);
     window.localStorage.setItem('user', JSON.stringify(user));
+    setTokens(user.token);
     dispatch({
       type: 'LOGIN',
-      data: user.user
+      data: user.user,
     });
   };
 };
@@ -47,7 +46,7 @@ export const checkLocalStorage = () => {
       baseService.saveToken(userInfoJSON.token);
       dispatch({
         type: 'LOGIN',
-        data: userInfoJSON.user
+        data: userInfoJSON.user,
       });
     }
   };
@@ -59,7 +58,7 @@ export const register = (credentials: UserAction) => {
     baseService.saveToken(user.token);
     dispatch({
       type: 'LOGIN',
-      data: user.user
+      data: user.user,
     });
   };
 };

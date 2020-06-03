@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 import PostService from '../../services/post.service';
 import { Post, CreatePost } from '../../interfaces/post.interfaces';
+import { createPost as serviceCreatePost } from '../../services/post';
 
 const postService = new PostService();
 
@@ -13,9 +14,9 @@ const reducer = (state: Post[] = [], action: any) => {
     case 'CREATE_POST':
       return [...state, action.data];
     case 'REMOVE_POST':
-      return state.filter(post => String(post.id) === action.id);
+      return state.filter((post) => String(post.id) === action.id);
     case 'UPDATE_POST':
-      return state.map(post =>
+      return state.map((post) =>
         String(post.id) === action.id ? action.data : post
       );
     default:
@@ -28,7 +29,7 @@ export const initPosts = () => {
     const posts = await postService.getPosts();
     dispatch({
       type: 'INIT_POSTS',
-      data: posts
+      data: posts,
     });
   };
 };
@@ -38,17 +39,17 @@ export const getPostById = (id: string) => {
     const post = await postService.getPostById(id);
     dispatch({
       type: 'CREATE_POST',
-      data: post
+      data: post,
     });
   };
 };
 
 export const createPost = (post: CreatePost) => {
   return async (dispatch: Dispatch) => {
-    const newPost = await postService.createPost(post);
+    const newPost = await serviceCreatePost(post);
     dispatch({
       type: 'CREATE_POST',
-      data: newPost
+      data: newPost,
     });
   };
 };
@@ -59,7 +60,7 @@ export const updatePost = (post: Post, id: string) => {
     dispatch({
       type: 'UPDATE_POST',
       data: updatedPost,
-      id: id
+      id: id,
     });
   };
 };
@@ -69,7 +70,7 @@ export const removePost = (id: string) => {
     await postService.removePost(id);
     dispatch({
       type: 'REMOVE_POST',
-      id: id
+      id: id,
     });
   };
 };
