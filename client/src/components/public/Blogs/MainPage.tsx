@@ -8,7 +8,7 @@ import Blog from './Blog';
 import Pagination from '../Layout/Pagination';
 
 const mapStateToProps = (state: AppState) => ({
-  posts: state.post
+  posts: state.post,
 });
 
 type Props = {
@@ -39,8 +39,8 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
   const paginate = (pageNum: number) => setCurrentPage(pageNum);
 
   return (
-    <div className="container mt-4">
-      {currentPosts.map(post => (
+    <div className="mt-5 container">
+      {currentPosts.map((post) => (
         <div key={`${post.id}`} style={{ marginBottom: '2rem' }}>
           <Blog
             id={String(post.id)}
