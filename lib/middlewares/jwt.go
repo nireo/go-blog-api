@@ -40,22 +40,21 @@ func JWTMiddleware() gin.HandlerFunc {
 		tokenString, err := c.Cookie("token")
 		if err != nil {
 			authorization := c.Request.Header.Get("Authorization")
-			if authorization == "" {
+			if authorization == "" || authorization == "[object Object]" {
 				c.Next()
 				return
 			}
 			sp := strings.Split(authorization, "bearer ")
 			if len(sp) < 1 {
-				fmt.Println("?")
 				c.Next()
 				return
 			}
+
 			tokenString = sp[1]
 		}
 
 		tokenData, err := validateToken(tokenString)
 		if err != nil {
-			fmt.Println("??")
 			c.Next()
 			return
 		}
