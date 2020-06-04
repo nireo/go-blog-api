@@ -1,7 +1,6 @@
 package posts
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,13 +41,12 @@ func create(c *gin.Context) {
 		Text        string `json:"text" binding:"required"`
 		Title       string `json:"title" binding:"required"`
 		Description string `json:"description" binding:"required"`
-		Topic       string `json:"topic" binding:"required"`
+		Topic       string `json:"topic"`
 		ImageURL    string `json:"imageURL" binding:"required"`
 	}
 
 	var requestBody RequestBody
 	if err := c.BindJSON(&requestBody); err != nil {
-		fmt.Println(err)
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -86,6 +84,11 @@ func list(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, serialized)
+		return
+	}
+
+	if err := db.Preload("User").Find(&posts).Limit(10).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
