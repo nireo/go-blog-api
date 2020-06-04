@@ -15,6 +15,7 @@ import { checkLocalStorage } from './store/user/reducer';
 import YourBlogs from './components/public/User/YourBlogs';
 import Login from './components/public/User/Login';
 import Register from './components/public/User/Register';
+import { About } from './components/public/Misc/About';
 
 type Props = {
   user: User;
@@ -38,6 +39,7 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
         <Route exact path="/login" render={() => <Login />} />
         <Route exact path="/register" render={() => <Register />} />
         <Route exact path="/all" render={() => <MainPage />} />
+        <Route exact path="/about" render={() => <About />} />
 
         <Route
           exact
