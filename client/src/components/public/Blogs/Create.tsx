@@ -5,6 +5,7 @@ import initialValue from './value.json';
 import { connect } from 'react-redux';
 import { createPost } from '../../../store/posts/reducer';
 import { CreatePost } from '../../../interfaces/post.interfaces';
+import TextareaAutosize from 'react-textarea-autosize';
 
 type Props = {
   createPost: (post: CreatePost) => Promise<void>;
@@ -17,6 +18,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const [topic, setTopic] = useState<string>('');
   const [image, setImage] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [paragraphs, setParagraphs] = useState<string[]>([]);
 
   const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
     // stop site from reloading
@@ -50,24 +52,26 @@ const Create: React.FC<Props> = ({ createPost }) => {
             />
           </div>
           <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
-            <input
+            <TextareaAutosize
               value={description}
               onChange={({ target }) => setDescription(target.value)}
               placeholder="Description..."
+              className="w-full"
+              style={{ resize: 'none' }}
+              translate
             />
           </div>
         </div>
-        <div style={{ width: '100%' }}>
-          <textarea
+        <h4 className="font-mono text-2xl mb-4 mt-10 text-blue-500">Content</h4>
+        <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
+          <TextareaAutosize
             value={content}
             onChange={({ target }) => setContent(target.value)}
             placeholder="Content..."
-            style={{
-              border: 'none',
-              width: '100%',
-              fontFamily: 'Merriweather, serif',
-            }}
-          ></textarea>
+            className="w-full"
+            style={{ resize: 'none' }}
+            translate
+          />
         </div>
         <hr />
         <label>
