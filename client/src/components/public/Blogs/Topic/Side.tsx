@@ -52,11 +52,11 @@ export const Side: React.FC<Props> = ({ topic }) => {
     <div>
       {foundTopic !== null && (
         <div>
-          <h3>
+          <h3 className="text-blue-500 text-2xl font-mono mb-2">
             <strong>{foundTopic.name}</strong>
           </h3>
           <p>{foundTopic.desc}</p>
-          <button className="get-started-button-big button-smaller">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
             Follow
           </button>
         </div>

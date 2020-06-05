@@ -34,7 +34,7 @@ const Main: React.FC<Props> = ({ user, topic }) => {
         <Loading />
       ) : (
         <div>
-          {posts.map(post => (
+          {posts.map((post) => (
             <div style={{ marginTop: '2rem' }}>
               <Blog
                 description={post.description}
@@ -51,7 +51,7 @@ const Main: React.FC<Props> = ({ user, topic }) => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-  user: state.user
+  user: state.user,
 });
 
 export default connect(mapStateToProps, null)(Main);

@@ -27,7 +27,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
       description,
       text: content,
       topic,
-      imageURL: image
+      imageURL: image,
     };
 
     createPost(postObject);
@@ -35,33 +35,27 @@ const Create: React.FC<Props> = ({ createPost }) => {
 
   return (
     <div className="container">
-      <form onSubmit={handlePostCreation}>
+      <h3 className="font-mono text-blue-500 text-4xl mt-8">Write</h3>
+      <p className="text-gray-600">
+        Here you can write about the topic you're interested in!
+      </p>
+      <form onSubmit={handlePostCreation} style={{ width: '100%' }}>
         <div>
-          <input
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-            style={{
-              border: 'none',
-              fontSize: '36px',
-              fontFamily: 'Raleway sans-serif',
-              width: '100%'
-            }}
-            placeholder="Title..."
-          />
-        </div>
-        <div>
-          <input
-            value={description}
-            onChange={({ target }) => setDescription(target.value)}
-            style={{
-              border: 'none',
-              fontSize: '20px',
-              fontFamily: 'Raleway sans-serif',
-              color: '#6c757d',
-              width: '100%'
-            }}
-            placeholder="Description..."
-          />
+          <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
+            <input
+              value={title}
+              onChange={({ target }) => setTitle(target.value)}
+              className="border-0 hover:border-0 focus:outline-0 w-full text-2xl"
+              placeholder="Title"
+            />
+          </div>
+          <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
+            <input
+              value={description}
+              onChange={({ target }) => setDescription(target.value)}
+              placeholder="Description..."
+            />
+          </div>
         </div>
         <div style={{ width: '100%' }}>
           <textarea
@@ -71,7 +65,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
             style={{
               border: 'none',
               width: '100%',
-              fontFamily: 'Merriweather, serif'
+              fontFamily: 'Merriweather, serif',
             }}
           ></textarea>
         </div>
