@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { createPost } from '../../../store/posts/reducer';
 import { CreatePost } from '../../../interfaces/post.interfaces';
 import TextareaAutosize from 'react-textarea-autosize';
+import Editor from 'react-simple-code-editor';
 
 type Props = {
   createPost: (post: CreatePost) => Promise<void>;
@@ -113,29 +114,46 @@ const Create: React.FC<Props> = ({ createPost }) => {
               className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden"
               key={index}
             >
-              <TextareaAutosize
-                value={paragraph.content}
-                onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-                  changeParagraphContent(event, index)
-                }
-                placeholder="Content..."
-                className="w-full"
-                style={{ resize: 'none', overflow: 'auto' }}
-                translate="true"
-              />
+              {paragraph.type === 'text' && (
+                <TextareaAutosize
+                  value={paragraph.content}
+                  onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                    changeParagraphContent(event, index)
+                  }
+                  placeholder="Content..."
+                  className="w-full"
+                  style={{ resize: 'none', overflow: 'auto' }}
+                  translate="true"
+                />
+              )}
+              {paragraph.type === 'code' && (
+                <div>
+                  <Editor
+                    value={this.state.code}
+                    onValueChange={(code) => this.setState({ code })}
+                    padding={10}
+                    style={{
+                      fontFamily: '"Fira code", "Fira Mono", monospace',
+                      fontSize: 12,
+                    }}
+                  />
+                </div>
+              )}
               <hr></hr>
-              <select
-                value={paragraph.type}
-                onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-                  changeParagraphType(event, index)
-                }
-                className="text-blue-500 bg-transparent border-blue-500 mt-2 text-sm"
-              >
-                <option value="text">Text</option>
-                <option value="code">Code</option>
-                <option value="quote">Quote</option>
-                <option value="list">List</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={paragraph.type}
+                  onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                    changeParagraphType(event, index)
+                  }
+                  className="block text-sm appearance-none bg-gray-200 border border-gray-200 text-blue-500 mt-2 py-1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                >
+                  <option value="text">Text</option>
+                  <option value="code">Code</option>
+                  <option value="quote">Quote</option>
+                  <option value="list">List</option>
+                </select>
+              </div>
             </div>
           ))}
           <button
