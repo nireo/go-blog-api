@@ -14,6 +14,7 @@ type Props = {
 interface Paragraph {
   content: string;
   id: number;
+  type: string;
 }
 
 const Create: React.FC<Props> = ({ createPost }) => {
@@ -54,9 +55,23 @@ const Create: React.FC<Props> = ({ createPost }) => {
     );
   };
 
+  const changeParagraphType = (
+    event: ChangeEvent<HTMLSelectElement>,
+    index: number
+  ) => {
+    let paragraphsCopy = paragraphs;
+    paragraphsCopy[index].type = event.target.value;
+
+    setParagraphs(
+      paragraphs.map((p) =>
+        p.id === paragraphsCopy[index].id ? paragraphsCopy[index] : p
+      )
+    );
+  };
+
   const createNewParagraph = () => {
     let id = Math.floor(Math.random() * 100);
-    setParagraphs(paragraphs.concat({ content: '', id }));
+    setParagraphs(paragraphs.concat({ content: '', id, type: 'text' }));
   };
 
   return (
@@ -86,43 +101,50 @@ const Create: React.FC<Props> = ({ createPost }) => {
             />
           </div>
         </div>
-        <h4 className="font-mono text-2xl mb-4 mt-10 text-blue-500">Content</h4>
-        {/*
-
-        <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
-          <TextareaAutosize
-            value={content}
-            onChange={({ target }) => setContent(target.value)}
-            placeholder="Content..."
-            className="w-full"
-            style={{ resize: 'none' }}
-            translate
-          />
-        </div>
-        */}
-        {paragraphs.map((paragraph: Paragraph, index: number) => (
-          <div
-            className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden"
-            key={index}
-          >
-            <TextareaAutosize
-              value={paragraph.content}
-              onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-                changeParagraphContent(event, index)
-              }
-              placeholder="Content..."
-              className="w-full"
-              style={{ resize: 'none' }}
-              translate="true"
-            />
+        <div className="mb-12">
+          <div className="mb-4 mt-10">
+            <h4 className="font-mono text-2xl text-blue-500">Content</h4>
+            <p className="text-gray-600">
+              Please create a new text box for each paragraph
+            </p>
           </div>
-        ))}
-        <button
-          onClick={() => createNewParagraph()}
-          className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-        >
-          Create new text box
-        </button>
+          {paragraphs.map((paragraph: Paragraph, index: number) => (
+            <div
+              className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden"
+              key={index}
+            >
+              <TextareaAutosize
+                value={paragraph.content}
+                onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                  changeParagraphContent(event, index)
+                }
+                placeholder="Content..."
+                className="w-full"
+                style={{ resize: 'none', overflow: 'auto' }}
+                translate="true"
+              />
+              <hr></hr>
+              <select
+                value={paragraph.type}
+                onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                  changeParagraphType(event, index)
+                }
+                className="text-blue-500 bg-transparent border-blue-500 mt-2 text-sm"
+              >
+                <option value="text">Text</option>
+                <option value="code">Code</option>
+                <option value="quote">Quote</option>
+                <option value="list">List</option>
+              </select>
+            </div>
+          ))}
+          <button
+            onClick={() => createNewParagraph()}
+            className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          >
+            Create new text box
+          </button>
+        </div>
         <hr />
         <label>
           Select topic{'   '}
