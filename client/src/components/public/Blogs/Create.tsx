@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { Value } from 'slate';
 import TextEditor from './TextEditor';
 import initialValue from './value.json';
@@ -11,6 +11,11 @@ type Props = {
   createPost: (post: CreatePost) => Promise<void>;
 };
 
+interface Paragraph {
+  content: string;
+  id: number;
+}
+
 const Create: React.FC<Props> = ({ createPost }) => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -18,7 +23,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const [topic, setTopic] = useState<string>('');
   const [image, setImage] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [paragraphs, setParagraphs] = useState<string[]>([]);
+  const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
 
   const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
     // stop site from reloading
@@ -33,6 +38,25 @@ const Create: React.FC<Props> = ({ createPost }) => {
     };
 
     createPost(postObject);
+  };
+
+  const changeParagraphContent = (
+    event: ChangeEvent<HTMLTextAreaElement>,
+    index: number
+  ) => {
+    let paragraphsCopy = paragraphs;
+    paragraphsCopy[index].content = event.target.value;
+
+    setParagraphs(
+      paragraphs.map((p) =>
+        p.id === paragraphsCopy[index].id ? paragraphsCopy[index] : p
+      )
+    );
+  };
+
+  const createNewParagraph = () => {
+    let id = Math.floor(Math.random() * 100);
+    setParagraphs(paragraphs.concat({ content: '', id }));
   };
 
   return (
@@ -58,11 +82,13 @@ const Create: React.FC<Props> = ({ createPost }) => {
               placeholder="Description..."
               className="w-full"
               style={{ resize: 'none' }}
-              translate
+              translate="true"
             />
           </div>
         </div>
         <h4 className="font-mono text-2xl mb-4 mt-10 text-blue-500">Content</h4>
+        {/*
+
         <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
           <TextareaAutosize
             value={content}
@@ -73,6 +99,30 @@ const Create: React.FC<Props> = ({ createPost }) => {
             translate
           />
         </div>
+        */}
+        {paragraphs.map((paragraph: Paragraph, index: number) => (
+          <div
+            className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden"
+            key={index}
+          >
+            <TextareaAutosize
+              value={paragraph.content}
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                changeParagraphContent(event, index)
+              }
+              placeholder="Content..."
+              className="w-full"
+              style={{ resize: 'none' }}
+              translate="true"
+            />
+          </div>
+        ))}
+        <button
+          onClick={() => createNewParagraph()}
+          className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+        >
+          Create new text box
+        </button>
         <hr />
         <label>
           Select topic{'   '}
