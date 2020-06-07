@@ -1,13 +1,11 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { Value } from 'slate';
-import TextEditor from './TextEditor';
 import initialValue from './value.json';
 import { connect } from 'react-redux';
 import { createPost } from '../../../store/posts/reducer';
 import { CreatePost } from '../../../interfaces/post.interfaces';
 import TextareaAutosize from 'react-textarea-autosize';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import Editor from 'react-simple-code-editor';
+import { CodeEditor } from './CodeEditor';
 
 type Props = {
   createPost: (post: CreatePost) => Promise<void>;
@@ -49,6 +47,17 @@ const Create: React.FC<Props> = ({ createPost }) => {
   ) => {
     let paragraphsCopy = paragraphs;
     paragraphsCopy[index].content = event.target.value;
+
+    setParagraphs(
+      paragraphs.map((p) =>
+        p.id === paragraphsCopy[index].id ? paragraphsCopy[index] : p
+      )
+    );
+  };
+
+  const changeCodeContent = (value: string, index: number) => {
+    let paragraphsCopy = paragraphs;
+    paragraphsCopy[index].content = value;
 
     setParagraphs(
       paragraphs.map((p) =>
@@ -129,14 +138,10 @@ const Create: React.FC<Props> = ({ createPost }) => {
               )}
               {paragraph.type === 'code' && (
                 <div>
-                  <Editor
+                  <CodeEditor
                     value={paragraph.content}
-                    onValueChange={(code) => ({ code })}
-                    padding={10}
-                    style={{
-                      fontFamily: '"Fira code", "Fira Mono", monospace',
-                      fontSize: 12,
-                    }}
+                    setValue={changeCodeContent}
+                    index={index}
                   />
                 </div>
               )}
