@@ -281,3 +281,30 @@ func addNewParagraph(c *gin.Context) {
 
 	c.JSON(http.StatusOK, newParagraph.Serialize())
 }
+
+func deleteParagraph(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
+	paragraphID := c.Param("id")
+
+	var paragraph Paragraph
+	if err := db.Where("uuid = ?", paragraphID).First(&paragraph).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	// find the post paragraph is in, so that we can check for ownership
+	var post Post
+	if err := db.Where("id = ?", paragraph.PostID).First(&post).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	if user.ID != post.UserID {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	db.Delete(&paragraph)
+	c.Status(http.StatusNoContent)
+}

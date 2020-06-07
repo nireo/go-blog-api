@@ -10,7 +10,7 @@ export const CodeEditor = ({ value, setValue, index }) => {
     <div>
       <Editor
         value={value}
-        onValueChange={(code) => setValue(code, index)}
+        onValueChange={(code) => setalue(code, index)}
         highlight={(code) => highlight(code, languages.js)}
         padding={10}
         style={{

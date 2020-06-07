@@ -16,5 +16,6 @@ func ApplyRoutes(r *gin.RouterGroup) {
 		posts.DELETE("/:id", middlewares.Authorized, remove)
 		posts.GET("/your-blogs", middlewares.Authorized, yourBlogs)
 		posts.POST("/paragraph/:id", middlewares.Authorized, addNewParagraph)
+		posts.DELETE("/paragraph/:id", middlewares.Authorized, deleteParagraph)
 	}
 }
