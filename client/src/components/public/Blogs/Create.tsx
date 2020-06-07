@@ -1,5 +1,4 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
-import { Value } from 'slate';
 import initialValue from './value.json';
 import { connect } from 'react-redux';
 import { createPost } from '../../../store/posts/reducer';
@@ -20,11 +19,11 @@ interface Paragraph {
 const Create: React.FC<Props> = ({ createPost }) => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [value] = useState(Value.fromJSON(initialValue as any));
   const [topic, setTopic] = useState<string>('');
   const [image, setImage] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
+  const [newListItem, setNewListItem] = useState<string>('');
 
   const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
     // stop site from reloading
@@ -85,6 +84,18 @@ const Create: React.FC<Props> = ({ createPost }) => {
     setParagraphs(paragraphs.concat({ content: '', id, type: 'text' }));
   };
 
+  const addNewListItem = (index: number) => {
+    let paragraphsCopy = paragraphs;
+    paragraphsCopy[index].content =
+      paragraphsCopy[index].content + newListItem + '|LIST|';
+
+    setParagraphs(
+      paragraphs.map((p) =>
+        p.id === paragraphsCopy[index].id ? paragraphsCopy[index] : p
+      )
+    );
+  };
+
   return (
     <div className="container">
       <h3 className="font-mono text-blue-500 text-4xl mt-8">Write</h3>
@@ -143,6 +154,34 @@ const Create: React.FC<Props> = ({ createPost }) => {
                     setValue={changeCodeContent}
                     index={index}
                   />
+                </div>
+              )}
+              {paragraph.type === 'list' && (
+                <div>
+                  <ul style={{ listStyle: 'circle' }}>
+                    {paragraph.content !== '' ? (
+                      paragraph.content.split('|LIST|').map((item: string) => {
+                        if (item !== '') {
+                          return <li>{item}</li>;
+                        }
+                      })
+                    ) : (
+                      <div></div>
+                    )}
+                  </ul>
+                  <div className="flex mb-2">
+                    <input
+                      className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                      onChange={({ target }) => setNewListItem(target.value)}
+                      value={newListItem}
+                    />
+                    <button
+                      onClick={() => addNewListItem(index)}
+                      className="bg-blue-500 ml-6 text-sm hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
               )}
               <hr></hr>
