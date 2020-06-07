@@ -153,10 +153,16 @@ func update(c *gin.Context) {
 		return
 	}
 
+	type ParagraphJSON struct {
+		Type    string `json:"type" binding:"required"`
+		Content string `json:"content" binding:"required"`
+	}
+
 	type RequestBody struct {
-		Text        string `json:"text" binding:"required"`
-		Title       string `json:"title" binding:"required"`
-		Description string `json:"description" binding:"required"`
+		Text        string          `json:"text" binding:"required"`
+		Title       string          `json:"title" binding:"required"`
+		Description string          `json:"description" binding:"required"`
+		Paragraphs  []ParagraphJSON `json:"paragraphs" binding:"required"`
 	}
 
 	var requestBody RequestBody
@@ -235,4 +241,43 @@ func yourBlogs(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, serialized)
+}
+
+// add new paragraph at the end of the content
+func addNewParagraph(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
+	postID := c.Param("id")
+
+	type RequestBody struct {
+		Type    string `json:"type" binding:"required"`
+		Content string `json:"content" binding:"required"`
+	}
+
+	var requestBody RequestBody
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	var post Post
+	if err := db.Where("uuid = ?", postID).First(&post).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	if post.UserID != user.ID {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	newParagraph := Paragraph{
+		Type:    requestBody.Type,
+		Content: requestBody.Content,
+	}
+
+	db.NewRecord(newParagraph)
+	db.Save(&newParagraph)
+
+	c.JSON(http.StatusOK, newParagraph.Serialize())
 }

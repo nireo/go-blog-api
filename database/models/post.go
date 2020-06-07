@@ -26,6 +26,7 @@ type Paragraph struct {
 	Type    string
 	Content string
 	PostID  uint
+	UUID    string
 }
 
 // SerializeParagraphs serializes multiple paragraphs into JSON-format
@@ -43,6 +44,7 @@ func (p *Paragraph) Serialize() common.JSON {
 	return common.JSON{
 		"type":    p.Type,
 		"content": p.Content,
+		"uuid":    p.UUID,
 	}
 }
 
