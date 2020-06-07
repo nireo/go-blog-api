@@ -39,13 +39,18 @@ func create(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	user := c.MustGet("user").(User)
 
-	// interface fro request
+	type ParagraphJSON struct {
+		Type    string `json:"type" binding:"required"`
+		Content string `json:"content" binding:"required"`
+	}
+
 	type RequestBody struct {
-		Text        string `json:"text" binding:"required"`
-		Title       string `json:"title" binding:"required"`
-		Description string `json:"description" binding:"required"`
-		Topic       string `json:"topic"`
-		ImageURL    string `json:"imageURL" binding:"required"`
+		Text        string          `json:"text" binding:"required"`
+		Title       string          `json:"title" binding:"required"`
+		Description string          `json:"description" binding:"required"`
+		Topic       string          `json:"topic"`
+		ImageURL    string          `json:"imageURL" binding:"required"`
+		Paragraphs  []ParagraphJSON `json:"paragraphs" binding:"required"`
 	}
 
 	var requestBody RequestBody
@@ -68,6 +73,18 @@ func create(c *gin.Context) {
 
 	db.NewRecord(post)
 	db.Create(&post)
+
+	// create database entries for paragraphs
+	for index := range requestBody.Paragraphs {
+		newParagraph := Paragraph{
+			Type:    requestBody.Paragraphs[index].Type,
+			Content: requestBody.Paragraphs[index].Content,
+		}
+
+		db.NewRecord(newParagraph)
+		db.Create(&newParagraph)
+	}
+
 	c.JSON(http.StatusOK, post.Serialize())
 }
 
