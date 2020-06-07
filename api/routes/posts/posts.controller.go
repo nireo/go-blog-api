@@ -18,6 +18,9 @@ type Post = models.Post
 // User type alias
 type User = models.User
 
+// Paragraph type alias
+type Paragraph = models.Paragraph
+
 // JSON type alias
 type JSON = common.JSON
 
@@ -111,7 +114,16 @@ func postFromID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, post.Serialize())
+	var paragraphs []Paragraph
+	if err := db.Model(&post).Related(&paragraphs).Error; err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"post":       post.Serialize(),
+		"paragraphs": models.SerializeParagraphs(paragraphs),
+	})
 }
 
 func update(c *gin.Context) {
