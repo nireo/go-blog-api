@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { createPost } from '../../../store/posts/reducer';
 import { CreatePost } from '../../../interfaces/post.interfaces';
 import TextareaAutosize from 'react-textarea-autosize';
+import { highlight, languages } from 'prismjs/components/prism-core';
 import Editor from 'react-simple-code-editor';
 
 type Props = {
@@ -129,8 +130,8 @@ const Create: React.FC<Props> = ({ createPost }) => {
               {paragraph.type === 'code' && (
                 <div>
                   <Editor
-                    value={this.state.code}
-                    onValueChange={(code) => this.setState({ code })}
+                    value={paragraph.content}
+                    onValueChange={(code) => ({ code })}
                     padding={10}
                     style={{
                       fontFamily: '"Fira code", "Fira Mono", monospace',
