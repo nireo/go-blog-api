@@ -40,12 +40,9 @@ const Create: React.FC<Props> = ({ createPost }) => {
     createPost(postObject);
   };
 
-  const changeParagraphContent = (
-    event: ChangeEvent<HTMLTextAreaElement>,
-    index: number
-  ) => {
+  const changeParagraphContent = (value: string, index: number) => {
     let paragraphsCopy = paragraphs;
-    paragraphsCopy[index].content = event.target.value;
+    paragraphsCopy[index].content = value;
 
     setParagraphs(
       paragraphs.map((p) =>
@@ -57,12 +54,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const changeCodeContent = (value: string, index: number) => {
     let paragraphsCopy = paragraphs;
     paragraphsCopy[index].content = value;
-
-    setParagraphs(
-      paragraphs.map((p) =>
-        p.id === paragraphsCopy[index].id ? paragraphsCopy[index] : p
-      )
-    );
+    updateParagraphList(paragraphsCopy[index]);
   };
 
   const changeParagraphType = (
@@ -71,12 +63,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
   ) => {
     let paragraphsCopy = paragraphs;
     paragraphsCopy[index].type = event.target.value;
-
-    setParagraphs(
-      paragraphs.map((p) =>
-        p.id === paragraphsCopy[index].id ? paragraphsCopy[index] : p
-      )
-    );
+    updateParagraphList(paragraphsCopy[index]);
   };
 
   const createNewParagraph = () => {
@@ -84,16 +71,17 @@ const Create: React.FC<Props> = ({ createPost }) => {
     setParagraphs(paragraphs.concat({ content: '', id, type: 'text' }));
   };
 
+  const updateParagraphList = (editedParagraph: Paragraph) => {
+    setParagraphs(
+      paragraphs.map((p) => (p.id === editedParagraph.id ? editedParagraph : p))
+    );
+  };
+
   const addNewListItem = (index: number) => {
     let paragraphsCopy = paragraphs;
     paragraphsCopy[index].content =
       paragraphsCopy[index].content + newListItem + '|LIST|';
-
-    setParagraphs(
-      paragraphs.map((p) =>
-        p.id === paragraphsCopy[index].id ? paragraphsCopy[index] : p
-      )
-    );
+    updateParagraphList(paragraphsCopy[index]);
   };
 
   return (
@@ -138,8 +126,8 @@ const Create: React.FC<Props> = ({ createPost }) => {
               {paragraph.type === 'text' && (
                 <TextareaAutosize
                   value={paragraph.content}
-                  onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-                    changeParagraphContent(event, index)
+                  onChange={({ target }) =>
+                    changeParagraphContent(target.value, index)
                   }
                   placeholder="Content..."
                   className="w-full"
@@ -153,6 +141,17 @@ const Create: React.FC<Props> = ({ createPost }) => {
                     value={paragraph.content}
                     setValue={changeCodeContent}
                     index={index}
+                  />
+                </div>
+              )}
+              {paragraph.type === 'quote' && (
+                <div>
+                  <input
+                    value={paragraph.content}
+                    className="text-2xl italic text-gray-400"
+                    onChange={({ target }) =>
+                      changeParagraphContent(target.value, index)
+                    }
                   />
                 </div>
               )}
