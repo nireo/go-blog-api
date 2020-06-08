@@ -20,7 +20,7 @@ const YourBlogs: React.FC<Props> = ({ user }) => {
       getBlogs();
       setLoaded(true);
     }
-  }, []);
+  }, [blogs, loaded, user]);
 
   if (!user) {
     return <div></div>;
@@ -58,7 +58,7 @@ const YourBlogs: React.FC<Props> = ({ user }) => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-  user: state.user
+  user: state.user,
 });
 
 export default connect(mapStateToProps, {})(YourBlogs);

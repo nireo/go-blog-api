@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FormEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
 import { getPostById, updatePost } from '../../../store/posts/reducer';
@@ -13,26 +13,26 @@ type Props = {
 };
 
 const mapStateToProps = (state: AppState) => ({
-  posts: state.post
+  posts: state.post,
 });
 
 const SingleBlogPage: React.FC<Props> = ({
   id,
   posts,
   getPostById,
-  updatePost
+  updatePost,
 }) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [post, setPost] = useState<undefined | Post>(undefined);
 
   useEffect(() => {
     if (loaded === false) {
-      const checkForPost = posts.find(post => String(post.id) === id);
+      const checkForPost = posts.find((post) => String(post.id) === id);
       if (checkForPost) {
         setPost(checkForPost);
       } else {
         getPostById(id).then(() => {
-          const singlePost = posts.find(post => String(post.id) === id);
+          const singlePost = posts.find((post) => String(post.id) === id);
           setPost(singlePost);
         });
       }
@@ -53,17 +53,17 @@ const SingleBlogPage: React.FC<Props> = ({
     );
   }
 
-  const addLike = (event: FormEvent<HTMLFormElement>) => {
-    // prevent site from reloading when submitting.
-    event.preventDefault();
-    if (!post) {
-      // not necessary, but typescript complains
-      return;
-    }
-
-    const postWithLike = { ...post, likes: post.likes + 1 };
-    updatePost(postWithLike, String(post.id));
-  };
+  //const addLike = (event: FormEvent<HTMLFormElement>) => {
+  //  // prevent site from reloading when submitting.
+  //  event.preventDefault();
+  //  if (!post) {
+  //    // not necessary, but typescript complains
+  //    return;
+  //  }
+  //
+  //  const postWithLike = { ...post, likes: post.likes + 1 };
+  //  updatePost(postWithLike, String(post.id));
+  //};
 
   const returnSensibleDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -79,7 +79,7 @@ const SingleBlogPage: React.FC<Props> = ({
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
 
     var day = date.getDate();
@@ -106,7 +106,7 @@ const SingleBlogPage: React.FC<Props> = ({
             <p className="text-muted">{returnSensibleDate(post.created_at)}</p>
           </div>
           <div className="text-center">
-            <img src={post.image_url} style={{ width: '50rem' }} />
+            <img alt="post" src={post.image_url} style={{ width: '50rem' }} />
           </div>
           <div className="row">
             <div className="col-md-2"></div>

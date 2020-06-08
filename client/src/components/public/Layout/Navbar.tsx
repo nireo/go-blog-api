@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppState } from '../../../store';
 import { connect } from 'react-redux';
@@ -9,20 +9,6 @@ type Props = {
 };
 
 const Navbar: React.FC<Props> = ({ user }) => {
-  const [show, setShow] = useState<boolean>(false);
-  const [showRegister, setShowRegister] = useState<boolean>(false);
-  const hideModal = () => {
-    setShow(false);
-  };
-
-  const showRegisterWindow = () => {
-    setShowRegister(true);
-  };
-
-  const hideRegisterWindow = () => {
-    setShowRegister(false);
-  };
-
   return (
     <nav className="flex items-center justify-between flex-wrap bg-blue-500 p-6">
       <div className="flex items-center flex-shrink-0 text-white mr-6">

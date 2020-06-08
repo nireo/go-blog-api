@@ -27,7 +27,7 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
     if (user === null) {
       checkLocalStorage();
     }
-  }, []);
+  }, [checkLocalStorage, user]);
 
   return (
     <Router>

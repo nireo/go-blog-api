@@ -1,5 +1,4 @@
-import React, { useState, FormEvent, ChangeEvent } from 'react';
-import initialValue from './value.json';
+import React, { useState, ChangeEvent } from 'react';
 import { connect } from 'react-redux';
 import { createPost } from '../../../store/posts/reducer';
 import { CreatePost } from '../../../interfaces/post.interfaces';
@@ -21,24 +20,23 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const [description, setDescription] = useState<string>('');
   const [topic, setTopic] = useState<string>('');
   const [image, setImage] = useState<string>('');
-  const [content, setContent] = useState<string>('');
   const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
   const [newListItem, setNewListItem] = useState<string>('');
 
-  const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
-    // stop site from reloading
-    event.preventDefault();
+  //const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
+  //  // stop site from reloading
+  //  event.preventDefault();
+  //
+  //  const postObject = {
+  //    title,
+  //    description,
+  //    text: content,
+  //    topic,
+  //    imageURL: image,
+  //  };
 
-    const postObject = {
-      title,
-      description,
-      text: content,
-      topic,
-      imageURL: image,
-    };
-
-    createPost(postObject);
-  };
+  //  createPost(postObject);
+  //};
 
   const changeParagraphContent = (value: string, index: number) => {
     let paragraphsCopy = paragraphs;
@@ -90,7 +88,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
       <p className="text-gray-600">
         Here you can write about the topic you're interested in!
       </p>
-      <form onSubmit={handlePostCreation} style={{ width: '100%' }}>
+      <form style={{ width: '100%' }}>
         <div>
           <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
             <input
@@ -163,6 +161,8 @@ const Create: React.FC<Props> = ({ createPost }) => {
                         if (item !== '') {
                           return <li>{item}</li>;
                         }
+
+                        return null;
                       })
                     ) : (
                       <div></div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../../store';
 import { User } from '../../../../interfaces/user.interfaces';
@@ -16,17 +16,17 @@ const Main: React.FC<Props> = ({ user, topic }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
 
+  const getPosts = useCallback(async () => {
+    const response = await axios.get(`/api/posts/?topic=${topic}`);
+    setPosts(response.data);
+  }, [topic]);
+
   useEffect(() => {
     if (loaded === false) {
       getPosts();
       setLoaded(true);
     }
-  }, []);
-
-  const getPosts = async () => {
-    const response = await axios.get(`/api/posts/?topic=${topic}`);
-    setPosts(response.data);
-  };
+  }, [getPosts, loaded]);
 
   return (
     <div className="container">

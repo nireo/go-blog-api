@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import Modal from '../Misc/Modal';
-import Register from '../User/Register';
-import Login from '../User/Login';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
 import { User } from '../../../interfaces/user.interfaces';
