@@ -46,3 +46,36 @@ func createTopic(c *gin.Context) {
 
 	c.JSON(http.StatusOK, newTopic.Serialize())
 }
+
+func deleteTopic(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
+	topicID := c.Param("id")
+
+	var topic Topic
+	if err := db.Where("uuid = ?", topicID).First(&topic).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	if user.ID != topic.UserID {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	db.Delete(&topic)
+	c.Status(http.StatusNoContent)
+}
+
+func getSingleTopic(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	topicID := c.Param("id")
+
+	var topic Topic
+	if err := db.Where("uuid = ?", topicID).First(&topic).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	c.JSON(http.StatusOK, topic.Serialize())
+}

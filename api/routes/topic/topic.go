@@ -1,12 +1,16 @@
 package topic
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/nireo/go-blog-api/lib/middlewares"
+)
 
 // ApplyRoutes adds topic routes to gin engine
 func ApplyRoutes(r *gin.RouterGroup) {
 	topics := r.Group("/topics")
 	{
-		topics.POST("/")
-		topics.GET("/")
+		topics.POST("/", middlewares.Authorized, createTopic)
+		topics.GET("/:id", getSingleTopic)
+		topics.DELETE("/:id", middlewares.Authorized, getSingleTopic)
 	}
 }
