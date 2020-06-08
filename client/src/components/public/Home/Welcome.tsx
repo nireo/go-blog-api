@@ -12,24 +12,8 @@ type Props = {
 };
 
 const Welcome: React.FC<Props> = ({ user }) => {
-  const [show, setShow] = useState<boolean>(false);
-  const [showRegister, setShowRegister] = useState<boolean>(false);
-
-  const hideModal = () => {
-    setShow(false);
-  };
-
   return (
     <div className="container">
-      <Modal show={show} handleClose={hideModal}>
-        <div className="container">
-          {showRegister === true ? (
-            <Register />
-          ) : (
-            <Login showRegisterWindow={setShowRegister} />
-          )}
-        </div>
-      </Modal>
       <h1
         className="text-center"
         style={{ fontSize: '80px', marginTop: '4rem' }}
@@ -78,24 +62,29 @@ const Welcome: React.FC<Props> = ({ user }) => {
       </div>
       <div style={{ marginTop: '4rem', textAlign: 'center' }}>
         {!user ? (
-          <button
-            onClick={() => setShow(true)}
-            className="get-started-button-big"
-          >
-            Get started
-          </button>
+          <Link to="/register">
+            <button className="text-3xl bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-24 rounded-full">
+              Get started!
+            </button>
+          </Link>
         ) : (
           <Link to="/all">
-            <button className="get-started-button-big">Get started</button>
+            <button className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+              Read
+            </button>
           </Link>
         )}
       </div>
       {!user && (
         <div style={{ marginTop: '1rem' }} className="text-center">
           Already have an account?{' '}
-          <button onClick={() => setShow(true)} className="link-styled-button">
-            Sign in.
-          </button>
+          <Link
+            style={{ textDecoration: 'none' }}
+            to="/login"
+            className="text-blue-500 no-underline hover:text-blue-400"
+          >
+            Sign in!
+          </Link>
         </div>
       )}
     </div>
