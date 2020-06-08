@@ -10,6 +10,7 @@ func ApplyRoutes(r *gin.RouterGroup) {
 	topics := r.Group("/topics")
 	{
 		topics.POST("/", middlewares.Authorized, createTopic)
+		topics.GET("/", getTopics)
 		topics.GET("/:id", getSingleTopic)
 		topics.DELETE("/:id", middlewares.Authorized, getSingleTopic)
 	}

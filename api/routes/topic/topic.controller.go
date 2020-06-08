@@ -12,6 +12,9 @@ import (
 // Topic model alias
 type Topic = models.Topic
 
+// Post model alias
+type Post = models.Post
+
 // User model alias
 type User = models.User
 
@@ -77,5 +80,37 @@ func getSingleTopic(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, topic.Serialize())
+	// get posts in the same category
+	var posts []Post
+	if err := db.Model(&topic).Related(&posts).Error; err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	serializedPosts := make([]JSON, len(posts), len(posts))
+	for index := range posts {
+		serializedPosts[index] = posts[index].Serialize()
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"topic": topic.Serialize(),
+		"posts": serializedPosts,
+	})
+}
+
+func getTopics(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+
+	var topics []Topic
+	if err := db.Find(&topics).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	serializedTopics := make([]JSON, len(topics), len(topics))
+	for index := range topics {
+		serializedTopics[index] = topics[index].Serialize()
+	}
+
+	c.JSON(http.StatusOK, serializedTopics)
 }
