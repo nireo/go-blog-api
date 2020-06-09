@@ -16,9 +16,10 @@ import YourBlogs from './components/public/User/YourBlogs';
 import Login from './components/public/User/Login';
 import Register from './components/public/User/Register';
 import { About } from './components/public/Misc/About';
+import { ProtectedRoute } from './components/public/User/ProtectedRoute';
 
 type Props = {
-  user: User;
+  user: User | null;
   checkLocalStorage: () => void;
 };
 
@@ -51,6 +52,7 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
           path="/topic/:term"
           render={({ match }) => <TopicMain topic={match.params.term} />}
         />
+        <ProtectedRoute user={user} exact={true} path="/dashboard" />
         <Route exact path="/create" render={() => <Create />} />
         <Route exact path="/your-blogs" render={() => <YourBlogs />} />
         <Route render={() => <NotFound />} />
