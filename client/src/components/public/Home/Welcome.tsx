@@ -20,7 +20,7 @@ const Welcome: React.FC<Props> = ({ user }) => {
       <h6 className="text-center" style={{ marginTop: '2rem' }}>
         <strong>Select what you're into.</strong>
       </h6>
-      <div style={{ marginTop: '2rem' }}>
+      <div style={{ marginTop: '2rem', textAlign: 'center' }}>
         <Link
           to="/topic/programming"
           className="display-tag"

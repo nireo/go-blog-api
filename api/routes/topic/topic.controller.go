@@ -72,10 +72,10 @@ func deleteTopic(c *gin.Context) {
 
 func getSingleTopic(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	topicID := c.Param("id")
+	topicURL := c.Param("url")
 
 	var topic Topic
-	if err := db.Where("uuid = ?", topicID).First(&topic).Error; err != nil {
+	if err := db.Where("url = ?", topicURL).First(&topic).Error; err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -113,4 +113,41 @@ func getTopics(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, serializedTopics)
+}
+
+func updateTopic(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
+
+	// topicID is only visible to the owner, so we can use it instead of the URL
+	topicID := c.Param("id")
+
+	type RequestBody struct {
+		Title       string `json:"title" binding:"required"`
+		Description string `json:"description" binding:"required"`
+	}
+
+	var body RequestBody
+	if err := c.BindJSON(&body); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	var topic Topic
+	if err := db.Where("uuid = ?", topicID).First(&topic).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	if user.ID != topic.UserID {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	topic.URL = common.FormatString(body.Title)
+	topic.Title = body.Title
+	topic.Description = body.Description
+
+	db.Save(&topic)
+	c.JSON(http.StatusOK, topic.Serialize())
 }
