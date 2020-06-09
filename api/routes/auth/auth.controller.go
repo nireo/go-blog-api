@@ -12,8 +12,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User alias for models
+// User model alias
 type User = models.User
+
+// Post model alias
+type Post = models.Post
+
+// JSON type alias
+type JSON = common.JSON
 
 func hash(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
@@ -68,6 +74,7 @@ func register(c *gin.Context) {
 		Username:     body.Username,
 		PasswordHash: hash,
 		UUID:         common.CreateUUID(),
+		URL:          common.FormatString(body.Username),
 	}
 
 	db.NewRecord(user)
@@ -207,5 +214,33 @@ func changePassword(c *gin.Context) {
 	db.Save(&user)
 	c.JSON(http.StatusOK, common.JSON{
 		"success": "Password has been updated",
+	})
+}
+
+func getUserWithUsername(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	url := c.Param("url")
+
+	var user User
+	if err := db.Where("url = ?", url).First(&user).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	// get user's posts
+	var posts []Post
+	if err := db.Model(&user).Related(&posts).Error; err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	serializedPosts := make([]JSON, len(posts), len(posts))
+	for index := range posts {
+		serializedPosts[index] = posts[index].Serialize()
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"user":  user,
+		"posts": serializedPosts,
 	})
 }

@@ -11,6 +11,7 @@ type User struct {
 	Username     string
 	PasswordHash string
 	UUID         string
+	URL          string
 }
 
 // Serialize user data
