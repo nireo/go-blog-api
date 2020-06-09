@@ -151,3 +151,21 @@ func updateTopic(c *gin.Context) {
 	db.Save(&topic)
 	c.JSON(http.StatusOK, topic.Serialize())
 }
+
+func getUserTopics(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
+
+	var topics []Topic
+	if err := db.Model(&user).Related(&topics).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	serializedTopics := make([]JSON, len(topics), len(topics))
+	for index := range topics {
+		serializedTopics[index] = topics[index].Serialize()
+	}
+
+	c.JSON(http.StatusOK, serializedTopics)
+}
