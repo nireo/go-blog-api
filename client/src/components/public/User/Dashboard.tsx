@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
 import { User } from '../../../interfaces/user.interfaces';
 import { Redirect } from 'react-router-dom';
 import { Topic } from '../../../interfaces/topic.interfaces';
 import { Post } from '../../../interfaces/post.interfaces';
+import { getUsersTopics } from '../../../services/topic';
+import { getUsersPosts } from '../../../services/post';
 
 type Props = {
   user: User | null;
@@ -13,6 +15,21 @@ type Props = {
 const Dashboard: React.FC<Props> = ({ user }) => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loaded, setLoaded] = useState<boolean>(false);
+
+  const loadData = useCallback(async () => {
+    const topicData = await getUsersTopics();
+    setTopics(topicData);
+
+    const postData = await getUsersPosts();
+    setPosts(postData);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) {
+    }
+  }, []);
+
   if (user === null) {
     return <Redirect to="/" />;
   }
