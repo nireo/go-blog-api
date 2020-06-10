@@ -44,10 +44,20 @@ func JWTMiddleware() gin.HandlerFunc {
 				c.Next()
 				return
 			}
-			sp := strings.Split(authorization, "bearer ")
-			if len(sp) < 1 {
-				c.Next()
-				return
+
+			var sp []string
+			if strings.Contains(authorization, "bearer") {
+				sp = strings.Split(authorization, "bearer ")
+				if len(sp) < 1 {
+					c.Next()
+					return
+				}
+			} else if strings.Contains(authorization, "Bearer") {
+				sp = strings.Split(authorization, "Bearer ")
+				if len(sp) < 1 {
+					c.Next()
+					return
+				}
 			}
 
 			tokenString = sp[1]

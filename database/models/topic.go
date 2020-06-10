@@ -17,5 +17,10 @@ type Topic struct {
 
 // Serialize formats topic to JSON-format
 func (t *Topic) Serialize() common.JSON {
-	return common.JSON{}
+	return common.JSON{
+		"title":       t.Title,
+		"description": t.Description,
+		"uuid":        t.UUID,
+		"url":         t.URL,
+	}
 }

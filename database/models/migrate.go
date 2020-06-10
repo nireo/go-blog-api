@@ -8,7 +8,7 @@ import (
 
 // Migrate models using ORM
 func Migrate(db *gorm.DB) {
-	db.AutoMigrate(&User{}, &Post{})
+	db.AutoMigrate(&User{}, &Post{}, &Topic{}, &Paragraph{})
 	db.Model(&Post{}).AddForeignKey(
 		"user_id",
 		"users(id)",

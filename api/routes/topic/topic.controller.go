@@ -36,6 +36,13 @@ func createTopic(c *gin.Context) {
 		return
 	}
 
+	// check if that topic already exists
+	var topic Topic
+	if err := db.Where("title", body.Title).First(&topic).Error; err == nil {
+		c.AbortWithStatus(http.StatusConflict)
+		return
+	}
+
 	newTopic := Topic{
 		URL:         common.FormatString(body.Title),
 		Description: body.Description,
