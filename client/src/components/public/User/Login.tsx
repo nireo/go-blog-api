@@ -6,12 +6,11 @@ import { AppState } from '../../../store';
 import { Link } from 'react-router-dom';
 
 type Props = {
-  showRegisterWindow?: Dispatch<React.SetStateAction<boolean>>;
   login: (credentials: UserAction) => void;
   user: User;
 };
 
-const Login: React.FC<Props> = ({ showRegisterWindow, login, user }) => {
+const Login: React.FC<Props> = ({ login, user }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 

@@ -22,6 +22,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const [image, setImage] = useState<string>('');
   const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
   const [newListItem, setNewListItem] = useState<string>('');
+  const [page, setPage] = useState<number>(0);
 
   //const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
   //  // stop site from reloading
@@ -88,152 +89,176 @@ const Create: React.FC<Props> = ({ createPost }) => {
       <p className="text-gray-600">
         Here you can write about the topic you're interested in!
       </p>
-      <form style={{ width: '100%' }}>
+      {page === 0 && (
         <div>
-          <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
-            <input
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-              className="border-0 hover:border-0 focus:outline-0 w-full text-2xl"
-              placeholder="Title"
-            />
+          <div>
+            <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
+              <input
+                value={title}
+                onChange={({ target }) => setTitle(target.value)}
+                className="border-0 hover:border-0 focus:outline-0 w-full text-2xl"
+                placeholder="Title"
+              />
+            </div>
+            <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
+              <TextareaAutosize
+                value={description}
+                onChange={({ target }) => setDescription(target.value)}
+                placeholder="Description..."
+                className="w-full"
+                style={{ resize: 'none' }}
+                translate="true"
+              />
+            </div>
           </div>
-          <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
-            <TextareaAutosize
-              value={description}
-              onChange={({ target }) => setDescription(target.value)}
-              placeholder="Description..."
-              className="w-full"
-              style={{ resize: 'none' }}
-              translate="true"
-            />
-          </div>
-        </div>
-        <div className="mb-12">
-          <div className="mb-4 mt-10">
-            <h4 className="font-mono text-2xl text-blue-500">Content</h4>
-            <p className="text-gray-600">
-              Please create a new text box for each paragraph
-            </p>
-          </div>
-          {paragraphs.map((paragraph: Paragraph, index: number) => (
-            <div
-              className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden"
-              key={index}
-            >
-              {paragraph.type === 'text' && (
-                <TextareaAutosize
-                  value={paragraph.content}
-                  onChange={({ target }) =>
-                    changeParagraphContent(target.value, index)
-                  }
-                  placeholder="Content..."
-                  className="w-full"
-                  style={{ resize: 'none', overflow: 'auto' }}
-                  translate="true"
-                />
-              )}
-              {paragraph.type === 'code' && (
-                <div>
-                  <CodeEditor
+          <div className="mb-12">
+            <div className="mb-4 mt-10">
+              <h4 className="font-mono text-2xl text-blue-500">Content</h4>
+              <p className="text-gray-600">
+                Please create a new text box for each paragraph
+              </p>
+            </div>
+            {paragraphs.map((paragraph: Paragraph, index: number) => (
+              <div
+                className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden"
+                key={index}
+              >
+                {paragraph.type === 'text' && (
+                  <TextareaAutosize
                     value={paragraph.content}
-                    setValue={changeCodeContent}
-                    index={index}
-                  />
-                </div>
-              )}
-              {paragraph.type === 'quote' && (
-                <div>
-                  <input
-                    value={paragraph.content}
-                    className="text-2xl italic text-gray-400"
                     onChange={({ target }) =>
                       changeParagraphContent(target.value, index)
                     }
+                    placeholder="Content..."
+                    className="w-full"
+                    style={{ resize: 'none', overflow: 'auto' }}
+                    translate="true"
                   />
-                </div>
-              )}
-              {paragraph.type === 'list' && (
-                <div>
-                  <ul style={{ listStyle: 'circle' }}>
-                    {paragraph.content !== '' ? (
-                      paragraph.content.split('|LIST|').map((item: string) => {
-                        if (item !== '') {
-                          return <li>{item}</li>;
-                        }
-
-                        return null;
-                      })
-                    ) : (
-                      <div></div>
-                    )}
-                  </ul>
-                  <div className="flex mb-2">
-                    <input
-                      className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                      onChange={({ target }) => setNewListItem(target.value)}
-                      value={newListItem}
+                )}
+                {paragraph.type === 'code' && (
+                  <div>
+                    <CodeEditor
+                      value={paragraph.content}
+                      setValue={changeCodeContent}
+                      index={index}
                     />
-                    <button
-                      onClick={() => addNewListItem(index)}
-                      className="bg-blue-500 ml-6 text-sm hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-                    >
-                      Add
-                    </button>
                   </div>
+                )}
+                {paragraph.type === 'quote' && (
+                  <div>
+                    <input
+                      value={paragraph.content}
+                      className="text-2xl italic text-gray-400"
+                      onChange={({ target }) =>
+                        changeParagraphContent(target.value, index)
+                      }
+                    />
+                  </div>
+                )}
+                {paragraph.type === 'list' && (
+                  <div>
+                    <ul style={{ listStyle: 'circle' }}>
+                      {paragraph.content !== '' ? (
+                        paragraph.content
+                          .split('|LIST|')
+                          .map((item: string) => {
+                            if (item !== '') {
+                              return <li>{item}</li>;
+                            }
+
+                            return null;
+                          })
+                      ) : (
+                        <div></div>
+                      )}
+                    </ul>
+                    <div className="flex mb-2">
+                      <input
+                        className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                        onChange={({ target }) => setNewListItem(target.value)}
+                        value={newListItem}
+                      />
+                      <button
+                        onClick={() => addNewListItem(index)}
+                        className="bg-blue-500 ml-6 text-sm hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <hr></hr>
+                <div className="relative">
+                  <select
+                    value={paragraph.type}
+                    onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                      changeParagraphType(event, index)
+                    }
+                    className="block text-sm appearance-none bg-gray-200 border border-gray-200 text-blue-500 mt-2 py-1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  >
+                    <option value="text">Text</option>
+                    <option value="code">Code</option>
+                    <option value="quote">Quote</option>
+                    <option value="list">List</option>
+                  </select>
                 </div>
-              )}
-              <hr></hr>
-              <div className="relative">
-                <select
-                  value={paragraph.type}
-                  onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-                    changeParagraphType(event, index)
-                  }
-                  className="block text-sm appearance-none bg-gray-200 border border-gray-200 text-blue-500 mt-2 py-1 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                >
-                  <option value="text">Text</option>
-                  <option value="code">Code</option>
-                  <option value="quote">Quote</option>
-                  <option value="list">List</option>
-                </select>
               </div>
-            </div>
-          ))}
-          <button
-            onClick={() => createNewParagraph()}
-            className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-          >
-            Create new text box
-          </button>
+            ))}
+            <button
+              onClick={() => createNewParagraph()}
+              className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            >
+              Create new text box
+            </button>
+          </div>
+          <div>
+            <button
+              onClick={() => setPage(1)}
+              className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 float-right"
+            >
+              Next page
+            </button>
+          </div>
         </div>
-        <hr />
-        <label>
-          Select topic{'   '}
-          <select
-            value={topic}
-            onChange={({ target }) => setTopic(target.value)}
+      )}
+      {page === 1 && (
+        <form style={{ width: '100%' }}>
+          <hr />
+          <label>
+            Select topic{'   '}
+            <select
+              value={topic}
+              onChange={({ target }) => setTopic(target.value)}
+              className="form-control form-control-sm"
+            >
+              <option value="programming">Programming</option>
+              <option value="ai">Artificial intelligence</option>
+              <option value="technology">Technology</option>
+              <option value="self-improvement">Self improvement</option>
+              <option value="fitness">Fitness</option>
+            </select>
+          </label>
+          <input
             className="form-control form-control-sm"
-          >
-            <option value="programming">Programming</option>
-            <option value="ai">Artificial intelligence</option>
-            <option value="technology">Technology</option>
-            <option value="self-improvement">Self improvement</option>
-            <option value="fitness">Fitness</option>
-          </select>
-        </label>
-        <input
-          className="form-control form-control-sm"
-          value={image}
-          onChange={({ target }) => setImage(target.value)}
-          type="text"
-          placeholder="Image url..."
-        />
-        <hr />
-        <button type="submit" className="get-started-button-big">
-          Create post
-        </button>
-      </form>
+            value={image}
+            onChange={({ target }) => setImage(target.value)}
+            type="text"
+            placeholder="Image url..."
+          />
+          <hr />
+          <button type="submit" className="get-started-button-big">
+            Create post
+          </button>
+          <div>
+            <button
+              onClick={() => setPage(0)}
+              className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 float-right"
+            >
+              Previous
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 };
