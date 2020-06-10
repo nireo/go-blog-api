@@ -3,6 +3,9 @@ import { Post, CreatePost } from '../../interfaces/post.interfaces';
 import {
   createPost as serviceCreatePost,
   getPosts as serviceGetPosts,
+  getPostById as serviceGetPostById,
+  updatePost as serviceUpdatePost,
+  removePost as serviceRemovePost,
 } from '../../services/post';
 
 const reducer = (state: Post[] = [], action: any) => {
@@ -36,7 +39,7 @@ export const initPosts = () => {
 
 export const getPostById = (id: string) => {
   return async (dispatch: Dispatch) => {
-    const post = await postService.getPostById(id);
+    const post = await serviceGetPostById(id);
     dispatch({
       type: 'CREATE_POST',
       data: post,
@@ -56,7 +59,7 @@ export const createPost = (post: CreatePost) => {
 
 export const updatePost = (post: Post, id: string) => {
   return async (dispatch: Dispatch) => {
-    const updatedPost = await postService.updatePost(post, id);
+    const updatedPost = await serviceUpdatePost(post, id);
     dispatch({
       type: 'UPDATE_POST',
       data: updatedPost,
@@ -67,7 +70,7 @@ export const updatePost = (post: Post, id: string) => {
 
 export const removePost = (id: string) => {
   return async (dispatch: Dispatch) => {
-    await postService.removePost(id);
+    await serviceRemovePost(id);
     dispatch({
       type: 'REMOVE_POST',
       id: id,
