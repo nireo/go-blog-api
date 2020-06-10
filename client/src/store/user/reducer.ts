@@ -1,12 +1,11 @@
 import { UserToken } from './../../interfaces/user.interfaces';
 import { User, UserAction } from '../../interfaces/user.interfaces';
 import { Dispatch } from 'redux';
-import UserService from '../../services/user.service';
-import BaseService from '../../services/base.service';
 import { setTokens } from '../../utils/setTokens';
-
-const userService = new UserService();
-const baseService = new BaseService();
+import {
+  login as serviceLogin,
+  register as serviceRegister,
+} from '../../services/user';
 
 const reducer = (state: User | null = null, action: any) => {
   switch (action.type) {
@@ -27,7 +26,7 @@ export const clearUser = () => {
 
 export const login = (credentials: UserAction) => {
   return async (dispatch: Dispatch) => {
-    const user: UserToken = await userService.login(credentials);
+    const user: UserToken = await serviceLogin(credentials);
     window.localStorage.setItem('user', JSON.stringify(user));
     setTokens(user.token);
     dispatch({
@@ -43,7 +42,7 @@ export const checkLocalStorage = () => {
     // check if there is an actual value
     if (userInfo) {
       const userInfoJSON: UserToken = JSON.parse(userInfo);
-      baseService.saveToken(userInfoJSON.token);
+      setTokens(userInfoJSON.token);
       dispatch({
         type: 'LOGIN',
         data: userInfoJSON.user,
@@ -54,8 +53,8 @@ export const checkLocalStorage = () => {
 
 export const register = (credentials: UserAction) => {
   return async (dispatch: Dispatch) => {
-    const user: UserToken = await userService.register(credentials);
-    baseService.saveToken(user.token);
+    const user: UserToken = await serviceRegister(credentials);
+    setTokens(user.token);
     dispatch({
       type: 'LOGIN',
       data: user.user,

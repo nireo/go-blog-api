@@ -1,12 +1,9 @@
 import { Dispatch } from 'redux';
-import PostService from '../../services/post.service';
 import { Post, CreatePost } from '../../interfaces/post.interfaces';
 import {
   createPost as serviceCreatePost,
   getPosts as serviceGetPosts,
 } from '../../services/post';
-
-const postService = new PostService();
 
 const reducer = (state: Post[] = [], action: any) => {
   switch (action.type) {

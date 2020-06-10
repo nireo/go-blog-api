@@ -1,9 +1,12 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { createPost } from '../../../store/posts/reducer';
 import { CreatePost } from '../../../interfaces/post.interfaces';
 import TextareaAutosize from 'react-textarea-autosize';
 import { CodeEditor } from './CodeEditor';
+import { Topic } from '../../../interfaces/topic.interfaces';
+import { getTopics } from '../../../services/topic';
+import axios from 'axios';
 
 type Props = {
   createPost: (post: CreatePost) => Promise<void>;
@@ -23,21 +26,22 @@ const Create: React.FC<Props> = ({ createPost }) => {
   const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
   const [newListItem, setNewListItem] = useState<string>('');
   const [page, setPage] = useState<number>(0);
+  const [topics, setTopics] = useState<Topic[] | null>([]);
+  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
+  const [search, setSearch] = useState<string>('');
 
-  //const handlePostCreation = (event: FormEvent<HTMLFormElement>) => {
-  //  // stop site from reloading
-  //  event.preventDefault();
-  //
-  //  const postObject = {
-  //    title,
-  //    description,
-  //    text: content,
-  //    topic,
-  //    imageURL: image,
-  //  };
+  const loadTopics = useCallback(async () => {
+    let data = await axios.get('/api/topics');
+    setTopics(data.data);
+  }, []);
 
-  //  createPost(postObject);
-  //};
+  useEffect(() => {
+    if (topics === null) {
+      loadTopics();
+    }
+  }, [loadTopics, topics, page]);
+
+  console.log(topics);
 
   const changeParagraphContent = (value: string, index: number) => {
     let paragraphsCopy = paragraphs;
@@ -222,8 +226,18 @@ const Create: React.FC<Props> = ({ createPost }) => {
         </div>
       )}
       {page === 1 && (
-        <form style={{ width: '100%' }}>
-          <hr />
+        <div className="mt-10">
+          <div className="mb-4">
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+              value={search}
+              placeholder="Search for topic"
+              onChange={({ target }) => setSearch(target.value)}
+            />
+            {topics?.map((topic: Topic) => (
+              <div>{topic.title}</div>
+            ))}
+          </div>
           <label>
             Select topic{'   '}
             <select
@@ -252,12 +266,12 @@ const Create: React.FC<Props> = ({ createPost }) => {
           <div>
             <button
               onClick={() => setPage(0)}
-              className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 float-right"
+              className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4"
             >
               Previous
             </button>
           </div>
-        </form>
+        </div>
       )}
     </div>
   );
