@@ -96,6 +96,15 @@ const Create: React.FC<Props> = ({ createPost }) => {
       {page === 0 && (
         <div>
           <div>
+            <button
+              onClick={() => setPage(1)}
+              className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 float-right"
+            >
+              Next page
+            </button>
+          </div>
+          <br />
+          <div>
             <div className="max-w px-4 mt-10 mb-4 py-2 rounded shadow-md overflow-hidden">
               <input
                 value={title}
@@ -215,19 +224,20 @@ const Create: React.FC<Props> = ({ createPost }) => {
               Create new text box
             </button>
           </div>
-          <div>
-            <button
-              onClick={() => setPage(1)}
-              className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 float-right"
-            >
-              Next page
-            </button>
-          </div>
         </div>
       )}
       {page === 1 && (
-        <div className="mt-10">
+        <div className="mt-4">
+          <div>
+            <button
+              onClick={() => setPage(0)}
+              className="bg-blue-500 mb-4 hover:bg-blue-700 text-white font-bold py-2 px-4"
+            >
+              Previous Page
+            </button>
+          </div>
           <div className="mb-4">
+            <h4 className="text-2xl font-mono text-blue-500 mb-2">Topic</h4>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
               value={search}
@@ -238,37 +248,23 @@ const Create: React.FC<Props> = ({ createPost }) => {
               <div>{topic.title}</div>
             ))}
           </div>
-          <label>
-            Select topic{'   '}
-            <select
-              value={topic}
-              onChange={({ target }) => setTopic(target.value)}
-              className="form-control form-control-sm"
-            >
-              <option value="programming">Programming</option>
-              <option value="ai">Artificial intelligence</option>
-              <option value="technology">Technology</option>
-              <option value="self-improvement">Self improvement</option>
-              <option value="fitness">Fitness</option>
-            </select>
-          </label>
-          <input
-            className="form-control form-control-sm"
-            value={image}
-            onChange={({ target }) => setImage(target.value)}
-            type="text"
-            placeholder="Image url..."
-          />
-          <hr />
-          <button type="submit" className="get-started-button-big">
-            Create post
-          </button>
           <div>
-            <button
-              onClick={() => setPage(0)}
-              className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4"
-            >
-              Previous
+            <h4 className="text-2xl font-mono text-blue-500 mb-2">Image</h4>
+            <div className="mb-4">
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xl"
+                value={image}
+                placeholder="Image URL"
+                onChange={({ target }) => setImage(target.value)}
+              />
+              {topics?.map((topic: Topic) => (
+                <div>{topic.title}</div>
+              ))}
+            </div>
+          </div>
+          <div className="text-center mt-4">
+            <button className="text-3xl bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-24 rounded-full">
+              Publish!
             </button>
           </div>
         </div>
