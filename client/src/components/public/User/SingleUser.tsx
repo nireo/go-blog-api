@@ -23,6 +23,11 @@ export const SingleUser: React.FC<Props> = ({ id }) => {
   return (
     <div className="container">
       {user === null && <div className="text-center">Loading...</div>}
+      {user !== null && (
+        <div>
+          <h2>{user.username}</h2>
+        </div>
+      )}
     </div>
   );
 };
