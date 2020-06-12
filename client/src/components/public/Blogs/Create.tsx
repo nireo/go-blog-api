@@ -54,12 +54,6 @@ const Create: React.FC<Props> = ({ createPost }) => {
     );
   };
 
-  const changeCodeContent = (value: string, index: number) => {
-    let paragraphsCopy = paragraphs;
-    paragraphsCopy[index].content = value;
-    updateParagraphList(paragraphsCopy[index]);
-  };
-
   const changeParagraphType = (
     event: ChangeEvent<HTMLSelectElement>,
     index: number
@@ -152,7 +146,7 @@ const Create: React.FC<Props> = ({ createPost }) => {
                   <div>
                     <CodeEditor
                       value={paragraph.content}
-                      setValue={changeCodeContent}
+                      setValue={changeParagraphContent}
                       index={index}
                     />
                   </div>
