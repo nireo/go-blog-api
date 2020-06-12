@@ -17,8 +17,10 @@ type User struct {
 // Serialize user data
 func (u *User) Serialize() common.JSON {
 	return common.JSON{
-		"id":       u.ID,
+		"uuid":     u.UUID,
 		"username": u.Username,
+		"url":      u.URL,
+		"created":  u.CreatedAt,
 	}
 }
 
