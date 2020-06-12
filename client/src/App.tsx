@@ -18,6 +18,7 @@ import Register from './components/public/User/Register';
 import { About } from './components/public/Misc/About';
 import { ProtectedRoute } from './components/public/User/ProtectedRoute';
 import Dashboard from './components/public/User/Dashboard';
+import { SingleUser } from './components/public/User/SingleUser';
 
 type Props = {
   user: User | null;
@@ -42,6 +43,11 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
         <Route exact path="/register" render={() => <Register />} />
         <Route exact path="/all" render={() => <MainPage />} />
         <Route exact path="/about" render={() => <About />} />
+        <Route
+          exact
+          path="/profile/:id"
+          render={({ match }) => <SingleUser id={match.params.id} />}
+        />
 
         <Route
           exact

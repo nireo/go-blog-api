@@ -5,7 +5,9 @@ export interface UserAction {
 
 export interface User {
   username: string;
-  id: number;
+  uuid: string;
+  url: string;
+  created: string;
 }
 
 export interface UserToken {
