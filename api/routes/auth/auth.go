@@ -13,6 +13,7 @@ func ApplyRoutes(r *gin.RouterGroup) {
 		auth.POST("/login", login)
 		auth.GET("/check", middlewares.Authorized, check)
 		auth.GET("/single/:url", getUserWithUsername)
+		auth.POST("/follow/:username", middlewares.Authorized, followUser)
 		auth.PATCH("/update", middlewares.Authorized, updateUser)
 		auth.PATCH("/update/password", middlewares.Authorized, changePassword)
 		auth.DELETE("/:id", middlewares.Authorized, remove)

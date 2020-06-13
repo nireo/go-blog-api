@@ -244,3 +244,22 @@ func getUserWithUsername(c *gin.Context) {
 		"posts": serializedPosts,
 	})
 }
+
+func followUser(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
+	toFollowUsername := c.Param("username")
+
+	var userToFollow User
+	if err := db.Where("url = ?", toFollowUsername).First(&userToFollow).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	if err := db.Model(&user).Association("Follows").Append(&userToFollow).Error; err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, userToFollow.Serialize())
+}

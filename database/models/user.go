@@ -12,6 +12,7 @@ type User struct {
 	PasswordHash string
 	UUID         string
 	URL          string
+	Follows      []*User `gorm:"many2many:follows;association_jointable_foreignkey:follow_id"`
 }
 
 // Serialize user data
