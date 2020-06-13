@@ -3,6 +3,7 @@ import { User } from '../../../interfaces/user.interfaces';
 import axios from 'axios';
 import formatDate from '../../../utils/formatData';
 import { Post } from '../../../interfaces/post.interfaces';
+import { followUser } from '../../../services/user';
 
 type Props = {
   id: string;
@@ -14,7 +15,8 @@ export const SingleUser: React.FC<Props> = ({ id }) => {
 
   const loadUser = useCallback(async () => {
     const response = await axios.get(`/api/auth/single/${id}`);
-    setUser(response.data);
+    setUser(response.data.user);
+    setPosts(response.data.posts);
   }, [id]);
 
   useEffect(() => {
@@ -23,7 +25,12 @@ export const SingleUser: React.FC<Props> = ({ id }) => {
     }
   }, []);
 
-  const handleUserFollow = () => {};
+  const handleUserFollow = () => {
+    if (!user) {
+      return;
+    }
+    followUser(user.username);
+  };
 
   return (
     <div className="container">
