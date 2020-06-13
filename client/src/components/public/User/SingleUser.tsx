@@ -23,7 +23,7 @@ export const SingleUser: React.FC<Props> = ({ id }) => {
     if (user === null) {
       loadUser();
     }
-  }, []);
+  }, [loadUser]);
 
   const handleUserFollow = () => {
     if (!user) {
