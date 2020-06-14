@@ -15,6 +15,15 @@ type User struct {
 	Follows      []*User `gorm:"many2many:follows;association_jointable_foreignkey:follow_id"`
 }
 
+// Follow data model
+type Follow struct {
+	gorm.Model
+	Following    User
+	FollowingID  uint
+	FollowedBy   User
+	FollowedByID uint
+}
+
 // Serialize user data
 func (u *User) Serialize() common.JSON {
 	return common.JSON{
@@ -23,6 +32,16 @@ func (u *User) Serialize() common.JSON {
 		"url":      u.URL,
 		"created":  u.CreatedAt,
 	}
+}
+
+// SerializeUsers serializes a list of users
+func SerializeUsers(users []User) []common.JSON {
+	serializedUsers := make([]common.JSON, len(users), len(users))
+	for index := range users {
+		serializedUsers[index] = users[index].Serialize()
+	}
+
+	return serializedUsers
 }
 
 // GetUserWithID returns a user with given id

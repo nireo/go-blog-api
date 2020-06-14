@@ -48,6 +48,16 @@ func (p *Paragraph) Serialize() common.JSON {
 	}
 }
 
+// SerializePosts serializes a list posts
+func SerializePosts(posts []Post) []common.JSON {
+	serializedPosts := make([]common.JSON, len(posts), len(posts))
+	for index := range posts {
+		serializedPosts[index] = posts[index].Serialize()
+	}
+
+	return serializedPosts
+}
+
 // Serialize post data
 func (p *Post) Serialize() common.JSON {
 	return common.JSON{

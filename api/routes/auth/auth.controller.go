@@ -263,3 +263,14 @@ func followUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, userToFollow.Serialize())
 }
+
+func getFollowed(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	user := c.MustGet("user").(User)
+
+	var followedUsers []User
+	if err := db.Preload("Followed").Find(&followedUsers).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+}

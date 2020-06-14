@@ -15,6 +15,16 @@ type Topic struct {
 	UserID      uint
 }
 
+// SerializeTopics serializes a list of topics
+func SerializeTopics(topics []Topic) []common.JSON {
+	serializedTopics := make([]common.JSON, len(topics), len(topics))
+	for index := range topics {
+		serializedTopics[index] = topics[index].Serialize()
+	}
+
+	return serializedTopics
+}
+
 // Serialize formats topic to JSON-format
 func (t *Topic) Serialize() common.JSON {
 	return common.JSON{
