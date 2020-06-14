@@ -1,5 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Post } from '../../../interfaces/post.interfaces';
+import { searchPost } from '../../../services/post';
+import Blog from './Blog';
 
 export const Search: React.FC = () => {
   const [search, setSearch] = useState<string>('');
@@ -7,6 +9,13 @@ export const Search: React.FC = () => {
 
   const handleSearch = (event: ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
+    searchPost(search)
+      .then((data) => {
+        setResults(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -30,6 +39,19 @@ export const Search: React.FC = () => {
           </button>
         </div>
       </form>
+      <div className="mt-4">
+        {results.map((post: Post) => (
+          <div key={`${post.id}`} style={{ marginBottom: '2rem' }}>
+            <Blog
+              id={String(post.id)}
+              likes={post.likes}
+              title={post.title}
+              description={post.description}
+              url={post.image_url}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -43,3 +43,9 @@ export const getUsersPosts = async () => {
   const response = await axios.get(`${baseUrl}/your-blogs`, getConfig());
   return response.data;
 };
+
+export const searchPost = async (search: string) => {
+  const response = await axios.get(`${baseUrl}/search/${search}`);
+  console.log(response.data);
+  return response.data;
+};

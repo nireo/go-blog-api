@@ -314,7 +314,7 @@ func searchForPost(c *gin.Context) {
 	search := c.Param("search")
 
 	var posts []Post
-	if err := db.Where("title LIKE = ?", search).Find(&posts).Error; err != nil {
+	if err := db.Where("title LIKE ?", search).Find(&posts).Error; err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
