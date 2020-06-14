@@ -2,10 +2,12 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import userReducer from './user/reducer';
 import postReducer from './posts/reducer';
+import topicReducer from './topics/reducer';
 
 const rootReducer = combineReducers({
   user: userReducer,
-  post: postReducer
+  post: postReducer,
+  topic: topicReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

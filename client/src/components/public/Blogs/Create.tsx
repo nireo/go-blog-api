@@ -7,9 +7,13 @@ import { CodeEditor } from './CodeEditor';
 import { Topic } from '../../../interfaces/topic.interfaces';
 import { getTopics } from '../../../services/topic';
 import axios from 'axios';
+import { getTopicsAction } from '../../../store/topics/reducer';
+import { AppState } from '../../../store';
 
 type Props = {
   createPost: (post: CreatePost) => Promise<void>;
+  getTopicsAction: () => Promise<void>;
+  topics: Topic[];
 };
 
 interface Paragraph {
@@ -18,28 +22,21 @@ interface Paragraph {
   type: string;
 }
 
-const Create: React.FC<Props> = ({ createPost }) => {
+const Create: React.FC<Props> = ({ createPost, topics, getTopicsAction }) => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [topic, setTopic] = useState<string>('');
   const [image, setImage] = useState<string>('');
   const [paragraphs, setParagraphs] = useState<Paragraph[]>([]);
   const [newListItem, setNewListItem] = useState<string>('');
   const [page, setPage] = useState<number>(0);
-  const [topics, setTopics] = useState<Topic[] | null>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [search, setSearch] = useState<string>('');
 
-  const loadTopics = useCallback(async () => {
-    let data = await axios.get('/api/topics');
-    setTopics(data.data);
-  }, []);
-
   useEffect(() => {
-    if (topics === null) {
-      loadTopics();
+    if (topics.length === 0) {
+      getTopicsAction();
     }
-  }, [loadTopics, topics, page]);
+  }, [topics, page]);
 
   const changeParagraphContent = (value: string, index: number) => {
     let paragraphsCopy = paragraphs;
@@ -78,6 +75,10 @@ const Create: React.FC<Props> = ({ createPost }) => {
       paragraphsCopy[index].content + newListItem + '|LIST|';
     updateParagraphList(paragraphsCopy[index]);
   };
+
+  const filteredTopics = topics.filter((topic: Topic) =>
+    topic.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="container">
@@ -236,8 +237,24 @@ const Create: React.FC<Props> = ({ createPost }) => {
               placeholder="Search for topic"
               onChange={({ target }) => setSearch(target.value)}
             />
-            {topics?.map((topic: Topic) => (
-              <div>{topic.title}</div>
+            {filteredTopics.map((topic: Topic) => (
+              <div>
+                {topic === selectedTopic ? (
+                  <button
+                    disabled
+                    className="bg-blue-500 text-gray-800 font-bold w-full"
+                  >
+                    {topic.title}
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setSelectedTopic(topic)}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold w-full"
+                  >
+                    {topic.title}
+                  </button>
+                )}
+              </div>
             ))}
           </div>
           <div>
@@ -249,9 +266,6 @@ const Create: React.FC<Props> = ({ createPost }) => {
                 placeholder="Image URL"
                 onChange={({ target }) => setImage(target.value)}
               />
-              {topics?.map((topic: Topic) => (
-                <div>{topic.title}</div>
-              ))}
             </div>
           </div>
           <div className="text-center mt-4">
@@ -265,4 +279,10 @@ const Create: React.FC<Props> = ({ createPost }) => {
   );
 };
 
-export default connect(null, { createPost })(Create);
+const mapStateToProps = (state: AppState) => ({
+  topics: state.topic,
+});
+
+export default connect(mapStateToProps, { createPost, getTopicsAction })(
+  Create
+);
