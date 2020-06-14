@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/nireo/go-blog-api/api"
+	"github.com/nireo/go-blog-api/lib/common"
 	"github.com/nireo/go-blog-api/lib/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,8 @@ import (
 func main() {
 	// start database
 	db, _ := database.Initialize()
+
+	common.SetDatabase(db)
 
 	app := gin.Default() // create gin app
 	app.Use(database.Inject(db))
