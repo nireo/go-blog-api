@@ -21,14 +21,15 @@ type User = models.User
 // JSON alias
 type JSON = common.JSON
 
+// RequestBody is the common request body needed in different functions
+type RequestBody struct {
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description" binding:"required"`
+}
+
 func createTopic(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	user := c.MustGet("user").(User)
-
-	type RequestBody struct {
-		Title       string `json:"title" binding:"required"`
-		Description string `json:"description" binding:"required"`
-	}
 
 	var body RequestBody
 	if err := c.BindJSON(&body); err != nil {
@@ -36,9 +37,8 @@ func createTopic(c *gin.Context) {
 		return
 	}
 
-	// check if that topic already exists
-	var topic Topic
-	if err := db.Where("title", body.Title).First(&topic).Error; err == nil {
+	_, ok := models.GetTopicWithTitle(body.Title)
+	if ok {
 		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
@@ -62,8 +62,8 @@ func deleteTopic(c *gin.Context) {
 	user := c.MustGet("user").(User)
 	topicID := c.Param("id")
 
-	var topic Topic
-	if err := db.Where("uuid = ?", topicID).First(&topic).Error; err != nil {
+	topic, ok := models.GetTopicWithID(topicID)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -78,61 +78,40 @@ func deleteTopic(c *gin.Context) {
 }
 
 func getSingleTopic(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
 	topicURL := c.Param("url")
 
-	var topic Topic
-	if err := db.Where("url = ?", topicURL).First(&topic).Error; err != nil {
+	topic, ok := models.GetTopicWithURL(topicURL)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	// get posts in the same category
-	var posts []Post
-	if err := db.Model(&topic).Related(&posts).Error; err != nil {
+	posts, ok := models.GetPostsRelatedToTopic(topic)
+	if !ok {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	serializedPosts := make([]JSON, len(posts), len(posts))
-	for index := range posts {
-		serializedPosts[index] = posts[index].Serialize()
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"topic": topic.Serialize(),
-		"posts": serializedPosts,
+		"posts": models.SerializePosts(posts),
 	})
 }
 
 func getTopics(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-
-	var topics []Topic
-	if err := db.Find(&topics).Error; err != nil {
+	topics, ok := models.GetAllTopics()
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	serializedTopics := make([]JSON, len(topics), len(topics))
-	for index := range topics {
-		serializedTopics[index] = topics[index].Serialize()
-	}
-
-	c.JSON(http.StatusOK, serializedTopics)
+	c.JSON(http.StatusOK, models.SerializeTopics(topics))
 }
 
 func updateTopic(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	user := c.MustGet("user").(User)
-
-	// topicID is only visible to the owner, so we can use it instead of the URL
 	topicID := c.Param("id")
-
-	type RequestBody struct {
-		Title       string `json:"title" binding:"required"`
-		Description string `json:"description" binding:"required"`
-	}
 
 	var body RequestBody
 	if err := c.BindJSON(&body); err != nil {
@@ -140,8 +119,8 @@ func updateTopic(c *gin.Context) {
 		return
 	}
 
-	var topic Topic
-	if err := db.Where("uuid = ?", topicID).First(&topic).Error; err != nil {
+	topic, ok := models.GetTopicWithID(topicID)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -160,19 +139,13 @@ func updateTopic(c *gin.Context) {
 }
 
 func getUserTopics(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
 	user := c.MustGet("user").(User)
 
-	var topics []Topic
-	if err := db.Model(&user).Related(&topics).Error; err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+	topics, ok := models.GetAllUsersTopics(user)
+	if !ok {
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	serializedTopics := make([]JSON, len(topics), len(topics))
-	for index := range topics {
-		serializedTopics[index] = topics[index].Serialize()
-	}
-
-	c.JSON(http.StatusOK, serializedTopics)
+	c.JSON(http.StatusOK, models.SerializeTopics(topics))
 }
