@@ -91,6 +91,17 @@ func GetPostsFromUser(user User) ([]Post, bool) {
 	return posts, true
 }
 
+// GetPosts returns a list of posts within a given offset and limit range
+func GetPosts(offset, limit int) ([]Post, bool) {
+	db := common.GetDatabase()
+	var posts []Post
+	if err := db.Find(&posts).Offset(offset).Limit(limit).Error; err != nil {
+		return posts, false
+	}
+
+	return posts, true
+}
+
 // Serialize post data
 func (p *Post) Serialize() common.JSON {
 	return common.JSON{

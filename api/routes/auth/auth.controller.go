@@ -6,7 +6,6 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/nireo/go-blog-api/database/models"
 	"github.com/nireo/go-blog-api/lib/common"
 	"golang.org/x/crypto/bcrypt"
@@ -44,7 +43,7 @@ func generateToken(data common.JSON) (string, error) {
 }
 
 func register(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 
 	type RequestBody struct {
 		Username string `json:"username" binding:"required"`
@@ -94,7 +93,7 @@ func register(c *gin.Context) {
 }
 
 func login(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 
 	type RequestBody struct {
 		Username string `json:"username" binding:"required"`
@@ -133,7 +132,7 @@ func login(c *gin.Context) {
 }
 
 func updateUser(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 
 	type RequestBody struct {
@@ -159,7 +158,7 @@ func updateUser(c *gin.Context) {
 }
 
 func remove(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 
 	db.Delete(&user)
@@ -167,7 +166,7 @@ func remove(c *gin.Context) {
 }
 
 func changePassword(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 
 	type RequestBody struct {
@@ -193,7 +192,7 @@ func changePassword(c *gin.Context) {
 }
 
 func getUserWithUsername(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	url := c.Param("url")
 
 	var user User
@@ -216,7 +215,7 @@ func getUserWithUsername(c *gin.Context) {
 }
 
 func followUser(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 	toFollowUsername := c.Param("username")
 

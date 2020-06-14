@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/nireo/go-blog-api/database/models"
 	"github.com/nireo/go-blog-api/lib/common"
 )
@@ -28,7 +27,7 @@ type RequestBody struct {
 }
 
 func createTopic(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 
 	var body RequestBody
@@ -58,7 +57,7 @@ func createTopic(c *gin.Context) {
 }
 
 func deleteTopic(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 	topicID := c.Param("id")
 
@@ -109,7 +108,7 @@ func getTopics(c *gin.Context) {
 }
 
 func updateTopic(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 	topicID := c.Param("id")
 

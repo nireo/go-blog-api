@@ -16,7 +16,6 @@ func main() {
 	common.SetDatabase(db)
 
 	app := gin.Default() // create gin app
-	app.Use(database.Inject(db))
 	app.Use(middlewares.JWTMiddleware())
 	api.ApplyRoutes(app) // apply api router
 	app.Run(":8080")     // listen to given port

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/nireo/go-blog-api/database/models"
 	"github.com/nireo/go-blog-api/lib/common"
 )
@@ -36,7 +35,7 @@ func checkIfValid(topic string) bool {
 }
 
 func create(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 
 	type ParagraphJSON struct {
@@ -89,25 +88,8 @@ func create(c *gin.Context) {
 }
 
 func list(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-	var posts []Post
-	topic := c.DefaultQuery("topic", "none")
-	if topic != "none" {
-		if err := db.Preload("User").Where("topic = ?", topic).Limit(10).Find(&posts).Error; err != nil {
-			c.AbortWithStatus(http.StatusNotFound)
-			return
-		}
-
-		serialized := make([]JSON, len(posts), len(posts))
-		for index := range posts {
-			serialized[index] = posts[index].Serialize()
-		}
-
-		c.JSON(http.StatusOK, serialized)
-		return
-	}
-
-	if err := db.Preload("User").Find(&posts).Limit(10).Error; err != nil {
+	posts, ok := models.GetPosts(0, 10)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -137,7 +119,7 @@ func postFromID(c *gin.Context) {
 }
 
 func update(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	postID := c.Param("id")
 	user := c.MustGet("user").(User)
 
@@ -179,7 +161,7 @@ func update(c *gin.Context) {
 }
 
 func handleLike(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	postID := c.Param("postId")
 
 	post, ok := models.GetPostWithID(postID)
@@ -194,7 +176,7 @@ func handleLike(c *gin.Context) {
 }
 
 func remove(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	postID := c.Param("id")
 	user := c.MustGet("user").(User)
 
@@ -227,7 +209,7 @@ func yourBlogs(c *gin.Context) {
 
 // add new paragraph at the end of the content
 func addNewParagraph(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 	postID := c.Param("id")
 
@@ -265,7 +247,7 @@ func addNewParagraph(c *gin.Context) {
 }
 
 func deleteParagraph(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 	paragraphID := c.Param("id")
 
@@ -292,7 +274,7 @@ func deleteParagraph(c *gin.Context) {
 }
 
 func searchForPost(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+	db := common.GetDatabase()
 	search := c.Param("search")
 
 	var posts []Post
