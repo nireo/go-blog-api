@@ -56,15 +56,22 @@ const Navbar: React.FC<Props> = ({ user }) => {
           </Link>
           <Link
             to="/about"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
             style={{ textDecoration: 'none' }}
           >
             About
           </Link>
+          <Link
+            to="/search"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            style={{ textDecoration: 'none' }}
+          >
+            Search
+          </Link>
           {user !== null && (
             <Link
               to="/dashboard"
-              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
               style={{ textDecoration: 'none' }}
             >
               Dashboard

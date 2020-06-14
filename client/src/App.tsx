@@ -19,6 +19,7 @@ import { About } from './components/public/Misc/About';
 import { ProtectedRoute } from './components/public/User/ProtectedRoute';
 import Dashboard from './components/public/User/Dashboard';
 import { SingleUser } from './components/public/User/SingleUser';
+import { Search } from './components/public/Blogs/Search';
 
 type Props = {
   user: User | null;
@@ -48,7 +49,7 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
           path="/profile/:id"
           render={({ match }) => <SingleUser id={match.params.id} />}
         />
-
+        <Route exact path="/search" render={() => <Search />} />
         <Route
           exact
           path="/blog/:id"

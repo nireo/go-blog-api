@@ -41,8 +41,6 @@ const Create: React.FC<Props> = ({ createPost }) => {
     }
   }, [loadTopics, topics, page]);
 
-  console.log(topics);
-
   const changeParagraphContent = (value: string, index: number) => {
     let paragraphsCopy = paragraphs;
     paragraphsCopy[index].content = value;
