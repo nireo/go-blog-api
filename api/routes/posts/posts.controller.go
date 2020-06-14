@@ -27,8 +27,8 @@ type JSON = common.JSON
 // function for checking if topic is valid
 func checkIfValid(topic string) bool {
 	valid := false
-	for _, v := range topics {
-		if v == topic {
+	for _, value := range topics {
+		if value == topic {
 			valid = true
 		}
 	}
@@ -112,27 +112,20 @@ func list(c *gin.Context) {
 		return
 	}
 
-	serialized := make([]JSON, len(posts), len(posts))
-	for index := range posts {
-		serialized[index] = posts[index].Serialize()
-	}
-
-	c.JSON(http.StatusOK, serialized)
-	return
+	c.JSON(http.StatusOK, models.SerializePosts(posts))
 }
 
 func postFromID(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-	id := c.Param("id")
+	postID := c.Param("id")
 
-	var post Post
-	if err := db.Set("gorm:auto_preload", true).Where("id = ?", id).First(&post).Error; err != nil {
+	post, ok := models.GetPostWithID(postID)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	var paragraphs []Paragraph
-	if err := db.Model(&post).Related(&paragraphs).Error; err != nil {
+	paragraphs, ok := models.GetParagraphsRelatedToPost(post)
+	if !ok {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -145,13 +138,8 @@ func postFromID(c *gin.Context) {
 
 func update(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	id := c.Param("id")
+	postID := c.Param("id")
 	user := c.MustGet("user").(User)
-
-	if id == "" {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
 
 	type ParagraphJSON struct {
 		Type    string `json:"type" binding:"required"`
@@ -171,9 +159,9 @@ func update(c *gin.Context) {
 		return
 	}
 
-	var post Post
-	if err := db.Preload("User").Where("uuid = ?", id).First(&post).Error; err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+	post, ok := models.GetPostWithID(postID)
+	if !ok {
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
@@ -192,10 +180,10 @@ func update(c *gin.Context) {
 
 func handleLike(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	id := c.Param("postId")
+	postID := c.Param("postId")
 
-	var post Post
-	if err := db.Preload("User").Where("uuid = ?", id).First(&post).Error; err != nil {
+	post, ok := models.GetPostWithID(postID)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -207,11 +195,11 @@ func handleLike(c *gin.Context) {
 
 func remove(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	id := c.Param("id")
+	postID := c.Param("id")
 	user := c.MustGet("user").(User)
 
-	var post Post
-	if err := db.Where("uuid = ?", id).First(&post).Error; err != nil {
+	post, ok := models.GetPostWithID(postID)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -226,21 +214,15 @@ func remove(c *gin.Context) {
 }
 
 func yourBlogs(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
 	user := c.MustGet("user").(User)
 
-	var posts []Post
-	if err := db.Model(&user).Related(&posts).Error; err != nil {
-		c.AbortWithStatus(http.StatusForbidden)
+	posts, ok := models.GetPostsFromUser(user)
+	if !ok {
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	serialized := make([]JSON, len(posts), len(posts))
-	for index := range posts {
-		serialized[index] = posts[index].Serialize()
-	}
-
-	c.JSON(http.StatusOK, serialized)
+	c.JSON(http.StatusOK, models.SerializePosts(posts))
 }
 
 // add new paragraph at the end of the content
@@ -260,8 +242,8 @@ func addNewParagraph(c *gin.Context) {
 		return
 	}
 
-	var post Post
-	if err := db.Where("uuid = ?", postID).First(&post).Error; err != nil {
+	post, ok := models.GetPostWithID(postID)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -319,10 +301,5 @@ func searchForPost(c *gin.Context) {
 		return
 	}
 
-	serializedPosts := make([]JSON, len(posts), len(posts))
-	for index := range posts {
-		serializedPosts[index] = posts[index].Serialize()
-	}
-
-	c.JSON(http.StatusOK, serializedPosts)
+	c.JSON(http.StatusOK, models.SerializePosts(posts))
 }

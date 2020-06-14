@@ -58,6 +58,39 @@ func SerializePosts(posts []Post) []common.JSON {
 	return serializedPosts
 }
 
+// GetPostWithID returns a post correspodding to given id
+func GetPostWithID(id string) (Post, bool) {
+	db := common.GetDatabase()
+	var post Post
+	if err := db.Where("uuid = ?", id).First(&post).Error; err != nil {
+		return post, false
+	}
+
+	return post, true
+}
+
+// GetParagraphsRelatedToPost gets all the paragraphs in a post
+func GetParagraphsRelatedToPost(post Post) ([]Paragraph, bool) {
+	db := common.GetDatabase()
+	var paragraphs []Paragraph
+	if err := db.Model(&post).Related(&paragraphs).Error; err != nil {
+		return paragraphs, false
+	}
+
+	return paragraphs, true
+}
+
+// GetPostsFromUser gets all the posts related to a given user
+func GetPostsFromUser(user User) ([]Post, bool) {
+	db := common.GetDatabase()
+	var posts []Post
+	if err := db.Model(&user).Related(&posts).Error; err != nil {
+		return posts, false
+	}
+
+	return posts, true
+}
+
 // Serialize post data
 func (p *Post) Serialize() common.JSON {
 	return common.JSON{
