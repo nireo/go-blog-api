@@ -81,10 +81,14 @@ func register(c *gin.Context) {
 	db.Create(&user)
 
 	serialized := user.Serialize()
-	token, _ := generateToken(serialized)
+	token, err := generateToken(serialized)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
 
 	c.JSON(http.StatusOK, common.JSON{
-		"user":  user.Serialize(),
+		"user":  serialized,
 		"token": token,
 	})
 }
@@ -123,34 +127,8 @@ func login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, common.JSON{
-		"user":  user.Serialize(),
+		"user":  serialized,
 		"token": token,
-	})
-}
-
-func check(c *gin.Context) {
-	user := c.MustGet("user").(User)
-	tokenExpire := int64(c.MustGet("token_expire").(float64))
-	now := time.Now().Unix()
-	difference := tokenExpire - now
-	// 60 * 60 * 24 * 2 = 2 days
-	if difference < 60*60*24*2 {
-		// make new token
-		token, err := generateToken(user.Serialize())
-		if err != nil {
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-		c.JSON(http.StatusOK, common.JSON{
-			"token": token,
-			"user":  user.Serialize(),
-		})
-		return
-	}
-	// since the token is less than 2 days old
-	// send a message informing the user
-	c.JSON(http.StatusOK, common.JSON{
-		"error": "Your current token is already less than 2 days old",
 	})
 }
 
@@ -169,16 +147,15 @@ func updateUser(c *gin.Context) {
 	}
 
 	_, ok := models.GetUserWithUsername(requestBody.Username, db)
-	if !ok {
-		user.Username = requestBody.Username
-
-		db.Save(&user)
-		c.JSON(http.StatusOK, user.Serialize())
+	if ok {
+		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
 
-	c.AbortWithStatus(http.StatusConflict)
-	return
+	user.Username = requestBody.Username
+
+	db.Save(&user)
+	c.JSON(http.StatusOK, user.Serialize())
 }
 
 func remove(c *gin.Context) {
@@ -212,9 +189,7 @@ func changePassword(c *gin.Context) {
 	user.PasswordHash = hash
 
 	db.Save(&user)
-	c.JSON(http.StatusOK, common.JSON{
-		"success": "Password has been updated",
-	})
+	c.Status(http.StatusOK)
 }
 
 func getUserWithUsername(c *gin.Context) {
@@ -234,14 +209,9 @@ func getUserWithUsername(c *gin.Context) {
 		return
 	}
 
-	serializedPosts := make([]JSON, len(posts), len(posts))
-	for index := range posts {
-		serializedPosts[index] = posts[index].Serialize()
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"user":  user,
-		"posts": serializedPosts,
+		"posts": models.SerializePosts(posts),
 	})
 }
 
@@ -262,15 +232,4 @@ func followUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, userToFollow.Serialize())
-}
-
-func getFollowed(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-	user := c.MustGet("user").(User)
-
-	var followedUsers []User
-	if err := db.Preload("Followed").Find(&followedUsers).Error; err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
 }
