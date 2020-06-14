@@ -17,5 +17,6 @@ func ApplyRoutes(r *gin.RouterGroup) {
 		posts.GET("/your-blogs", middlewares.Authorized, yourBlogs)
 		posts.POST("/paragraph/:id", middlewares.Authorized, addNewParagraph)
 		posts.DELETE("/paragraph/:id", middlewares.Authorized, deleteParagraph)
+		posts.GET("/search/:search", searchForPost)
 	}
 }

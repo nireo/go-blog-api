@@ -308,3 +308,21 @@ func deleteParagraph(c *gin.Context) {
 	db.Delete(&paragraph)
 	c.Status(http.StatusNoContent)
 }
+
+func searchForPost(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	search := c.Param("search")
+
+	var posts []Post
+	if err := db.Where("title LIKE = ?", search).Find(&posts).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	serializedPosts := make([]JSON, len(posts), len(posts))
+	for index := range posts {
+		serializedPosts[index] = posts[index].Serialize()
+	}
+
+	c.JSON(http.StatusOK, serializedPosts)
+}
