@@ -109,9 +109,7 @@ const SingleBlogPage: React.FC<Props> = ({
             <h2 style={{ fontSize: '36px' }}>
               <strong>{post.post.title}</strong>
             </h2>
-            <h6 className="text-muted" style={{ fontSize: '20px' }}>
-              {post.description}
-            </h6>
+            <h6 className="text-gray-600">{post.post.description}</h6>
           </div>
           <div style={{ marginLeft: '20%' }}>
             <p style={{ marginBottom: '0' }}>{post.post.user.username}</p>
@@ -120,24 +118,40 @@ const SingleBlogPage: React.FC<Props> = ({
             </p>
           </div>
           <div className="text-center">
-            <img alt="post" src={post.image_url} style={{ width: '50rem' }} />
+            <img
+              alt="post"
+              className="m-auto w-1/2"
+              src={post.post.image_url}
+            />
           </div>
           {post.paragraphs.map((paragraph: ParagraphAction) => (
-            <div>
-              {paragraph.type === 'text' && <p>{paragraph.content}</p>}
+            <div className="m-auto w-1/2 mt-4 mb-4">
+              {paragraph.type === 'text' && (
+                <p style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                  {paragraph.content}
+                </p>
+              )}
               {paragraph.type === 'code' && (
-                <div>
+                <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                   <pre className="line-numbers">
                     <code className="language-js">{paragraph.content}</code>
                   </pre>
                 </div>
               )}
               {paragraph.type === 'list' && (
-                <div>
-                  <ul>
-                    {paragraph.content.split('|LIST|').map((item: string) => (
-                      <li>{item}</li>
-                    ))}
+                <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                  <ul style={{ listStyle: 'circle' }}>
+                    {paragraph.content
+                      .split('|LIST|')
+                      .map((item: string, index: number) => {
+                        if (
+                          index ===
+                          paragraph.content.split('|LIST|').length - 1
+                        ) {
+                          return null;
+                        }
+                        return <li>{item}</li>;
+                      })}
                   </ul>
                 </div>
               )}
