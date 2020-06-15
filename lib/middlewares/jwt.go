@@ -14,6 +14,9 @@ import (
 
 var secretKey []byte
 
+// User model alias
+type User = models.User
+
 func init() {
 	secretKey = []byte("temp")
 }
@@ -34,33 +37,36 @@ func validateToken(tokenString string) (common.JSON, error) {
 	return token.Claims.(jwt.MapClaims), nil
 }
 
+func extractTokenFromAuthorizationHeader(c *gin.Context) (string, error) {
+	authorization := c.Request.Header.Get("Authorization")
+	if authorization == "" || authorization == "[object Object]" {
+		return "", errors.New("Invalid token")
+	}
+
+	var splittedAuthHeader []string
+	if strings.Contains(authorization, "bearer") {
+		splittedAuthHeader = strings.Split(authorization, "bearer ")
+		return splittedAuthHeader[1], nil
+	} else if strings.Contains(authorization, "Bearer") {
+		splittedAuthHeader = strings.Split(authorization, "Bearer ")
+		return splittedAuthHeader[1], nil
+	} else {
+		return "", errors.New("Token is not in bearer format")
+	}
+}
+
 // JWTMiddleware parses jwt token from cookie/header
 func JWTMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString, err := c.Cookie("token")
 		if err != nil {
-			authorization := c.Request.Header.Get("Authorization")
-			if authorization == "" || authorization == "[object Object]" {
+			authTokenString, err := extractTokenFromAuthorizationHeader(c)
+			if err != nil {
 				c.Next()
 				return
 			}
 
-			var sp []string
-			if strings.Contains(authorization, "bearer") {
-				sp = strings.Split(authorization, "bearer ")
-				if len(sp) < 1 {
-					c.Next()
-					return
-				}
-			} else if strings.Contains(authorization, "Bearer") {
-				sp = strings.Split(authorization, "Bearer ")
-				if len(sp) < 1 {
-					c.Next()
-					return
-				}
-			}
-
-			tokenString = sp[1]
+			tokenString = authTokenString
 		}
 
 		tokenData, err := validateToken(tokenString)
@@ -69,7 +75,7 @@ func JWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		var user models.User
+		var user User
 		user.Read(tokenData["user"].(common.JSON))
 		c.Set("user", user)
 		c.Set("token_expire", tokenData["exp"])

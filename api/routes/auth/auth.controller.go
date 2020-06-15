@@ -324,3 +324,21 @@ func unFollowTopic(c *gin.Context) {
 
 	c.Status(http.StatusNoContent)
 }
+
+func getFollowedTopics(c *gin.Context) {
+	db := common.GetDatabase()
+	user := c.MustGet("user").(User)
+
+	var followedTopics []FollowedTopic
+	if err := db.Where(FollowedTopic{UserID: user.ID}).Find(&followedTopics).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	serializedTopics := make([]JSON, len(followedTopics), len(followedTopics))
+	for index := range followedTopics {
+		serializedTopics[index] = followedTopics[index].FollowedTopic.Serialize()
+	}
+
+	c.JSON(http.StatusOK, serializedTopics)
+}
