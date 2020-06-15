@@ -45,6 +45,7 @@ const YourBlogs: React.FC<Props> = ({ user }) => {
               title={blog.title}
               description={blog.description}
               id={String(blog.id)}
+              uuid={blog.uuid}
             />
           </div>
           <div className="col-md-3">

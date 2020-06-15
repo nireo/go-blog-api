@@ -48,6 +48,7 @@ export const Search: React.FC = () => {
               title={post.title}
               description={post.description}
               url={post.image_url}
+              uuid={post.uuid}
             />
           </div>
         ))}

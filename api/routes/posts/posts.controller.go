@@ -74,6 +74,7 @@ func create(c *gin.Context) {
 		newParagraph := Paragraph{
 			Type:    requestBody.Paragraphs[index].Type,
 			Content: requestBody.Paragraphs[index].Content,
+			PostID:  post.ID,
 		}
 
 		db.NewRecord(newParagraph)

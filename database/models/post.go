@@ -126,5 +126,6 @@ func (p *Post) Serialize() common.JSON {
 		"created_at":  p.CreatedAt,
 		"topic":       p.Topic,
 		"image_url":   p.ImageURL,
+		"uuid":        p.UUID,
 	}
 }

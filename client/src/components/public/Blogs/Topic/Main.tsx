@@ -41,6 +41,7 @@ const Main: React.FC<Props> = ({ user, topic }) => {
                 id={String(post.id)}
                 title={post.title}
                 likes={post.likes}
+                uuid={post.uuid}
               />
             </div>
           ))}

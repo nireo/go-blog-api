@@ -13,6 +13,7 @@ type Topic struct {
 	UUID        string
 	URL         string
 	UserID      uint
+	User        User
 }
 
 // SerializeTopics serializes a list of topics

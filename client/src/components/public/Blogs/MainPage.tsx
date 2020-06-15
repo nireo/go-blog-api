@@ -48,6 +48,7 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
             title={post.title}
             description={post.description}
             url={post.image_url}
+            uuid={post.uuid}
           />
         </div>
       ))}

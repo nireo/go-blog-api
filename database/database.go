@@ -9,7 +9,6 @@ import (
 // Initialize the database
 func Initialize() (*gorm.DB, error) {
 	db, err := gorm.Open("sqlite3", "./database.db")
-	// db.LogMode(true)
 	if err != nil {
 		panic(err)
 	}
