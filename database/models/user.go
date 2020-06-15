@@ -1,8 +1,11 @@
 package models
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 	"github.com/nireo/go-blog-api/lib/common"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User data model
@@ -62,6 +65,38 @@ func GetUserWithUsername(username string) (User, bool) {
 	}
 
 	return user, true
+}
+
+func (u *User) setPassword(newPassword string) error {
+	if len(newPassword) > 5 {
+		return errors.New("Passwords should be longer than 5 characters")
+	}
+
+	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	u.PasswordHash = string(passwordHash)
+	return nil
+}
+
+// checkPassword checks if user's password is the given password
+func (u *User) checkPassword(password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
+}
+
+func (u *User) isFollowing(following User) bool {
+	db := common.GetDatabase()
+	var follow Follow
+	db.Where(Follow{FollowedByID: u.ID, FollowingID: following.ID}).First(&follow)
+	return follow.ID != 0
+}
+
+func (u *User) unFollow(unFollowUser User) error {
+	if !u.isFollowing(unFollowUser) {
+		return errors.New("User is not following this user")
+	}
+
+	db := common.GetDatabase()
+	err := db.Where(Follow{FollowedByID: u.ID, FollowingID: unFollowUser.ID}).Delete(Follow{}).Error
+	return err
 }
 
 func (u *User) Read(m common.JSON) {
