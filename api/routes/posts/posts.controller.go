@@ -75,6 +75,7 @@ func create(c *gin.Context) {
 			Type:    requestBody.Paragraphs[index].Type,
 			Content: requestBody.Paragraphs[index].Content,
 			PostID:  post.ID,
+			UUID:    common.CreateUUID(),
 		}
 
 		db.NewRecord(newParagraph)

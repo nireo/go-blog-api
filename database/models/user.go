@@ -17,6 +17,15 @@ type User struct {
 	URL          string
 }
 
+// FollowedTopic bypasses using many2many and makes code cleaner
+type FollowedTopic struct {
+	gorm.Model
+	User          User
+	UserID        uint
+	FollowedTopic Topic
+	TopicID       uint
+}
+
 // Follow data model
 type Follow struct {
 	gorm.Model
@@ -91,6 +100,24 @@ func (u *User) UnFollow(unFollowUser User) error {
 	db := common.GetDatabase()
 	err := db.Where(Follow{FollowedByID: u.ID, FollowingID: unFollowUser.ID}).Delete(Follow{}).Error
 	return err
+}
+
+// IsFollowingTopic checks if a user is following a certain topic
+func (u *User) IsFollowingTopic(topic Topic) bool {
+	db := common.GetDatabase()
+	var isFollowing FollowedTopic
+	db.Where(FollowedTopic{UserID: u.ID, TopicID: topic.ID})
+	return isFollowing.ID != 0
+}
+
+// UnFollowTopic removes a user's following of a topic
+func (u *User) UnFollowTopic(topic Topic) error {
+	if !u.IsFollowingTopic(topic) {
+		return errors.New("User is not following this topic")
+	}
+
+	db := common.GetDatabase()
+	return db.Where(FollowedTopic{UserID: u.ID, TopicID: topic.ID}).Delete(FollowedTopic{}).Error
 }
 
 func (u *User) Read(m common.JSON) {
