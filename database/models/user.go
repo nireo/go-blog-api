@@ -12,7 +12,6 @@ type User struct {
 	PasswordHash string
 	UUID         string
 	URL          string
-	Follows      []*User `gorm:"many2many:follows;association_jointable_foreignkey:follow_id"`
 }
 
 // Follow data model
@@ -55,7 +54,8 @@ func GetUserWithID(id string, db *gorm.DB) (User, bool) {
 }
 
 // GetUserWithUsername returns a user with given username
-func GetUserWithUsername(username string, db *gorm.DB) (User, bool) {
+func GetUserWithUsername(username string) (User, bool) {
+	db := common.GetDatabase()
 	var user User
 	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
 		return user, false

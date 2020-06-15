@@ -17,6 +17,9 @@ type User = models.User
 // Post model alias
 type Post = models.Post
 
+// Follow model alias
+type Follow = models.Follow
+
 // JSON type alias
 type JSON = common.JSON
 
@@ -57,7 +60,7 @@ func register(c *gin.Context) {
 	}
 
 	// check if user exists
-	_, ok := models.GetUserWithUsername(body.Username, db)
+	_, ok := models.GetUserWithUsername(body.Username)
 	if ok {
 		c.AbortWithStatus(http.StatusConflict)
 		return
@@ -93,8 +96,6 @@ func register(c *gin.Context) {
 }
 
 func login(c *gin.Context) {
-	db := common.GetDatabase()
-
 	type RequestBody struct {
 		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -106,7 +107,7 @@ func login(c *gin.Context) {
 		return
 	}
 
-	user, ok := models.GetUserWithUsername(body.Username, db)
+	user, ok := models.GetUserWithUsername(body.Username)
 	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 	}
@@ -145,7 +146,7 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
-	_, ok := models.GetUserWithUsername(requestBody.Username, db)
+	_, ok := models.GetUserWithUsername(requestBody.Username)
 	if ok {
 		c.AbortWithStatus(http.StatusConflict)
 		return
@@ -219,16 +220,21 @@ func followUser(c *gin.Context) {
 	user := c.MustGet("user").(User)
 	toFollowUsername := c.Param("username")
 
-	var userToFollow User
-	if err := db.Where("url = ?", toFollowUsername).First(&userToFollow).Error; err != nil {
+	userToFollow, ok := models.GetUserWithUsername(toFollowUsername)
+	if !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	if err := db.Model(&user).Association("Follows").Append(&userToFollow).Error; err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
+	newFollow := Follow{
+		Following:    userToFollow,
+		FollowingID:  userToFollow.ID,
+		FollowedBy:   user,
+		FollowedByID: user.ID,
 	}
 
-	c.JSON(http.StatusOK, userToFollow.Serialize())
+	db.NewRecord(newFollow)
+	db.Create(&newFollow)
+
+	c.Status(http.StatusNoContent)
 }

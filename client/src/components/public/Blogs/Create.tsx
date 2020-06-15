@@ -33,7 +33,7 @@ const Create: React.FC<Props> = ({ createPost, topics, getTopicsAction }) => {
   const [search, setSearch] = useState<string>('');
 
   useEffect(() => {
-    if (topics.length === 0) {
+    if (topics.length === 0 && page === 1) {
       getTopicsAction();
     }
   }, [topics, page]);
