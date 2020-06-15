@@ -25,7 +25,7 @@ export const updatePost = async (updated: Post, id: string) => {
 };
 
 export const getPostById = async (id: string) => {
-  const response = await axios.get(`${baseUrl}/${id}`, getConfig());
+  const response = await axios.get(`${baseUrl}/single/${id}`, getConfig());
   return response.data;
 };
 

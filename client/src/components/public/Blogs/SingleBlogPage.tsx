@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
 import { getPostById, updatePost } from '../../../store/posts/reducer';
-import { Post } from '../../../interfaces/post.interfaces';
+import { Post, ParagraphAction } from '../../../interfaces/post.interfaces';
 import { Loading } from '../Misc/Loading';
+import { getPostById as servicePostById } from '../../../services/post';
+import Prism from 'prismjs';
 
 type Props = {
   id: string;
@@ -23,20 +25,30 @@ const SingleBlogPage: React.FC<Props> = ({
   updatePost,
 }) => {
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [post, setPost] = useState<undefined | Post>(undefined);
+  const [post, setPost] = useState<any>(undefined);
+
+  const loadPost = useCallback(async () => {
+    const data = await servicePostById(id);
+    console.log(data);
+    setPost(data);
+  }, [id]);
+
+  console.log(post);
 
   useEffect(() => {
     if (loaded === false) {
-      const checkForPost = posts.find((post) => String(post.id) === id);
-      if (checkForPost) {
-        setPost(checkForPost);
-      } else {
-        getPostById(id).then(() => {
-          const singlePost = posts.find((post) => String(post.id) === id);
-          setPost(singlePost);
-        });
-      }
-      setLoaded(false);
+      //const checkForPost = posts.find((post) => String(post.id) === id);
+      //if (checkForPost) {
+      //  setPost(checkForPost);
+      //} else {
+      //  getPostById(id).then(() => {
+      //    const singlePost = posts.find((post) => String(post.id) === id);
+      //    setPost(singlePost);
+      //  });
+      // }
+      //setLoaded(false);
+      loadPost();
+      setLoaded(true);
     }
   }, [id, loaded, setLoaded, posts, getPostById]);
 
@@ -95,33 +107,49 @@ const SingleBlogPage: React.FC<Props> = ({
         <div>
           <div className="text-center">
             <h2 style={{ fontSize: '36px' }}>
-              <strong>{post.title}</strong>
+              <strong>{post.post.title}</strong>
             </h2>
             <h6 className="text-muted" style={{ fontSize: '20px' }}>
               {post.description}
             </h6>
           </div>
           <div style={{ marginLeft: '20%' }}>
-            <p style={{ marginBottom: '0' }}>{post.user.username}</p>
-            <p className="text-muted">{returnSensibleDate(post.created_at)}</p>
+            <p style={{ marginBottom: '0' }}>{post.post.user.username}</p>
+            <p className="text-muted">
+              {returnSensibleDate(post.post.created_at)}
+            </p>
           </div>
           <div className="text-center">
             <img alt="post" src={post.image_url} style={{ width: '50rem' }} />
           </div>
-          <div className="row">
-            <div className="col-md-2"></div>
-            <div className="col-md-8">
-              <hr />
-              <p style={{ fontSize: '18px' }}>{post.text}</p>
-              <hr />
+          {post.paragraphs.map((paragraph: ParagraphAction) => (
+            <div>
+              {paragraph.type === 'text' && <p>{paragraph.content}</p>}
+              {paragraph.type === 'code' && (
+                <div>
+                  <pre className="line-numbers">
+                    <code className="language-js">{paragraph.content}</code>
+                  </pre>
+                </div>
+              )}
+              {paragraph.type === 'list' && (
+                <div>
+                  <ul>
+                    {paragraph.content.split('|LIST|').map((item: string) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            <div className="col-md-2"></div>
-          </div>
+          ))}
         </div>
       )}
     </div>
   );
 };
+
+setTimeout(() => Prism.highlightAll(), 0);
 
 export default connect(mapStateToProps, { getPostById, updatePost })(
   SingleBlogPage

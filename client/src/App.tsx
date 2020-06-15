@@ -52,7 +52,7 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
         <Route exact path="/search" render={() => <Search />} />
         <Route
           exact
-          path="/blog/:id"
+          path="/post/:id"
           render={({ match }) => <SingleBlogPage id={match.params.id} />}
         />
         <Route
