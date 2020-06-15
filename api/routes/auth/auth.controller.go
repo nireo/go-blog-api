@@ -226,6 +226,13 @@ func followUser(c *gin.Context) {
 		return
 	}
 
+	// check if the user is already following the toFollowUser this isn't really necessary,
+	// but it prevents the database from storing multiple records of the same information
+	if user.IsFollowing(userToFollow) {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
 	newFollow := Follow{
 		Following:    userToFollow,
 		FollowingID:  userToFollow.ID,
@@ -235,6 +242,24 @@ func followUser(c *gin.Context) {
 
 	db.NewRecord(newFollow)
 	db.Create(&newFollow)
+
+	c.Status(http.StatusNoContent)
+}
+
+func unFollowUser(c *gin.Context) {
+	user := c.MustGet("user").(User)
+	toUnFollowUsername := c.Param("username")
+
+	toUnFollowUser, ok := models.GetUserWithUsername(toUnFollowUsername)
+	if !ok {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	if err := user.UnFollow(toUnFollowUser); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 
 	c.Status(http.StatusNoContent)
 }

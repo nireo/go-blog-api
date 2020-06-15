@@ -67,7 +67,8 @@ func GetUserWithUsername(username string) (User, bool) {
 	return user, true
 }
 
-func (u *User) setPassword(newPassword string) error {
+// SetPassword sets a new hashed password to the user
+func (u *User) SetPassword(newPassword string) error {
 	if len(newPassword) > 5 {
 		return errors.New("Passwords should be longer than 5 characters")
 	}
@@ -77,20 +78,22 @@ func (u *User) setPassword(newPassword string) error {
 	return nil
 }
 
-// checkPassword checks if user's password is the given password
-func (u *User) checkPassword(password string) error {
+// CheckPassword checks if user's password is the given password
+func (u *User) CheckPassword(password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
 }
 
-func (u *User) isFollowing(following User) bool {
+// IsFollowing checks for a follow model between 2 users
+func (u *User) IsFollowing(following User) bool {
 	db := common.GetDatabase()
 	var follow Follow
 	db.Where(Follow{FollowedByID: u.ID, FollowingID: following.ID}).First(&follow)
 	return follow.ID != 0
 }
 
-func (u *User) unFollow(unFollowUser User) error {
-	if !u.isFollowing(unFollowUser) {
+// UnFollow removes a follow model between 2 users
+func (u *User) UnFollow(unFollowUser User) error {
+	if !u.IsFollowing(unFollowUser) {
 		return errors.New("User is not following this user")
 	}
 
