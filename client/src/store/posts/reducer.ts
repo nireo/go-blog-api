@@ -1,5 +1,9 @@
 import { Dispatch } from 'redux';
-import { Post, CreatePost } from '../../interfaces/post.interfaces';
+import {
+  Post,
+  CreatePost,
+  CreateNewPost,
+} from '../../interfaces/post.interfaces';
 import {
   createPost as serviceCreatePost,
   getPosts as serviceGetPosts,
@@ -47,7 +51,7 @@ export const getPostById = (id: string) => {
   };
 };
 
-export const createPost = (post: CreatePost) => {
+export const createPost = (post: CreateNewPost) => {
   return async (dispatch: Dispatch) => {
     const newPost = await serviceCreatePost(post);
     dispatch({

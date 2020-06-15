@@ -1,17 +1,19 @@
 import React, { useState, ChangeEvent, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { createPost } from '../../../store/posts/reducer';
-import { CreatePost } from '../../../interfaces/post.interfaces';
+import {
+  CreatePost,
+  ParagraphAction,
+  CreateNewPost,
+} from '../../../interfaces/post.interfaces';
 import TextareaAutosize from 'react-textarea-autosize';
 import { CodeEditor } from './CodeEditor';
 import { Topic } from '../../../interfaces/topic.interfaces';
-import { getTopics } from '../../../services/topic';
-import axios from 'axios';
 import { getTopicsAction } from '../../../store/topics/reducer';
 import { AppState } from '../../../store';
 
 type Props = {
-  createPost: (post: CreatePost) => Promise<void>;
+  createPost: (post: CreateNewPost) => Promise<void>;
   getTopicsAction: () => Promise<void>;
   topics: Topic[];
 };
@@ -47,6 +49,23 @@ const Create: React.FC<Props> = ({ createPost, topics, getTopicsAction }) => {
         p.id === paragraphsCopy[index].id ? paragraphsCopy[index] : p
       )
     );
+  };
+
+  const handlePostCreation = () => {
+    const filteredParagraphs: ParagraphAction[] = paragraphs.map(
+      (paragraph: Paragraph) => {
+        return { type: paragraph.type, content: paragraph.content };
+      }
+    );
+
+    const newPost: CreateNewPost = {
+      title,
+      description,
+      imageURL: image,
+      paragraphs: filteredParagraphs,
+    };
+
+    createPost(newPost);
   };
 
   const changeParagraphType = (
@@ -269,7 +288,10 @@ const Create: React.FC<Props> = ({ createPost, topics, getTopicsAction }) => {
             </div>
           </div>
           <div className="text-center mt-4">
-            <button className="text-3xl bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-24 rounded-full">
+            <button
+              onClick={() => handlePostCreation()}
+              className="text-3xl bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-24 rounded-full"
+            >
               Publish!
             </button>
           </div>

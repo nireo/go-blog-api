@@ -10,6 +10,18 @@ export interface CreatePost {
   title: string;
 }
 
+export interface CreateNewPost {
+  title: string;
+  description: string;
+  imageURL: string;
+  paragraphs: ParagraphAction[];
+}
+
+export interface ParagraphAction {
+  type: string;
+  content: string;
+}
+
 export interface Post {
   text: string;
   title: string;

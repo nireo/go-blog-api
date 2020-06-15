@@ -44,10 +44,8 @@ func create(c *gin.Context) {
 	}
 
 	type RequestBody struct {
-		Text        string          `json:"text" binding:"required"`
 		Title       string          `json:"title" binding:"required"`
 		Description string          `json:"description" binding:"required"`
-		Topic       string          `json:"topic"`
 		ImageURL    string          `json:"imageURL" binding:"required"`
 		Paragraphs  []ParagraphJSON `json:"paragraphs" binding:"required"`
 	}
@@ -60,12 +58,10 @@ func create(c *gin.Context) {
 
 	// take title, description and text from body, but set likes to 0
 	post := Post{
-		Text:        requestBody.Text,
 		User:        user,
 		Title:       requestBody.Title,
 		Likes:       0,
 		Description: requestBody.Description,
-		Topic:       requestBody.Topic,
 		ImageURL:    requestBody.ImageURL,
 		UUID:        common.CreateUUID(),
 	}

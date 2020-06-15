@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CreatePost, Post } from '../interfaces/post.interfaces';
+import { CreatePost, Post, CreateNewPost } from '../interfaces/post.interfaces';
 const baseUrl: string = '/api/posts';
 
 let token: string | null = null;
@@ -14,7 +14,7 @@ const getConfig = () => ({
   },
 });
 
-export const createPost = async (newPost: CreatePost) => {
+export const createPost = async (newPost: CreateNewPost) => {
   const response = await axios.post(`${baseUrl}`, newPost, getConfig());
   return response.data;
 };
