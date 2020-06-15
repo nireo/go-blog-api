@@ -69,6 +69,18 @@ func GetPostWithID(id string) (Post, bool) {
 	return post, true
 }
 
+// FindOnePost finds a post matching the given condition
+func FindOnePost(condition interface{}) (Post, error) {
+	db := common.GetDatabase()
+
+	var post Post
+	if err := db.Where(condition).First(&post).Error; err != nil {
+		return post, err
+	}
+
+	return post, nil
+}
+
 // GetParagraphsRelatedToPost gets all the paragraphs in a post
 func GetParagraphsRelatedToPost(post Post) ([]Paragraph, bool) {
 	db := common.GetDatabase()

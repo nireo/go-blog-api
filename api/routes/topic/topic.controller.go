@@ -36,8 +36,8 @@ func createTopic(c *gin.Context) {
 		return
 	}
 
-	_, ok := models.GetTopicWithTitle(body.Title)
-	if ok {
+	_, err := models.FindOneTopic(&Topic{Title: body.Title})
+	if err != nil {
 		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
@@ -61,8 +61,8 @@ func deleteTopic(c *gin.Context) {
 	user := c.MustGet("user").(User)
 	topicID := c.Param("id")
 
-	topic, ok := models.GetTopicWithID(topicID)
-	if !ok {
+	topic, err := models.FindOneTopic(&Topic{UUID: topicID})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -79,8 +79,8 @@ func deleteTopic(c *gin.Context) {
 func getSingleTopic(c *gin.Context) {
 	topicURL := c.Param("url")
 
-	topic, ok := models.GetTopicWithURL(topicURL)
-	if !ok {
+	topic, err := models.FindOneTopic(&Topic{URL: topicURL})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -118,8 +118,8 @@ func updateTopic(c *gin.Context) {
 		return
 	}
 
-	topic, ok := models.GetTopicWithID(topicID)
-	if !ok {
+	topic, err := models.FindOneTopic(&Topic{UUID: topicID})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}

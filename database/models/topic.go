@@ -25,39 +25,6 @@ func SerializeTopics(topics []Topic) []common.JSON {
 	return serializedTopics
 }
 
-// GetTopicWithID returns a topic with given id
-func GetTopicWithID(id string) (Topic, bool) {
-	db := common.GetDatabase()
-	var topic Topic
-	if err := db.Where("uuid = ?", id).First(&topic).Error; err != nil {
-		return topic, false
-	}
-
-	return topic, true
-}
-
-// GetTopicWithURL returns a topic with given url
-func GetTopicWithURL(url string) (Topic, bool) {
-	db := common.GetDatabase()
-	var topic Topic
-	if err := db.Where("url = ?", url).First(&topic).Error; err != nil {
-		return topic, false
-	}
-
-	return topic, true
-}
-
-// GetTopicWithTitle returns a topic with given title
-func GetTopicWithTitle(title string) (Topic, bool) {
-	db := common.GetDatabase()
-	var topic Topic
-	if err := db.Where("title = ?", title).First(&topic).Error; err != nil {
-		return topic, false
-	}
-
-	return topic, true
-}
-
 // GetPostsRelatedToTopic finds all posts in the topic's category
 func GetPostsRelatedToTopic(topic Topic) ([]Post, bool) {
 	db := common.GetDatabase()
@@ -78,6 +45,18 @@ func GetAllTopics() ([]Topic, bool) {
 	}
 
 	return topics, true
+}
+
+// FindOneTopic finds a single topic with the given condition
+func FindOneTopic(condition interface{}) (Topic, error) {
+	db := common.GetDatabase()
+
+	var topic Topic
+	if err := db.Where(condition).First(&topic).Error; err != nil {
+		return topic, err
+	}
+
+	return topic, nil
 }
 
 // GetAllUsersTopics returns all the topics created by the given user

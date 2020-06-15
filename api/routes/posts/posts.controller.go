@@ -96,8 +96,8 @@ func list(c *gin.Context) {
 func postFromID(c *gin.Context) {
 	postID := c.Param("id")
 
-	post, ok := models.GetPostWithID(postID)
-	if !ok {
+	post, err := models.FindOnePost(&Post{UUID: postID})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -137,9 +137,9 @@ func update(c *gin.Context) {
 		return
 	}
 
-	post, ok := models.GetPostWithID(postID)
-	if !ok {
-		c.AbortWithStatus(http.StatusInternalServerError)
+	post, err := models.FindOnePost(&Post{UUID: postID})
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
@@ -160,10 +160,9 @@ func handleLike(c *gin.Context) {
 	db := common.GetDatabase()
 	postID := c.Param("postId")
 
-	post, ok := models.GetPostWithID(postID)
-	if !ok {
+	post, err := models.FindOnePost(&Post{UUID: postID})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		return
 	}
 
 	post.Likes = post.Likes + 1
@@ -176,8 +175,8 @@ func remove(c *gin.Context) {
 	postID := c.Param("id")
 	user := c.MustGet("user").(User)
 
-	post, ok := models.GetPostWithID(postID)
-	if !ok {
+	post, err := models.FindOnePost(&Post{UUID: postID})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -220,8 +219,8 @@ func addNewParagraph(c *gin.Context) {
 		return
 	}
 
-	post, ok := models.GetPostWithID(postID)
-	if !ok {
+	post, err := models.FindOnePost(&Post{UUID: postID})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
