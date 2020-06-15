@@ -20,6 +20,12 @@ type Post = models.Post
 // Follow model alias
 type Follow = models.Follow
 
+// FollowedTopic alias
+type FollowedTopic = models.FollowedTopic
+
+// Topic model alias
+type Topic = models.Topic
+
 // JSON type alias
 type JSON = common.JSON
 
@@ -270,6 +276,49 @@ func unFollowUser(c *gin.Context) {
 
 	if err := user.UnFollow(toUnFollowUser); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func followTopic(c *gin.Context) {
+	db := common.GetDatabase()
+	user := c.MustGet("user").(User)
+	topicID := c.Param("topicID")
+
+	topic, err := models.FindOneTopic(&Topic{UUID: topicID})
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	newTopicFollow := FollowedTopic{
+		User:          user,
+		UserID:        user.ID,
+		FollowedTopic: topic,
+		TopicID:       topic.ID,
+	}
+
+	db.NewRecord(newTopicFollow)
+	db.Save(&newTopicFollow)
+
+	c.Status(http.StatusNoContent)
+}
+
+func unFollowTopic(c *gin.Context) {
+	user := c.MustGet("user").(User)
+	topicID := c.Param("topicID")
+
+	topic, err := models.FindOneTopic(&Topic{UUID: topicID})
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	if err := user.UnFollowTopic(topic); err != nil {
+		// not found status since a follow relationship has not been found
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
