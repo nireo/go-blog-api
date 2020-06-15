@@ -111,11 +111,11 @@ const SingleBlogPage: React.FC<Props> = ({
             </h2>
             <h6 className="text-gray-600">{post.post.description}</h6>
           </div>
-          <div style={{ marginLeft: '20%' }}>
-            <p style={{ marginBottom: '0' }}>{post.post.user.username}</p>
+          <div className="m-auto w-1/2 flex">
             <p className="text-muted">
               {returnSensibleDate(post.post.created_at)}
             </p>
+            <p className="mt-4">{post.post.likes} &#128077;</p>
           </div>
           <div className="text-center">
             <img

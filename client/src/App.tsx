@@ -63,8 +63,12 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
         <ProtectedRoute user={user} exact={true} path="/dashboard">
           <Dashboard />
         </ProtectedRoute>
-        <Route exact path="/create" render={() => <Create />} />
-        <Route exact path="/your-blogs" render={() => <YourBlogs />} />
+        <ProtectedRoute user={user} exact path="/write">
+          <Create />
+        </ProtectedRoute>
+        <ProtectedRoute user={user} exact={true} path="/your-blogs">
+          <YourBlogs />
+        </ProtectedRoute>
         <Route render={() => <NotFound />} />
       </Switch>
     </Router>

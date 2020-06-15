@@ -3,25 +3,23 @@ import { Link } from 'react-router-dom';
 import { AppState } from '../../../store';
 import { connect } from 'react-redux';
 import { User } from '../../../interfaces/user.interfaces';
+import { clearUser } from '../../../store/user/reducer';
 
 type Props = {
   user: User;
+  clearUser: () => void;
 };
 
-const Navbar: React.FC<Props> = ({ user }) => {
+const Navbar: React.FC<Props> = ({ user, clearUser }) => {
+  const handleSignOut = () => {
+    clearUser();
+    localStorage.clear();
+  };
+
   return (
     <nav className="flex items-center justify-between flex-wrap bg-blue-500 p-6">
       <div className="flex items-center flex-shrink-0 text-white mr-6">
-        <svg
-          className="fill-current h-8 w-8 mr-2"
-          width="54"
-          height="54"
-          viewBox="0 0 54 54"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z" />
-        </svg>
-        <span className="font-semibold text-xl tracking-tight">Gedium</span>
+        <span className="font-semibold text-xl tracking-tight">gedium</span>
       </div>
       <div className="block lg:hidden">
         <button className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
@@ -42,28 +40,30 @@ const Navbar: React.FC<Props> = ({ user }) => {
         <div className="text-sm lg:flex-grow">
           <Link
             to="/all"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            className="block lg:inline-block text-teal-200 hover:text-white mr-4"
             style={{ textDecoration: 'none' }}
           >
             Read
           </Link>
-          <Link
-            to="/create"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-            style={{ textDecoration: 'none' }}
-          >
-            Write
-          </Link>
+          {user !== null && (
+            <Link
+              to="/write"
+              className="block lg:inline-block text-teal-200 hover:text-white mr-4"
+              style={{ textDecoration: 'none' }}
+            >
+              Write
+            </Link>
+          )}
           <Link
             to="/about"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            className="block lg:inline-block text-teal-200 hover:text-white mr-4"
             style={{ textDecoration: 'none' }}
           >
             About
           </Link>
           <Link
             to="/search"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            className="block lg:inline-block text-teal-200 hover:text-white mr-4"
             style={{ textDecoration: 'none' }}
           >
             Search
@@ -71,7 +71,7 @@ const Navbar: React.FC<Props> = ({ user }) => {
           {user !== null && (
             <Link
               to="/dashboard"
-              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+              className="block lg:inline-block text-teal-200 hover:text-white mr-4"
               style={{ textDecoration: 'none' }}
             >
               Dashboard
@@ -79,12 +79,23 @@ const Navbar: React.FC<Props> = ({ user }) => {
           )}
         </div>
         <div>
-          <Link
-            to="/login"
-            className="inline-block text-sm px-4 py-2 leading-none border rounded border-white hover:border-transparent hover:text-blue-500 hover:bg-white mt-4 lg:mt-0"
-          >
-            Login
-          </Link>
+          {user == null ? (
+            <Link
+              to="/login"
+              className="inline-block hover:text-blue-500 text-sm px-4 py-2 leading-none border rounded border-white hover:border-transparent text-white"
+              style={{ textDecoration: 'none' }}
+            >
+              Login
+            </Link>
+          ) : (
+            <button
+              className="inline-block hover:text-blue-500 text-sm px-4 py-2 leading-none border rounded border-white hover:border-transparent text-white"
+              style={{ textDecoration: 'none' }}
+              onClick={() => handleSignOut()}
+            >
+              Sign out
+            </button>
+          )}
         </div>
       </div>
     </nav>
@@ -95,4 +106,4 @@ const mapStateToProps = (state: AppState) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps, {})(Navbar);
+export default connect(mapStateToProps, { clearUser })(Navbar);
