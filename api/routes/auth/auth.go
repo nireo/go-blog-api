@@ -16,6 +16,6 @@ func ApplyRoutes(r *gin.RouterGroup) {
 		auth.DELETE("/follow/:username", middlewares.Authorized, unFollowUser)
 		auth.PATCH("/update", middlewares.Authorized, updateUser)
 		auth.PATCH("/update/password", middlewares.Authorized, changePassword)
-		auth.DELETE("/:id", middlewares.Authorized, remove)
+		auth.DELETE("/user/:id", middlewares.Authorized, remove)
 	}
 }

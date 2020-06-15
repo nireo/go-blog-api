@@ -196,6 +196,17 @@ func getUserWithUsername(c *gin.Context) {
 	db := common.GetDatabase()
 	url := c.Param("url")
 
+	displayFollowing := true
+	userRaw, ok := c.Get("user")
+	if !ok {
+		displayFollowing = false
+	}
+
+	var toCheckFollowing User
+	if displayFollowing {
+		toCheckFollowing = userRaw.(User)
+	}
+
 	var user User
 	if err := db.Where("url = ?", url).First(&user).Error; err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -209,10 +220,18 @@ func getUserWithUsername(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"user":  user,
-		"posts": models.SerializePosts(posts),
-	})
+	if displayFollowing {
+		c.JSON(http.StatusOK, gin.H{
+			"user":      user,
+			"posts":     models.SerializePosts(posts),
+			"following": toCheckFollowing.IsFollowing(user),
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"user":  user,
+			"posts": models.SerializePosts(posts),
+		})
+	}
 }
 
 func followUser(c *gin.Context) {
