@@ -60,8 +60,8 @@ func register(c *gin.Context) {
 	}
 
 	// check if user exists
-	_, ok := models.GetUserWithUsername(body.Username)
-	if ok {
+	_, err := models.FindOneUser(&User{Username: body.Username})
+	if err != nil {
 		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
@@ -107,12 +107,12 @@ func login(c *gin.Context) {
 		return
 	}
 
-	user, ok := models.GetUserWithUsername(body.Username)
-	if !ok {
+	user, err := models.FindOneUser(&User{Username: body.Username})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
+		return
 	}
 
-	// passwords don't match
 	if !checkHash(body.Password, user.PasswordHash) {
 		c.AbortWithStatus(http.StatusForbidden)
 		return
@@ -140,19 +140,19 @@ func updateUser(c *gin.Context) {
 		Username string `json:"username" binding:"required"`
 	}
 
-	var requestBody RequestBody
-	if err := c.BindJSON(&requestBody); err != nil {
+	var body RequestBody
+	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	_, ok := models.GetUserWithUsername(requestBody.Username)
-	if ok {
+	_, err := models.FindOneUser(&User{Username: body.Username})
+	if err != nil {
 		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
 
-	user.Username = requestBody.Username
+	user.Username = body.Username
 
 	db.Save(&user)
 	c.JSON(http.StatusOK, user.Serialize())
@@ -180,13 +180,7 @@ func changePassword(c *gin.Context) {
 		return
 	}
 
-	hash, hashErr := hash(body.Password)
-	if hashErr != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	user.PasswordHash = hash
+	user.SetPassword(body.Password)
 
 	db.Save(&user)
 	c.Status(http.StatusOK)
@@ -207,13 +201,12 @@ func getUserWithUsername(c *gin.Context) {
 		toCheckFollowing = userRaw.(User)
 	}
 
-	var user User
-	if err := db.Where("url = ?", url).First(&user).Error; err != nil {
+	user, err := models.FindOneUser(&User{URL: url})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	// get user's posts
 	var posts []Post
 	if err := db.Model(&user).Related(&posts).Error; err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
@@ -239,8 +232,8 @@ func followUser(c *gin.Context) {
 	user := c.MustGet("user").(User)
 	toFollowUsername := c.Param("username")
 
-	userToFollow, ok := models.GetUserWithUsername(toFollowUsername)
-	if !ok {
+	userToFollow, err := models.FindOneUser(&User{Username: toFollowUsername})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -269,8 +262,8 @@ func unFollowUser(c *gin.Context) {
 	user := c.MustGet("user").(User)
 	toUnFollowUsername := c.Param("username")
 
-	toUnFollowUser, ok := models.GetUserWithUsername(toUnFollowUsername)
-	if !ok {
+	toUnFollowUser, err := models.FindOneUser(&User{Username: toUnFollowUsername})
+	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}

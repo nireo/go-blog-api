@@ -46,25 +46,16 @@ func SerializeUsers(users []User) []common.JSON {
 	return serializedUsers
 }
 
-// GetUserWithID returns a user with given id
-func GetUserWithID(id string, db *gorm.DB) (User, bool) {
-	var user User
-	if err := db.Where("uuid = ?", id).First(&user).Error; err != nil {
-		return user, false
-	}
-
-	return user, true
-}
-
-// GetUserWithUsername returns a user with given username
-func GetUserWithUsername(username string) (User, bool) {
+// FindOneUser finds a single topic with the given condition
+func FindOneUser(condition interface{}) (User, error) {
 	db := common.GetDatabase()
+
 	var user User
-	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
-		return user, false
+	if err := db.Where(condition).First(&user).Error; err != nil {
+		return user, err
 	}
 
-	return user, true
+	return user, nil
 }
 
 // SetPassword sets a new hashed password to the user
