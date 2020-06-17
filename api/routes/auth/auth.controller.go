@@ -221,13 +221,13 @@ func getUserWithUsername(c *gin.Context) {
 
 	if displayFollowing {
 		c.JSON(http.StatusOK, gin.H{
-			"user":      user,
+			"user":      user.Serialize(),
 			"posts":     models.SerializePosts(posts),
 			"following": toCheckFollowing.IsFollowing(user),
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"user":  user,
+			"user":  user.Serialize(),
 			"posts": models.SerializePosts(posts),
 		})
 	}

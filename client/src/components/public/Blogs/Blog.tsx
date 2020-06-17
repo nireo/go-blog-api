@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import formatDate from '../../../utils/formatData';
 
 type Props = {
   description: string;
@@ -8,6 +9,7 @@ type Props = {
   likes: number;
   uuid: string;
   url?: string;
+  created?: string;
 };
 
 const Blog: React.FC<Props> = ({
@@ -17,6 +19,7 @@ const Blog: React.FC<Props> = ({
   likes,
   url,
   uuid,
+  created,
 }) => {
   return (
     <div className="max-w-sm w-full lg:max-w-full lg:flex">
@@ -36,7 +39,11 @@ const Blog: React.FC<Props> = ({
         <div className="flex items-center">
           <div className="text-sm">
             <p className="text-gray-900 leading-none">Writer</p>
-            <p className="text-gray-600">Aug 18</p>
+            {created !== undefined ? (
+              <p className="text-gray-600">{formatDate(created)}</p>
+            ) : (
+              <div></div>
+            )}
           </div>
           <Link to={`/post/${uuid}`}>
             <button className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
