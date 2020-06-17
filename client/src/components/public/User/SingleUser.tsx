@@ -4,6 +4,7 @@ import axios from 'axios';
 import formatDate from '../../../utils/formatData';
 import { Post } from '../../../interfaces/post.interfaces';
 import { followUser } from '../../../services/user';
+import Blog from '../Blogs/Blog';
 
 type Props = {
   id: string;
@@ -23,7 +24,7 @@ export const SingleUser: React.FC<Props> = ({ id }) => {
     if (user === null) {
       loadUser();
     }
-  }, [loadUser]);
+  }, [loadUser, user]);
 
   const handleUserFollow = () => {
     if (!user) {
@@ -47,6 +48,11 @@ export const SingleUser: React.FC<Props> = ({ id }) => {
           >
             Follow
           </button>
+          <hr className="mt-6 mb-6"></hr>
+          <h3 className="text-2xl">Posts</h3>
+          {posts?.map((post: Post) => (
+            <div></div>
+          ))}
         </div>
       )}
     </div>

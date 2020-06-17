@@ -67,7 +67,7 @@ func register(c *gin.Context) {
 
 	// check if user exists
 	_, err := models.FindOneUser(&User{Username: body.Username})
-	if err != nil {
+	if err == nil {
 		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
