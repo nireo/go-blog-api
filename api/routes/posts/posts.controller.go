@@ -20,6 +20,9 @@ type User = models.User
 // Paragraph type alias
 type Paragraph = models.Paragraph
 
+// Topic model alias
+type Topic = models.Topic
+
 // JSON type alias
 type JSON = common.JSON
 
@@ -47,12 +50,19 @@ func create(c *gin.Context) {
 		Title       string          `json:"title" binding:"required"`
 		Description string          `json:"description" binding:"required"`
 		ImageURL    string          `json:"imageURL" binding:"required"`
+		Topic       string          `json:"topic" binding:"required"`
 		Paragraphs  []ParagraphJSON `json:"paragraphs" binding:"required"`
 	}
 
 	var requestBody RequestBody
 	if err := c.BindJSON(&requestBody); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	topic, err := models.FindOneTopic(&Topic{URL: requestBody.Title})
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
@@ -64,6 +74,8 @@ func create(c *gin.Context) {
 		Description: requestBody.Description,
 		ImageURL:    requestBody.ImageURL,
 		UUID:        common.CreateUUID(),
+		Topic:       topic,
+		TopicID:     topic.ID,
 	}
 
 	db.NewRecord(post)

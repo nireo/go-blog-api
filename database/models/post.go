@@ -12,12 +12,13 @@ type Post struct {
 	Title       string
 	Likes       int
 	Description string
-	Topic       string
 	ImageURL    string
 	User        User
 	UserID      uint
 	UUID        string
 	Paragraphs  []Paragraph
+	Topic       Topic
+	TopicID     uint
 }
 
 // Paragraph struct stores the post's content
