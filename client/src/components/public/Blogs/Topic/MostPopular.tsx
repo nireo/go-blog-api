@@ -22,6 +22,7 @@ export const MostPopular: React.FC<Props> = ({ topic }) => {
   useEffect(() => {
     if (!loaded && sortedPosts.length === 0) {
       setSortedPosts(topic.posts.sort(sortByLikes));
+      setLoaded(true);
     }
   }, []);
 

@@ -64,9 +64,7 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
         <Route
           exact
           path="/topic/:term"
-          render={({ match }) => (
-            <TopicMain id={match.params.term} topic={match.params.term} />
-          )}
+          render={({ match }) => <TopicMain id={match.params.term} />}
         />
         <ProtectedRoute user={user} exact={true} path="/dashboard">
           <Dashboard />

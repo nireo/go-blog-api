@@ -7,11 +7,10 @@ import { Loading } from '../../Misc/Loading';
 import { Link } from 'react-router-dom';
 
 type Props = {
-  topic: string;
   id: string;
 };
 
-const TopicMain: React.FC<Props> = ({ topic, id }) => {
+const TopicMain: React.FC<Props> = ({ id }) => {
   const [mainTopic, setMainTopic] = useState<TopicWithPosts | null>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -21,11 +20,11 @@ const TopicMain: React.FC<Props> = ({ topic, id }) => {
   }, [id]);
 
   useEffect(() => {
-    if (mainTopic === null) {
+    if (mainTopic === null && loaded === false) {
       loadTopic();
       setLoaded(true);
     }
-  }, []);
+  }, [setLoaded, mainTopic, loadTopic, loaded]);
 
   return (
     <div className="container">
@@ -51,10 +50,10 @@ const TopicMain: React.FC<Props> = ({ topic, id }) => {
       {mainTopic !== null && (
         <div className="row" style={{ marginTop: '2rem' }}>
           <div className="col-md-9">
-            <Main topic={topic} />
+            <Main topic={mainTopic} />
           </div>
           <div className="col-md-3">
-            <Side topic={topic} />
+            <Side topic={mainTopic} />
           </div>
         </div>
       )}

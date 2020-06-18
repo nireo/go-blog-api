@@ -1,58 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../../store';
-import { User } from '../../../../interfaces/user.interfaces';
-import { Post } from '../../../../interfaces/post.interfaces';
-import axios from 'axios';
-import Blog from '../Blog';
-import { Loading } from '../../Misc/Loading';
+import { TopicWithPosts } from '../../../../interfaces/topic.interfaces';
+import { Latest } from './Latest';
+import { MostPopular } from './MostPopular';
 
 type Props = {
-  user?: User;
-  topic: string;
+  topic: TopicWithPosts;
 };
 
-const Main: React.FC<Props> = ({ user, topic }) => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState<boolean>(false);
-
-  const getPosts = useCallback(async () => {
-    const response = await axios.get(`/api/posts/?topic=${topic}`);
-    setPosts(response.data);
-  }, [topic]);
-
-  useEffect(() => {
-    if (loaded === false) {
-      getPosts();
-      setLoaded(true);
-    }
-  }, [getPosts, loaded]);
-
+const Main: React.FC<Props> = ({ topic }) => {
   return (
     <div className="container">
-      {loaded === false ? (
-        <Loading />
-      ) : (
-        <div>
-          {posts.map((post) => (
-            <div style={{ marginTop: '2rem' }}>
-              <Blog
-                description={post.description}
-                id={String(post.id)}
-                title={post.title}
-                likes={post.likes}
-                uuid={post.uuid}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+      <h2 className="font-mono text-blue-500">Latest</h2>
+      <Latest topic={topic} />
+      <hr className="my-10"></hr>
+
+      <h2 className="font-mono text-blue-500">Most popular</h2>
+      <MostPopular topic={topic} />
     </div>
   );
 };
 
-const mapStateToProps = (state: AppState) => ({
-  user: state.user,
-});
-
-export default connect(mapStateToProps, null)(Main);
+export default Main;
