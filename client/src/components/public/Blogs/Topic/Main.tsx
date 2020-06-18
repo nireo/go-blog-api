@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { connect } from 'react-redux';
-import { AppState } from '../../../../store';
+import React from 'react';
 import { TopicWithPosts } from '../../../../interfaces/topic.interfaces';
 import { Latest } from './Latest';
 import { MostPopular } from './MostPopular';

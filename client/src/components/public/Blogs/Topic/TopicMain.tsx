@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Side } from './Side';
 import Main from './Main';
-import { TopicWithPosts, Topic } from '../../../../interfaces/topic.interfaces';
+import { TopicWithPosts } from '../../../../interfaces/topic.interfaces';
 import { getSingleTopic } from '../../../../services/topic';
 import { Loading } from '../../Misc/Loading';
 import { Link } from 'react-router-dom';
@@ -53,7 +53,7 @@ const TopicMain: React.FC<Props> = ({ id }) => {
             <Main topic={mainTopic} />
           </div>
           <div className="col-md-3">
-            <Side topic={mainTopic} />
+            <Side topic={mainTopic.topic} />
           </div>
         </div>
       )}
