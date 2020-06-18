@@ -6,7 +6,7 @@ import Navbar from './components/public/Layout/Navbar';
 import { NotFound } from './components/public/Misc/NotFound';
 import './styles.css';
 import Welcome from './components/public/Home/Welcome';
-import { TopicMain } from './components/public/Blogs/Topic/TopicMain';
+import TopicMain from './components/public/Blogs/Topic/TopicMain';
 import MainPage from './components/public/Blogs/MainPage';
 import { User } from './interfaces/user.interfaces';
 import { connect } from 'react-redux';
@@ -58,7 +58,9 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
         <Route
           exact
           path="/topic/:term"
-          render={({ match }) => <TopicMain topic={match.params.term} />}
+          render={({ match }) => (
+            <TopicMain id={match.params.term} topic={match.params.term} />
+          )}
         />
         <ProtectedRoute user={user} exact={true} path="/dashboard">
           <Dashboard />
