@@ -20,6 +20,7 @@ import { ProtectedRoute } from './components/public/User/ProtectedRoute';
 import Dashboard from './components/public/User/Dashboard';
 import { SingleUser } from './components/public/User/SingleUser';
 import { Search } from './components/public/Blogs/Search';
+import Notification from './components/public/Misc/Notification';
 
 type Props = {
   user: User | null;
@@ -36,7 +37,12 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
   return (
     <Router>
       <div>
-        <Navbar />
+        <div>
+          <Navbar />
+        </div>
+        <div className="mt-4 container">
+          <Notification />
+        </div>
       </div>
       <Switch>
         <Route exact path="/" render={() => <Welcome />} />
