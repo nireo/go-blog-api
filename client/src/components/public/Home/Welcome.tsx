@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
 import { User } from '../../../interfaces/user.interfaces';
+import { Topic } from '../../../interfaces/topic.interfaces';
+import { getTopicsAction } from '../../../store/topics/reducer';
 
 type Props = {
   user: User;
+  topics: Topic[];
+  getTopicsAction: () => Promise<void>;
 };
 
-const Welcome: React.FC<Props> = ({ user }) => {
+const Welcome: React.FC<Props> = ({ user, topics, getTopicsAction }) => {
+  const [loaded, setLoaded] = useState<boolean>(false);
+  useEffect(() => {
+    if (topics.length === 0 && !loaded) {
+      getTopicsAction();
+      setLoaded(true);
+    }
+  }, [loaded, setLoaded, topics.length, getTopicsAction]);
+
   return (
     <div className="container">
       <h1
@@ -21,41 +33,16 @@ const Welcome: React.FC<Props> = ({ user }) => {
         <strong>Select what you're into.</strong>
       </h6>
       <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-        <Link
-          to="/topic/programming"
-          className="display-tag"
-          style={{ textDecoration: 'none' }}
-        >
-          Programming
-        </Link>
-        <Link
-          to="/topic/ai"
-          className="display-tag"
-          style={{ textDecoration: 'none' }}
-        >
-          Artificial Intelligence
-        </Link>
-        <Link
-          to="/topic/technology"
-          className="display-tag"
-          style={{ textDecoration: 'none' }}
-        >
-          Technology
-        </Link>
-        <Link
-          to="/topic/fitness"
-          className="display-tag"
-          style={{ textDecoration: 'none' }}
-        >
-          Fitness
-        </Link>
-        <Link
-          to="/topic/self-improvement"
-          className="display-tag"
-          style={{ textDecoration: 'none' }}
-        >
-          Self Improvement
-        </Link>
+        {topics.map((topic: Topic) => (
+          <Link
+            key={topic.uuid}
+            to={`/topic/${topic.url}`}
+            className="display-tag"
+            style={{ textDecoration: 'none' }}
+          >
+            {topic.title}
+          </Link>
+        ))}
       </div>
       <div style={{ marginTop: '4rem', textAlign: 'center' }}>
         {!user ? (
@@ -66,7 +53,7 @@ const Welcome: React.FC<Props> = ({ user }) => {
           </Link>
         ) : (
           <Link to="/all">
-            <button className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+            <button className="text-3xl bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
               Read
             </button>
           </Link>
@@ -90,6 +77,7 @@ const Welcome: React.FC<Props> = ({ user }) => {
 
 const mapStateToProps = (state: AppState) => ({
   user: state.user,
+  topics: state.topic,
 });
 
-export default connect(mapStateToProps, {})(Welcome);
+export default connect(mapStateToProps, { getTopicsAction })(Welcome);
