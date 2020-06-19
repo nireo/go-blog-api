@@ -1,13 +1,7 @@
 import { Dispatch } from 'redux';
 import { Notification } from '../../interfaces/notification.interfaces';
 
-const reducer = (
-  state: Notification | null = {
-    content: 'Something was successful',
-    type: 'error',
-  },
-  action: any
-) => {
+const reducer = (state: Notification | null = null, action: any) => {
   switch (action.type) {
     case 'SET_NOTIFICATION':
       return action.data;

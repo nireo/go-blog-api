@@ -11,11 +11,17 @@ import { CodeEditor } from './CodeEditor';
 import { Topic } from '../../../interfaces/topic.interfaces';
 import { getTopicsAction } from '../../../store/topics/reducer';
 import { AppState } from '../../../store';
+import { setNotification } from '../../../store/notification/reducer';
+import { Notification } from '../../../interfaces/notification.interfaces';
 
 type Props = {
   createPost: (post: CreateNewPost) => Promise<void>;
   getTopicsAction: () => Promise<void>;
   topics: Topic[];
+  setNotification: (
+    newNotification: Notification,
+    duration: number
+  ) => Promise<void>;
 };
 
 interface Paragraph {
@@ -24,7 +30,12 @@ interface Paragraph {
   type: string;
 }
 
-const Create: React.FC<Props> = ({ createPost, topics, getTopicsAction }) => {
+const Create: React.FC<Props> = ({
+  createPost,
+  topics,
+  getTopicsAction,
+  setNotification,
+}) => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [image, setImage] = useState<string>('');
@@ -66,6 +77,13 @@ const Create: React.FC<Props> = ({ createPost, topics, getTopicsAction }) => {
     };
 
     createPost(newPost);
+    setNotification(
+      {
+        type: 'success',
+        content: 'Your post has successfully been published!',
+      },
+      3
+    );
   };
 
   const changeParagraphType = (
@@ -305,6 +323,8 @@ const mapStateToProps = (state: AppState) => ({
   topics: state.topic,
 });
 
-export default connect(mapStateToProps, { createPost, getTopicsAction })(
-  Create
-);
+export default connect(mapStateToProps, {
+  createPost,
+  getTopicsAction,
+  setNotification,
+})(Create);

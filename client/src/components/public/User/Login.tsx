@@ -3,14 +3,20 @@ import { UserAction, User } from '../../../interfaces/user.interfaces';
 import { login } from '../../../store/user/reducer';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { setNotification } from '../../../store/notification/reducer';
+import { Notification } from '../../../interfaces/notification.interfaces';
 
 type Props = {
   login: (credentials: UserAction) => void;
   user: User;
+  setNotification: (
+    newNotification: Notification,
+    duration: number
+  ) => Promise<void>;
 };
 
-const Login: React.FC<Props> = ({ login, user }) => {
+const Login: React.FC<Props> = ({ login, user, setNotification }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -22,15 +28,18 @@ const Login: React.FC<Props> = ({ login, user }) => {
       password,
     };
     login(credentials);
+
+    setNotification(
+      {
+        type: 'success',
+        content: 'Successfully logged in.',
+      },
+      3
+    );
   };
 
   if (user) {
-    return (
-      <div>
-        <h2>You're already logged in.</h2>
-        <p>You have already logged in, so you don't need to do it again.</p>
-      </div>
-    );
+    return <Redirect to="/" />;
   }
 
   return (
@@ -97,4 +106,4 @@ const mapStateToProps = (state: AppState) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps, { login })(Login);
+export default connect(mapStateToProps, { login, setNotification })(Login);

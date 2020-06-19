@@ -5,13 +5,16 @@ import formatDate from '../../../utils/formatData';
 import { Post } from '../../../interfaces/post.interfaces';
 import { followUser } from '../../../services/user';
 import Blog from '../Blogs/Blog';
-import { stringify } from 'querystring';
+import { setNotification } from '../../../store/notification/reducer';
+import { connect } from 'react-redux';
+import { Notification } from '../../../interfaces/notification.interfaces';
 
 type Props = {
   id: string;
+  setNotification: (newNotification: Notification, duration: number) => void;
 };
 
-export const SingleUser: React.FC<Props> = ({ id }) => {
+const SingleUser: React.FC<Props> = ({ id }) => {
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
 
@@ -32,6 +35,13 @@ export const SingleUser: React.FC<Props> = ({ id }) => {
       return;
     }
     followUser(user.username);
+    setNotification(
+      {
+        type: 'success',
+        content: `Successfully followed user ${user.username}!`,
+      },
+      3
+    );
   };
 
   return (
@@ -75,3 +85,5 @@ export const SingleUser: React.FC<Props> = ({ id }) => {
     </div>
   );
 };
+
+export default connect(null, { setNotification })(SingleUser);
