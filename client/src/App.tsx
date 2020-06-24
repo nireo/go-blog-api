@@ -7,7 +7,6 @@ import { NotFound } from "./components/public/Misc/NotFound";
 import "./styles.css";
 import Welcome from "./components/public/Home/Welcome";
 import TopicMain from "./components/public/Blogs/Topic/TopicMain";
-import MainPage from "./components/public/Blogs/MainPage";
 import { User } from "./interfaces/user.interfaces";
 import { connect } from "react-redux";
 import { AppState } from "./store";
@@ -49,7 +48,6 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
         <Route exact path="/" render={() => <Welcome />} />
         <Route exact path="/login" render={() => <Login />} />
         <Route exact path="/register" render={() => <Register />} />
-        <Route exact path="/all" render={() => <MainPage />} />
         <Route exact path="/about" render={() => <About />} />
         <Route exact path="/read" render={() => <TopicBrowser />} />
         <Route

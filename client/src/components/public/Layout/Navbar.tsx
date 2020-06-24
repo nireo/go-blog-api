@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { AppState } from '../../../store';
-import { connect } from 'react-redux';
-import { User } from '../../../interfaces/user.interfaces';
-import { clearUser } from '../../../store/user/reducer';
+import React from "react";
+import { Link } from "react-router-dom";
+import { AppState } from "../../../store";
+import { connect } from "react-redux";
+import { User } from "../../../interfaces/user.interfaces";
+import { clearUser } from "../../../store/user/reducer";
 
 type Props = {
   user: User;
@@ -39,9 +39,9 @@ const Navbar: React.FC<Props> = ({ user, clearUser }) => {
       >
         <div className="text-sm lg:flex-grow">
           <Link
-            to="/all"
+            to="/read"
             className="block lg:inline-block text-teal-200 hover:text-white mr-4"
-            style={{ textDecoration: 'none' }}
+            style={{ textDecoration: "none" }}
           >
             Read
           </Link>
@@ -49,7 +49,7 @@ const Navbar: React.FC<Props> = ({ user, clearUser }) => {
             <Link
               to="/write"
               className="block lg:inline-block text-teal-200 hover:text-white mr-4"
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: "none" }}
             >
               Write
             </Link>
@@ -57,14 +57,14 @@ const Navbar: React.FC<Props> = ({ user, clearUser }) => {
           <Link
             to="/about"
             className="block lg:inline-block text-teal-200 hover:text-white mr-4"
-            style={{ textDecoration: 'none' }}
+            style={{ textDecoration: "none" }}
           >
             About
           </Link>
           <Link
             to="/search"
             className="block lg:inline-block text-teal-200 hover:text-white mr-4"
-            style={{ textDecoration: 'none' }}
+            style={{ textDecoration: "none" }}
           >
             Search
           </Link>
@@ -72,7 +72,7 @@ const Navbar: React.FC<Props> = ({ user, clearUser }) => {
             <Link
               to="/dashboard"
               className="block lg:inline-block text-teal-200 hover:text-white mr-4"
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: "none" }}
             >
               Dashboard
             </Link>
@@ -83,14 +83,14 @@ const Navbar: React.FC<Props> = ({ user, clearUser }) => {
             <Link
               to="/login"
               className="inline-block hover:text-blue-500 text-sm px-4 py-2 leading-none border rounded border-white hover:border-transparent text-white"
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: "none" }}
             >
               Login
             </Link>
           ) : (
             <button
               className="inline-block hover:text-blue-500 text-sm px-4 py-2 leading-none border rounded border-white hover:border-transparent text-white"
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: "none" }}
               onClick={() => handleSignOut()}
             >
               Sign out
