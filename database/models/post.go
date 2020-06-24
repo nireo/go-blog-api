@@ -119,7 +119,6 @@ func (p *Post) Serialize() common.JSON {
 	db := common.GetDatabase()
 	var user User
 	if err := db.Where("id = ?", p.UserID).First(&user).Error; err != nil {
-
 		return common.JSON{
 			"id":          p.ID,
 			"text":        p.Text,

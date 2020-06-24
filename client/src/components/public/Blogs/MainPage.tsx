@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { AppState } from '../../../store/index';
-import { connect } from 'react-redux';
-import { Post } from '../../../interfaces/post.interfaces';
-import { initPosts } from '../../../store/posts/reducer';
-import { Loading } from '../Misc/Loading';
-import Blog from './Blog';
-import Pagination from '../Layout/Pagination';
+import React, { useEffect, useState } from "react";
+import { AppState } from "../../../store/index";
+import { connect } from "react-redux";
+import { Post } from "../../../interfaces/post.interfaces";
+import { initPosts } from "../../../store/posts/reducer";
+import { Loading } from "../Misc/Loading";
+import Blog from "./Blog";
+import Pagination from "../Layout/Pagination";
 
 const mapStateToProps = (state: AppState) => ({
   posts: state.post,
@@ -41,7 +41,7 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
   return (
     <div className="mt-5 container">
       {currentPosts.map((post) => (
-        <div key={`${post.id}`} style={{ marginBottom: '2rem' }}>
+        <div key={`${post.id}`} style={{ marginBottom: "2rem" }}>
           <Blog
             id={String(post.id)}
             likes={post.likes}
@@ -50,10 +50,11 @@ const MainPage: React.FC<Props> = ({ posts, initPosts }) => {
             url={post.image_url}
             uuid={post.uuid}
             created={post.created_at}
+            writer={post.user.username}
           />
         </div>
       ))}
-      <div className="container" style={{ paddingTop: '1rem' }}>
+      <div className="container" style={{ paddingTop: "1rem" }}>
         <Pagination
           amountInPage={amountInPage}
           paginate={paginate}

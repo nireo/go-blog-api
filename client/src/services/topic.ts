@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { TopicAction } from '../interfaces/topic.interfaces';
-const baseURL: string = '/api/topics';
+import axios from "axios";
+import { TopicAction } from "../interfaces/topic.interfaces";
+const baseURL: string = "/api/topics";
 
 let token: null | string = null;
 
@@ -25,7 +25,7 @@ export const getTopics = async () => {
 };
 
 export const getSingleTopic = async (url: string) => {
-  const response = await axios.get(`${baseURL}/${url}`);
+  const response = await axios.get(`${baseURL}/single/${url}`);
   return response.data;
 };
 

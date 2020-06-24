@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import formatDate from '../../../utils/formatData';
+import React from "react";
+import { Link } from "react-router-dom";
+import formatDate from "../../../utils/formatData";
 
 type Props = {
   description: string;
@@ -10,6 +10,7 @@ type Props = {
   uuid: string;
   url?: string;
   created?: string;
+  writer?: String;
 };
 
 const Blog: React.FC<Props> = ({
@@ -20,6 +21,7 @@ const Blog: React.FC<Props> = ({
   url,
   uuid,
   created,
+  writer,
 }) => {
   return (
     <div className="max-w-sm w-full lg:max-w-full lg:flex">
@@ -28,7 +30,7 @@ const Blog: React.FC<Props> = ({
         style={{ backgroundImage: `url('${url}')` }}
       ></div>
       <div
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         className="border-r border-b border-l border-gray-400 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal"
       >
         <div className="mb-8">
@@ -38,7 +40,11 @@ const Blog: React.FC<Props> = ({
         </div>
         <div className="flex items-center">
           <div className="text-sm">
-            <p className="text-gray-900 leading-none">Writer</p>
+            {writer !== undefined ? (
+              <p className="text-gray-900 leading-none">{writer}</p>
+            ) : (
+              <div></div>
+            )}
             {created !== undefined ? (
               <p className="text-gray-600">{formatDate(created)}</p>
             ) : (

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Side } from './Side';
-import Main from './Main';
-import { TopicWithPosts } from '../../../../interfaces/topic.interfaces';
-import { getSingleTopic } from '../../../../services/topic';
-import { Loading } from '../../Misc/Loading';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
+import { Side } from "./Side";
+import Main from "./Main";
+import { TopicWithPosts } from "../../../../interfaces/topic.interfaces";
+import { getSingleTopic } from "../../../../services/topic";
+import { Loading } from "../../Misc/Loading";
+import { Link } from "react-router-dom";
 
 type Props = {
   id: string;
@@ -29,7 +29,7 @@ const TopicMain: React.FC<Props> = ({ id }) => {
   return (
     <div className="container">
       {mainTopic === null && loaded === false && (
-        <div className="mt-8" style={{ textAlign: 'center' }}>
+        <div className="mt-8" style={{ textAlign: "center" }}>
           <Loading />
         </div>
       )}
@@ -48,12 +48,25 @@ const TopicMain: React.FC<Props> = ({ id }) => {
         </div>
       )}
       {mainTopic !== null && (
-        <div className="row" style={{ marginTop: '2rem' }}>
-          <div className="col-md-9">
-            <Main topic={mainTopic} />
-          </div>
-          <div className="col-md-3">
-            <Side topic={mainTopic.topic} />
+        <div>
+          <div className="row" style={{ marginTop: "2rem" }}>
+            <div className="col-md-9">
+              {mainTopic.posts.length === 0 ? (
+                <div>
+                  <h2 className="text-2xl font-mono text-blue-500">
+                    No posts found
+                  </h2>
+                  <p className="text-gray-600">
+                    This topic currently has no published posts :(
+                  </p>
+                </div>
+              ) : (
+                <Main topic={mainTopic} />
+              )}
+            </div>
+            <div className="col-md-3">
+              <Side topic={mainTopic.topic} />
+            </div>
           </div>
         </div>
       )}
