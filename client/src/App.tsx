@@ -18,9 +18,9 @@ import Register from './components/public/User/Register';
 import { About } from './components/public/Misc/About';
 import { ProtectedRoute } from './components/public/User/ProtectedRoute';
 import Dashboard from './components/public/User/Dashboard';
-import { SingleUser } from './components/public/User/SingleUser';
 import { Search } from './components/public/Blogs/Search';
 import Notification from './components/public/Misc/Notification';
+import SingleUser from './components/public/User/SingleUser';
 
 type Props = {
   user: User | null;

@@ -17,7 +17,6 @@ type Post struct {
 	UserID      uint
 	UUID        string
 	Paragraphs  []Paragraph
-	Topic       Topic
 	TopicID     uint
 }
 
@@ -125,7 +124,6 @@ func (p *Post) Serialize() common.JSON {
 		"description": p.Description,
 		"user":        p.User.Serialize(),
 		"created_at":  p.CreatedAt,
-		"topic":       p.Topic,
 		"image_url":   p.ImageURL,
 		"uuid":        p.UUID,
 	}

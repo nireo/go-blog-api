@@ -74,7 +74,6 @@ func create(c *gin.Context) {
 		Description: requestBody.Description,
 		ImageURL:    requestBody.ImageURL,
 		UUID:        common.CreateUUID(),
-		Topic:       topic,
 		TopicID:     topic.ID,
 	}
 

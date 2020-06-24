@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -238,6 +239,7 @@ func followUser(c *gin.Context) {
 	user := c.MustGet("user").(User)
 	toFollowUsername := c.Param("username")
 
+	fmt.Println(toFollowUsername)
 	userToFollow, err := models.FindOneUser(&User{Username: toFollowUsername})
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
