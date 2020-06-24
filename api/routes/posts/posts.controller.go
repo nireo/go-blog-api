@@ -69,6 +69,7 @@ func create(c *gin.Context) {
 	// take title, description and text from body, but set likes to 0
 	post := Post{
 		User:        user,
+		UserID:      user.ID,
 		Title:       requestBody.Title,
 		Likes:       0,
 		Description: requestBody.Description,

@@ -116,13 +116,29 @@ func GetPosts(offset, limit int) ([]Post, bool) {
 
 // Serialize post data
 func (p *Post) Serialize() common.JSON {
+	db := common.GetDatabase()
+	var user User
+	if err := db.Where("id = ?", p.UserID).First(&user).Error; err != nil {
+
+		return common.JSON{
+			"id":          p.ID,
+			"text":        p.Text,
+			"title":       p.Title,
+			"likes":       p.Likes,
+			"description": p.Description,
+			"created_at":  p.CreatedAt,
+			"image_url":   p.ImageURL,
+			"uuid":        p.UUID,
+		}
+	}
+
 	return common.JSON{
 		"id":          p.ID,
 		"text":        p.Text,
 		"title":       p.Title,
 		"likes":       p.Likes,
 		"description": p.Description,
-		"user":        p.User.Serialize(),
+		"user":        user.Serialize(),
 		"created_at":  p.CreatedAt,
 		"image_url":   p.ImageURL,
 		"uuid":        p.UUID,
