@@ -204,18 +204,6 @@ func remove(c *gin.Context) {
 	c.Status(http.StatusForbidden)
 }
 
-func yourBlogs(c *gin.Context) {
-	user := c.MustGet("user").(User)
-
-	posts, ok := models.GetPostsFromUser(user)
-	if !ok {
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	c.JSON(http.StatusOK, models.SerializePosts(posts))
-}
-
 // add new paragraph at the end of the content
 func addNewParagraph(c *gin.Context) {
 	db := common.GetDatabase()

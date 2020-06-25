@@ -136,15 +136,3 @@ func updateTopic(c *gin.Context) {
 	db.Save(&topic)
 	c.JSON(http.StatusOK, topic.Serialize())
 }
-
-func getUserTopics(c *gin.Context) {
-	user := c.MustGet("user").(User)
-
-	topics, ok := models.GetAllUsersTopics(user)
-	if !ok {
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	c.JSON(http.StatusOK, models.SerializeTopics(topics))
-}
