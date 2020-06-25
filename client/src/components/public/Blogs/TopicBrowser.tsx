@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { AppState } from "../../../store/index";
-import { Topic } from "../../../interfaces/topic.interfaces";
-import { getTopicsAction } from "../../../store/topics/reducer";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { AppState } from '../../../store/index';
+import { Topic } from '../../../interfaces/topic.interfaces';
+import { getTopicsAction } from '../../../store/topics/reducer';
+import { Link } from 'react-router-dom';
 
 type Props = {
   topics: Topic[];
@@ -11,7 +11,7 @@ type Props = {
 };
 
 const TopicBrowser: React.FC<Props> = ({ topics, getTopicsAction }) => {
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>('');
 
   useEffect(() => {
     if (topics.length === 0) {
@@ -33,11 +33,8 @@ const TopicBrowser: React.FC<Props> = ({ topics, getTopicsAction }) => {
         onChange={({ target }) => setSearch(target.value)}
       />
       {filteredTopics.map((topic: Topic) => (
-        <Link to={`/topics/${topic.url}`}>
-          <button
-            disabled
-            className="text-blue-500 bg-gray-200 py-3 hover:text-gray-200 hover:bg-blue-500 font-bold w-full"
-          >
+        <Link to={`/topic/${topic.url}`}>
+          <button className="text-blue-500 bg-gray-200 py-3 hover:text-gray-200 hover:bg-blue-500 font-bold w-full">
             {topic.title}
           </button>
         </Link>

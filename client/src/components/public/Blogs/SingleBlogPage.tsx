@@ -6,6 +6,7 @@ import { Post, ParagraphAction } from '../../../interfaces/post.interfaces';
 import { Loading } from '../Misc/Loading';
 import { getPostById as servicePostById } from '../../../services/post';
 import Prism from 'prismjs';
+import formatDate from '../../../utils/formatData';
 
 type Props = {
   id: string;
@@ -37,16 +38,6 @@ const SingleBlogPage: React.FC<Props> = ({
 
   useEffect(() => {
     if (loaded === false) {
-      //const checkForPost = posts.find((post) => String(post.id) === id);
-      //if (checkForPost) {
-      //  setPost(checkForPost);
-      //} else {
-      //  getPostById(id).then(() => {
-      //    const singlePost = posts.find((post) => String(post.id) === id);
-      //    setPost(singlePost);
-      //  });
-      // }
-      //setLoaded(false);
       loadPost();
       setLoaded(true);
     }
@@ -65,42 +56,6 @@ const SingleBlogPage: React.FC<Props> = ({
     );
   }
 
-  //const addLike = (event: FormEvent<HTMLFormElement>) => {
-  //  // prevent site from reloading when submitting.
-  //  event.preventDefault();
-  //  if (!post) {
-  //    // not necessary, but typescript complains
-  //    return;
-  //  }
-  //
-  //  const postWithLike = { ...post, likes: post.likes + 1 };
-  //  updatePost(postWithLike, String(post.id));
-  //};
-
-  const returnSensibleDate = (dateString: string) => {
-    const date = new Date(dateString);
-    var monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-
-    var day = date.getDate();
-    var monthIndex = date.getMonth();
-    var year = date.getFullYear();
-
-    return day + ' ' + monthNames[monthIndex] + ' ' + year;
-  };
-
   return (
     <div className="container mt-4">
       {post !== undefined && (
@@ -112,9 +67,7 @@ const SingleBlogPage: React.FC<Props> = ({
             <h6 className="text-gray-600">{post.post.description}</h6>
           </div>
           <div className="m-auto w-1/2 flex">
-            <p className="text-muted">
-              {returnSensibleDate(post.post.created_at)}
-            </p>
+            <p className="text-muted">{formatDate(post.post.created_at)}</p>
             <p className="mt-4">{post.post.likes} &#128077;</p>
           </div>
           <div className="text-center">

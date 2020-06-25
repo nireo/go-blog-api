@@ -60,7 +60,7 @@ func create(c *gin.Context) {
 		return
 	}
 
-	topic, err := models.FindOneTopic(&Topic{URL: requestBody.Title})
+	topic, err := models.FindOneTopic(&Topic{URL: requestBody.Topic})
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
