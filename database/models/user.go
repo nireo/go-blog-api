@@ -42,6 +42,7 @@ func (u *User) Serialize() common.JSON {
 		"username": u.Username,
 		"url":      u.URL,
 		"created":  u.CreatedAt,
+		"id":       u.ID,
 	}
 }
 

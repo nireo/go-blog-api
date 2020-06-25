@@ -69,10 +69,15 @@ const Create: React.FC<Props> = ({
       }
     );
 
+    if (selectedTopic === null) {
+      return;
+    }
+
     const newPost: CreateNewPost = {
       title,
       description,
       imageURL: image,
+      topic: selectedTopic.url,
       paragraphs: filteredParagraphs,
     };
 

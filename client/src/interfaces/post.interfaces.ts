@@ -14,6 +14,7 @@ export interface CreateNewPost {
   title: string;
   description: string;
   imageURL: string;
+  topic: string;
   paragraphs: ParagraphAction[];
 }
 
