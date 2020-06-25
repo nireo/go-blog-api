@@ -39,8 +39,8 @@ export const removePost = async (id: string) => {
   return response.data;
 };
 
-export const getUsersPosts = async () => {
-  const response = await axios.get(`${baseUrl}/your-blogs`, getConfig());
+export const getDashboardData = async () => {
+  const response = await axios.get(`${baseUrl}/dashboard`, getConfig());
   return response.data;
 };
 

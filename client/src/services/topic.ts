@@ -1,6 +1,6 @@
-import axios from "axios";
-import { TopicAction } from "../interfaces/topic.interfaces";
-const baseURL: string = "/api/topics";
+import axios from 'axios';
+import { TopicAction } from '../interfaces/topic.interfaces';
+const baseURL: string = '/api/topics';
 
 let token: null | string = null;
 
@@ -31,11 +31,6 @@ export const getSingleTopic = async (url: string) => {
 
 export const deleteTopic = async (id: string) => {
   const response = await axios.delete(`${baseURL}/${id}`, getConfig());
-  return response.data;
-};
-
-export const getUsersTopics = async () => {
-  const response = await axios.get(`${baseURL}/user`, getConfig());
   return response.data;
 };
 

@@ -5,8 +5,9 @@ import { User } from '../../../interfaces/user.interfaces';
 import { Redirect } from 'react-router-dom';
 import { Topic } from '../../../interfaces/topic.interfaces';
 import { Post } from '../../../interfaces/post.interfaces';
-import { getUsersTopics } from '../../../services/topic';
-import { getUsersPosts } from '../../../services/post';
+import { getDashboardData } from '../../../services/post';
+import Blog from '../Blogs/Blog';
+import { kStringMaxLength } from 'buffer';
 
 type Props = {
   user: User | null;
@@ -18,15 +19,15 @@ const Dashboard: React.FC<Props> = ({ user }) => {
   const [loaded, setLoaded] = useState<boolean>(false);
 
   const loadData = useCallback(async () => {
-    const topicData = await getUsersTopics();
-    setTopics(topicData);
-
-    const postData = await getUsersPosts();
-    setPosts(postData);
+    const data = await getDashboardData();
+    setTopics(data.topics);
+    setPosts(data.posts);
   }, []);
 
   useEffect(() => {
     if (!loaded) {
+      loadData();
+      setLoaded(true);
     }
   }, []);
 
@@ -43,14 +44,27 @@ const Dashboard: React.FC<Props> = ({ user }) => {
         Here you can manage topics and the posts you've created.
       </p>
       <hr className="mt-4 mb-4"></hr>
-      <h4 className="text-3xl">Your topics</h4>
+      <h4 className="text-3xl font-mono text-blue-500">Your topics</h4>
       {topics.map((topic: Topic) => (
-        <div></div>
+        <div className="shadow-md w-full py-4 px-4 rounded mb-4">
+          <h4 className="text-xl text-blue-500 font-mono">{topic.title}</h4>
+          <p className="text-gray-600">{topic.description}</p>
+        </div>
       ))}
       <hr className="mt-4 mb-4"></hr>
-      <h4 className="text-3xl">Your posts</h4>
+      <h4 className="text-3xl font-mono text-blue-500">Your posts</h4>
       {posts.map((post: Post) => (
-        <div></div>
+        <div className="mt-2 mb-2">
+          <Blog
+            id={String(post.id)}
+            likes={post.likes}
+            title={post.title}
+            description={post.description}
+            url={post.image_url}
+            uuid={post.uuid}
+            created={post.created_at}
+          />
+        </div>
       ))}
     </div>
   );

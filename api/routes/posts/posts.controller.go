@@ -290,16 +290,10 @@ func dashboardController(c *gin.Context) {
 	user := c.MustGet("user").(User)
 
 	var topics []Topic
-	if err := db.Model(&user).Related(&topics).Error; err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
+	db.Model(&user).Related(&topics)
 
 	var posts []Post
-	if err := db.Model(&user).Related(&posts).Error; err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
+	db.Model(&user).Related(&posts)
 
 	c.JSON(http.StatusOK, gin.H{
 		"posts":  models.SerializePosts(posts),
