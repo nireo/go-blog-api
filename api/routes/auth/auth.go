@@ -14,7 +14,7 @@ func ApplyRoutes(r *gin.RouterGroup) {
 
 		auth.GET("/single/:url", getUserWithUsername)
 
-		auth.GET("/follow/")
+		auth.GET("/followed", middlewares.Authorized, getFollowedUsers)
 		auth.POST("/follow/user/:username", middlewares.Authorized, followUser)
 		auth.DELETE("/follow/user/:username", middlewares.Authorized, unFollowUser)
 

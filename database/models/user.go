@@ -35,6 +35,21 @@ type Follow struct {
 	FollowedByID uint
 }
 
+// Serialize serializes the followed model to just show user
+func (follow *Follow) Serialize() common.JSON {
+	db := common.GetDatabase()
+	var user User
+	if err := db.Where("id = ?", follow.FollowingID).First(&user).Error; err != nil {
+		return common.JSON{
+			"user": user,
+		}
+	}
+
+	return common.JSON{
+		"user": user.Serialize(),
+	}
+}
+
 // Serialize user data
 func (u *User) Serialize() common.JSON {
 	return common.JSON{
