@@ -294,3 +294,27 @@ func searchForPost(c *gin.Context) {
 
 	c.JSON(http.StatusOK, models.SerializePosts(posts))
 }
+
+// gets basically all the needed information for dashboard page.
+// this is used so that we can lower the needed amount of controllers
+func dashboardController(c *gin.Context) {
+	db := common.GetDatabase()
+	user := c.MustGet("user").(User)
+
+	var topics []Topic
+	if err := db.Model(&user).Related(&topics).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	var posts []Post
+	if err := db.Model(&user).Related(&posts).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"posts":  models.SerializePosts(posts),
+		"topics": models.SerializeTopics(topics),
+	})
+}

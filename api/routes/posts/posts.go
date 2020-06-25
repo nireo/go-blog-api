@@ -9,14 +9,17 @@ import (
 func ApplyRoutes(r *gin.RouterGroup) {
 	posts := r.Group("/posts")
 	{
-		posts.POST("/", middlewares.Authorized, create)
 		posts.GET("/", list)
 		posts.GET("/single/:id", postFromID)
-		posts.PATCH("/:id", middlewares.Authorized, update)
-		posts.DELETE("/blog/:id", middlewares.Authorized, remove)
-		posts.GET("/your-blogs", middlewares.Authorized, yourBlogs)
-		posts.POST("/paragraph/:id", middlewares.Authorized, addNewParagraph)
-		posts.DELETE("/paragraph/:id", middlewares.Authorized, deleteParagraph)
+		posts.GET("/dashboard", middlewares.Authorized, dashboardController)
 		posts.GET("/search/:search", searchForPost)
+
+		posts.POST("/", middlewares.Authorized, create)
+		posts.POST("/paragraph/:id", middlewares.Authorized, addNewParagraph)
+
+		posts.PATCH("/:id", middlewares.Authorized, update)
+
+		posts.DELETE("/blog/:id", middlewares.Authorized, remove)
+		posts.DELETE("/paragraph/:id", middlewares.Authorized, deleteParagraph)
 	}
 }

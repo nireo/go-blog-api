@@ -10,11 +10,11 @@ type Props = {
 const Main: React.FC<Props> = ({ topic }) => {
   return (
     <div className="container">
-      <h2 className="font-mono text-blue-500">Latest</h2>
+      <h2 className="font-mono text-blue-500 text-2xl mb-2">Latest</h2>
       <Latest topic={topic} />
       <hr className="my-10"></hr>
 
-      <h2 className="font-mono text-blue-500">Most popular</h2>
+      <h2 className="font-mono text-blue-500 text-2xl mb-2">Most popular</h2>
       <MostPopular topic={topic} />
     </div>
   );
