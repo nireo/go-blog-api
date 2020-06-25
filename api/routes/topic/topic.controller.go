@@ -37,7 +37,7 @@ func createTopic(c *gin.Context) {
 	}
 
 	_, err := models.FindOneTopic(&Topic{Title: body.Title})
-	if err != nil {
+	if err == nil {
 		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
