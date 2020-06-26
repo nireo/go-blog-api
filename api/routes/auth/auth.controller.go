@@ -345,6 +345,39 @@ func unFollowTopic(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// followedPage is combination of getFollowedTopics and getFollowedUsers
+func followedPage(c *gin.Context) {
+	db := common.GetDatabase()
+	user := c.MustGet("user").(User)
+
+	var followedUsers []models.Follow
+	if err := db.Where(&Follow{FollowedByID: user.ID}).Find(&followedUsers).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	serializedUsers := make([]JSON, len(followedUsers), len(followedUsers))
+	for index := range followedUsers {
+		serializedUsers[index] = followedUsers[index].Serialize()
+	}
+
+	var followedTopics []FollowedTopic
+	if err := db.Where(FollowedTopic{UserID: user.ID}).Find(&followedTopics).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	serializedTopics := make([]JSON, len(followedTopics), len(followedTopics))
+	for index := range followedTopics {
+		serializedTopics[index] = followedTopics[index].FollowedTopic.Serialize()
+	}
+
+	c.JSON(http.StatusOK, JSON{
+		"followedTopics": serializedTopics,
+		"followedUsers":  serializedUsers,
+	})
+}
+
 func getFollowedTopics(c *gin.Context) {
 	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
