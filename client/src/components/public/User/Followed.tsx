@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { User } from '../../../interfaces/user.interfaces';
 import { Topic } from '../../../interfaces/topic.interfaces';
-import { getFollowedPage } from '../../../services/user';
+import {
+  getFollowedPage,
+  unfollowTopic,
+  unfollowUser,
+} from '../../../services/user';
 import { Link } from 'react-router-dom';
 
 export const Followed: React.FC = () => {
@@ -20,7 +24,17 @@ export const Followed: React.FC = () => {
     }
   }, []);
 
-  const handleFollowRemove = (urlUsername: string) => {};
+  const handleUserUnFollow = (urlUsername: string) => {
+    if (window.confirm(`Are you sure you want to unfollow ${urlUsername}`)) {
+      unfollowUser(urlUsername);
+    }
+  };
+
+  const handleTopicUnFollow = (topicUrl: string) => {
+    if (window.confirm(`Are you sure you want to unfollow ${topicUrl}`)) {
+      unfollowTopic(topicUrl);
+    }
+  };
 
   return (
     <div className="container">
@@ -31,7 +45,7 @@ export const Followed: React.FC = () => {
           <div>
             <button
               className="bg-blue-500 mr-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-              onClick={() => handleFollowRemove(user.url)}
+              onClick={() => handleUserUnFollow(user.url)}
             >
               Remove follow
             </button>
@@ -50,7 +64,10 @@ export const Followed: React.FC = () => {
         <div className="shadow-md w-full py-4 px-4 rounded mb-4">
           <h4 className="text-xl text-blue-500 font-mono">{topic.title}</h4>
           <p className="text-gray-600">{topic.description}</p>
-          <button className="bg-blue-500 mr-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+          <button
+            className="bg-blue-500 mr-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            onClick={() => handleTopicUnFollow(topic.url)}
+          >
             Remove follow
           </button>
           <Link

@@ -36,3 +36,19 @@ export const followUser = async (username: string) => {
   );
   return response.data;
 };
+
+export const unfollowUser = async (username: string) => {
+  const response = await axios.delete(
+    `${baseUrl}/follow/user/${username}`,
+    getConfig()
+  );
+  return response.data;
+};
+
+export const unfollowTopic = async (topicUrl: string) => {
+  const response = await axios.delete(
+    `${baseUrl}/follow/topic/${topicUrl}`,
+    getConfig()
+  );
+  return response.data;
+};
