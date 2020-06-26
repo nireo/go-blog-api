@@ -24,6 +24,11 @@ export const login = async (credentials: UserAction) => {
   return response.data;
 };
 
+export const getFollowedPage = async () => {
+  const response = await axios.get(`${baseUrl}/followed`, getConfig());
+  return response.data;
+};
+
 export const followUser = async (username: string) => {
   const response = await axios.post(
     `${baseUrl}/follow${username}`,
