@@ -20,7 +20,6 @@ func ApplyRoutes(r *gin.RouterGroup) {
 
 		auth.POST("/follow/topic/:topicURL", middlewares.Authorized, followTopic)
 		auth.DELETE("/follow/topic/:topicURL", middlewares.Authorized, unFollowTopic)
-
 		auth.PATCH("/update", middlewares.Authorized, updateUser)
 		auth.PATCH("/update/password", middlewares.Authorized, changePassword)
 
