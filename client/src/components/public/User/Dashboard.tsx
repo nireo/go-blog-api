@@ -7,13 +7,21 @@ import { Topic } from '../../../interfaces/topic.interfaces';
 import { Post } from '../../../interfaces/post.interfaces';
 import { getDashboardData } from '../../../services/post';
 import Blog from '../Blogs/Blog';
-import { kStringMaxLength } from 'buffer';
+import { deleteTopicAction } from '../../../store/topics/reducer';
+import { setNotification } from '../../../store/notification/reducer';
+import { Notification } from '../../../interfaces/notification.interfaces';
 
 type Props = {
   user: User | null;
+  deleteTopicAction: (id: string) => void;
+  setNotification: (newNotification: Notification, duration: number) => void;
 };
 
-const Dashboard: React.FC<Props> = ({ user }) => {
+const Dashboard: React.FC<Props> = ({
+  user,
+  setNotification,
+  deleteTopicAction,
+}) => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -35,6 +43,14 @@ const Dashboard: React.FC<Props> = ({ user }) => {
     return <Redirect to="/" />;
   }
 
+  const handleTopicDeletion = (topicID: string) => {
+    deleteTopicAction(topicID);
+    setNotification(
+      { type: 'success', content: 'Successfully removed topic!' },
+      3
+    );
+  };
+
   return (
     <div className="container">
       <h3 className="text-4xl mt-6 font-mono text-blue-500">
@@ -49,6 +65,12 @@ const Dashboard: React.FC<Props> = ({ user }) => {
         <div className="shadow-md w-full py-4 px-4 rounded mb-4">
           <h4 className="text-xl text-blue-500 font-mono">{topic.title}</h4>
           <p className="text-gray-600">{topic.description}</p>
+          <button
+            onClick={() => handleTopicDeletion(topic.uuid)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 text-sm mt-2 rounded"
+          >
+            Create topic
+          </button>
         </div>
       ))}
       <hr className="mt-4 mb-4"></hr>
@@ -74,4 +96,6 @@ const mapStateToProps = (state: AppState) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps, { setNotification, deleteTopicAction })(
+  Dashboard
+);
