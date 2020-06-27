@@ -1,12 +1,35 @@
 import React, { useState, ChangeEvent } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
+import { connect } from 'react-redux';
+import { setNotification } from '../../../../store/notification/reducer';
+import { Notification } from '../../../../interfaces/notification.interfaces';
+import { createTopicAction } from '../../../../store/topics/reducer';
+import { TopicAction } from '../../../../interfaces/topic.interfaces';
 
-export const CreateTopic: React.FC = () => {
+type Props = {
+  setNotification: (newNotification: Notification, duration: number) => void;
+  createTopicAction: (newTopic: TopicAction) => void;
+};
+
+const CreateTopic: React.FC<Props> = ({
+  setNotification,
+  createTopicAction,
+}) => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
   const handleTopicCreation = (event: ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!title || !description) {
+      return;
+    }
+
+    createTopicAction({ title, description });
+    setNotification(
+      { type: 'success', content: 'Topic has been successfully created!' },
+      3
+    );
   };
 
   return (
@@ -43,3 +66,7 @@ export const CreateTopic: React.FC = () => {
     </div>
   );
 };
+
+export default connect(null, { setNotification, createTopicAction })(
+  CreateTopic
+);

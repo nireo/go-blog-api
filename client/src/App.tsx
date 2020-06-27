@@ -20,7 +20,7 @@ import Dashboard from './components/public/User/Dashboard';
 import Notification from './components/public/Misc/Notification';
 import SingleUser from './components/public/User/SingleUser';
 import TopicBrowser from './components/public/Blogs/TopicBrowser';
-import { CreateTopic } from './components/public/Blogs/Topic/CreateTopic';
+import CreateTopic from './components/public/Blogs/Topic/CreateTopic';
 
 type Props = {
   user: User | null;
