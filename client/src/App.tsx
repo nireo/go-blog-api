@@ -17,10 +17,10 @@ import Register from './components/public/User/Register';
 import { About } from './components/public/Misc/About';
 import { ProtectedRoute } from './components/public/User/ProtectedRoute';
 import Dashboard from './components/public/User/Dashboard';
-import { Search } from './components/public/Blogs/Search';
 import Notification from './components/public/Misc/Notification';
 import SingleUser from './components/public/User/SingleUser';
 import TopicBrowser from './components/public/Blogs/TopicBrowser';
+import { CreateTopic } from './components/public/Blogs/Topic/CreateTopic';
 
 type Props = {
   user: User | null;
@@ -49,6 +49,9 @@ const App: React.FC<Props> = ({ user, checkLocalStorage }) => {
         <Route exact path="/login" render={() => <Login />} />
         <Route exact path="/register" render={() => <Register />} />
         <Route exact path="/about" render={() => <About />} />
+        <ProtectedRoute user={user} exact={true} path="/create">
+          <CreateTopic />
+        </ProtectedRoute>
         <Route exact path="/read" render={() => <TopicBrowser />} />
         <Route
           exact

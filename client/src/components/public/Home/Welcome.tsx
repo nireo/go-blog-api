@@ -43,6 +43,15 @@ const Welcome: React.FC<Props> = ({ user, topics, getTopicsAction }) => {
             {topic.title}
           </Link>
         ))}
+        {user !== null && (
+          <Link
+            className="display-tag"
+            style={{ textDecoration: 'none' }}
+            to="/create"
+          >
+            Create New topic +
+          </Link>
+        )}
       </div>
       <div style={{ marginTop: '4rem', textAlign: 'center' }}>
         {!user ? (
@@ -52,8 +61,8 @@ const Welcome: React.FC<Props> = ({ user, topics, getTopicsAction }) => {
             </button>
           </Link>
         ) : (
-          <Link to="/all">
-            <button className="text-3xl bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+          <Link to="/read">
+            <button className="text-3xl bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded-full">
               Read
             </button>
           </Link>
