@@ -11,6 +11,7 @@ type Props = {
   url?: string;
   created?: string;
   writer?: String;
+  handlePostDeletion?: (id: string) => void;
 };
 
 const Blog: React.FC<Props> = ({
@@ -22,6 +23,7 @@ const Blog: React.FC<Props> = ({
   uuid,
   created,
   writer,
+  handlePostDeletion,
 }) => {
   return (
     <div className="max-w-sm w-full lg:max-w-full lg:flex">
@@ -51,11 +53,21 @@ const Blog: React.FC<Props> = ({
               <div></div>
             )}
           </div>
-          <Link to={`/post/${uuid}`}>
-            <button className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-              Read
-            </button>
-          </Link>
+          <div>
+            <Link to={`/post/${uuid}`}>
+              <button className="bg-blue-500 ml-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Read
+              </button>
+              {handlePostDeletion !== undefined && (
+                <button
+                  onClick={() => handlePostDeletion(uuid)}
+                  className="bg-blue-500 hover:bg-blue-700 ml-4 text-white font-bold py-2 px-4 mt-2 rounded"
+                >
+                  Delete post
+                </button>
+              )}
+            </Link>
+          </div>
         </div>
       </div>
     </div>

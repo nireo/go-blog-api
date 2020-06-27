@@ -10,11 +10,13 @@ import Blog from '../Blogs/Blog';
 import { deleteTopicAction } from '../../../store/topics/reducer';
 import { setNotification } from '../../../store/notification/reducer';
 import { Notification } from '../../../interfaces/notification.interfaces';
+import { removePost } from '../../../store/posts/reducer';
 
 type Props = {
   user: User | null;
   deleteTopicAction: (id: string) => void;
   setNotification: (newNotification: Notification, duration: number) => void;
+  removePost: (id: string) => void;
 };
 
 const Dashboard: React.FC<Props> = ({
@@ -44,11 +46,23 @@ const Dashboard: React.FC<Props> = ({
   }
 
   const handleTopicDeletion = (topicID: string) => {
-    deleteTopicAction(topicID);
-    setNotification(
-      { type: 'success', content: 'Successfully removed topic!' },
-      3
-    );
+    if (window.confirm('Are you sure you want to delete this topic?')) {
+      deleteTopicAction(topicID);
+      setNotification(
+        { type: 'success', content: 'Successfully removed topic!' },
+        3
+      );
+    }
+  };
+
+  const handlePostDeletion = (postID: string) => {
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      removePost(postID);
+      setNotification(
+        { type: 'success', content: 'Successfully removed post!' },
+        3
+      );
+    }
   };
 
   return (
@@ -69,7 +83,7 @@ const Dashboard: React.FC<Props> = ({
             onClick={() => handleTopicDeletion(topic.uuid)}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 text-sm mt-2 rounded"
           >
-            Create topic
+            Delete Topic
           </button>
         </div>
       ))}
@@ -85,6 +99,7 @@ const Dashboard: React.FC<Props> = ({
             url={post.image_url}
             uuid={post.uuid}
             created={post.created_at}
+            handlePostDeletion={handlePostDeletion}
           />
         </div>
       ))}
@@ -96,6 +111,8 @@ const mapStateToProps = (state: AppState) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps, { setNotification, deleteTopicAction })(
-  Dashboard
-);
+export default connect(mapStateToProps, {
+  setNotification,
+  deleteTopicAction,
+  removePost,
+})(Dashboard);
