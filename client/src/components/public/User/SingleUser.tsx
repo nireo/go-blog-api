@@ -3,7 +3,7 @@ import { User } from '../../../interfaces/user.interfaces';
 import axios from 'axios';
 import formatDate from '../../../utils/formatData';
 import { Post } from '../../../interfaces/post.interfaces';
-import { followUser } from '../../../services/user';
+import { followUser, unfollowUser } from '../../../services/user';
 import Blog from '../Blogs/Blog';
 import { setNotification } from '../../../store/notification/reducer';
 import { connect } from 'react-redux';
@@ -17,11 +17,16 @@ type Props = {
 const SingleUser: React.FC<Props> = ({ id }) => {
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   const loadUser = useCallback(async () => {
     const response = await axios.get(`/api/auth/single/${id}`);
     setUser(response.data.user);
     setPosts(response.data.posts);
+
+    if (response.data.following !== undefined) {
+      setIsFollowing(response.data.following);
+    }
   }, [id]);
 
   useEffect(() => {
@@ -44,6 +49,21 @@ const SingleUser: React.FC<Props> = ({ id }) => {
     );
   };
 
+  const handleUnFollow = () => {
+    if (user === null) {
+      return null;
+    }
+
+    unfollowUser(user.url);
+    setNotification(
+      {
+        type: 'success',
+        content: `Successfully unfollowed user ${user.username}!`,
+      },
+      3
+    );
+  };
+
   return (
     <div className="container mt-8">
       {user === null && <div className="text-center">Loading...</div>}
@@ -53,12 +73,21 @@ const SingleUser: React.FC<Props> = ({ id }) => {
           <h2 className="text-gray-600 text-sm">
             Signed up: {formatDate(user.created)}
           </h2>
-          <button
-            className="bg-blue-500 mt-4 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-            onClick={() => handleUserFollow()}
-          >
-            Follow
-          </button>
+          {isFollowing ? (
+            <button
+              className="bg-blue-500 mt-4 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+              onClick={() => handleUserFollow()}
+            >
+              Unfollow
+            </button>
+          ) : (
+            <button
+              className="bg-blue-500 mt-4 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+              onClick={() => handleUserFollow()}
+            >
+              Follow
+            </button>
+          )}
           <hr className="mt-6 mb-6"></hr>
           <h3 className="text-2xl">Posts</h3>
           {posts?.length === 0 ? (

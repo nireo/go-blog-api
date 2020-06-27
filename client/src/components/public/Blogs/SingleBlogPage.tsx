@@ -32,7 +32,7 @@ const SingleBlogPage: React.FC<Props> = ({
     const data = await servicePostById(id);
     console.log(data);
     setPost(data);
-  }, [id]);
+  }, [id]) ;
 
   console.log(post);
 
