@@ -30,6 +30,17 @@ type Topic = models.Topic
 // JSON type alias
 type JSON = common.JSON
 
+// UserAction is a struct which is used in multiple controllers
+type UserAction struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+// UpdateRequestBody is the request definiton used for the updateUser controller
+type UpdateRequestBody struct {
+	Username string `json:"username" binding:"required"`
+}
+
 func hash(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	return string(bytes), err
@@ -55,12 +66,7 @@ func generateToken(data common.JSON) (string, error) {
 func register(c *gin.Context) {
 	db := common.GetDatabase()
 
-	type RequestBody struct {
-		Username string `json:"username" binding:"required"`
-		Password string `json:"password" binding:"required"`
-	}
-
-	var body RequestBody
+	var body UserAction
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
@@ -103,12 +109,7 @@ func register(c *gin.Context) {
 }
 
 func login(c *gin.Context) {
-	type RequestBody struct {
-		Username string `json:"username" binding:"required"`
-		Password string `json:"password" binding:"required"`
-	}
-
-	var body RequestBody
+	var body UserAction
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
@@ -168,6 +169,13 @@ func updateUser(c *gin.Context) {
 func remove(c *gin.Context) {
 	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
+
+	var posts []Post
+	db.Model(&user).Related(&posts)
+
+	for index := range posts {
+		db.Delete(&posts[index])
+	}
 
 	db.Delete(&user)
 	c.Status(http.StatusOK)
