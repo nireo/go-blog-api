@@ -50,9 +50,7 @@ func createTopic(c *gin.Context) {
 		UserID:      user.ID,
 	}
 
-	db.NewRecord(newTopic)
-	db.Save(&newTopic)
-
+	newTopic.Save()
 	c.JSON(http.StatusOK, newTopic.Serialize())
 }
 
@@ -72,7 +70,7 @@ func deleteTopic(c *gin.Context) {
 		return
 	}
 
-	db.Delete(&topic)
+	topic.Delete()
 	c.Status(http.StatusNoContent)
 }
 

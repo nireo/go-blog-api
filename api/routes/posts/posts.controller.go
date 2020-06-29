@@ -78,8 +78,7 @@ func create(c *gin.Context) {
 		TopicID:     topic.ID,
 	}
 
-	db.NewRecord(post)
-	db.Create(&post)
+	post.Save()
 
 	// create database entries for paragraphs
 	for index := range requestBody.Paragraphs {
@@ -200,7 +199,7 @@ func remove(c *gin.Context) {
 		return
 	}
 
-	db.Delete(&post)
+	post.Delete()
 	c.Status(http.StatusForbidden)
 }
 

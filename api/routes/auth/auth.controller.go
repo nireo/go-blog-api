@@ -64,8 +64,6 @@ func generateToken(data common.JSON) (string, error) {
 }
 
 func register(c *gin.Context) {
-	db := common.GetDatabase()
-
 	var body UserAction
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -92,8 +90,8 @@ func register(c *gin.Context) {
 		URL:          common.FormatString(body.Username),
 	}
 
-	db.NewRecord(user)
-	db.Create(&user)
+	// save to database
+	user.Save()
 
 	serialized := user.Serialize()
 	token, err := generateToken(serialized)
@@ -177,7 +175,7 @@ func remove(c *gin.Context) {
 		db.Delete(&posts[index])
 	}
 
-	db.Delete(&user)
+	user.Delete()
 	c.Status(http.StatusOK)
 }
 
