@@ -61,6 +61,19 @@ func (u *User) Serialize() common.JSON {
 	}
 }
 
+func (user *User) Save() {
+	db := common.GetDatabase()
+
+	db.NewRecord(user)
+	db.Save(&user)
+}
+
+func (user *User) Delete() {
+	db := common.GetDatabase()
+
+	db.Delete(&user)
+}
+
 // SerializeUsers serializes a list of users
 func SerializeUsers(users []User) []common.JSON {
 	serializedUsers := make([]common.JSON, len(users), len(users))

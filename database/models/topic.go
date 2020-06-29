@@ -37,6 +37,20 @@ func GetPostsRelatedToTopic(topic Topic) ([]Post, bool) {
 	return posts, true
 }
 
+// Delete deletes the given topic's entry from the database
+func (topic *Topic) Delete() {
+	db := common.GetDatabase()
+
+	db.Delete(&topic)
+}
+
+func (topic *Topic) Save() {
+	db := common.GetDatabase()
+
+	db.NewRecord(topic)
+	db.Save(&topic)
+}
+
 // GetAllTopics gets all in the database
 func GetAllTopics() ([]Topic, bool) {
 	db := common.GetDatabase()

@@ -48,6 +48,19 @@ func (p *Paragraph) Serialize() common.JSON {
 	}
 }
 
+func (post *Post) Save() {
+	db := common.GetDatabase()
+
+	db.NewRecord(post)
+	db.Save(&post)
+}
+
+func (post *Post) Delete() {
+	db := common.GetDatabase()
+
+	db.Delete(&post)
+}
+
 // SerializePosts serializes a list posts
 func SerializePosts(posts []Post) []common.JSON {
 	serializedPosts := make([]common.JSON, len(posts), len(posts))
