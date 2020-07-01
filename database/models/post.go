@@ -52,7 +52,7 @@ func (post *Post) Save() {
 	db := common.GetDatabase()
 
 	db.NewRecord(post)
-	db.Save(&post)
+	db.Create(&post)
 }
 
 func (post *Post) Delete() {

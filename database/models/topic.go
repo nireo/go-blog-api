@@ -48,7 +48,7 @@ func (topic *Topic) Save() {
 	db := common.GetDatabase()
 
 	db.NewRecord(topic)
-	db.Save(&topic)
+	db.Create(&topic)
 }
 
 // GetAllTopics gets all in the database
