@@ -172,10 +172,23 @@ func update(c *gin.Context) {
 func handleLike(c *gin.Context) {
 	db := common.GetDatabase()
 	postID := c.Param("postId")
+	user := c.MustGet("user").(models.User)
 
 	post, err := models.FindOnePost(&Post{UUID: postID})
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
+	}
+
+	postLike, err := models.FindPostLikeModel(&models.PostLike{UserID: user.ID, LikedPostID: post.ID})
+	if err == nil {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	// unneeded, but go keeps complaining for literally no reason
+	if postLike.ID > 0 {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
 	post.Likes = post.Likes + 1

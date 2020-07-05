@@ -29,6 +29,24 @@ type Paragraph struct {
 	UUID    string
 }
 
+// PostLike model helps keeping track of if a user has already liked a post
+type PostLike struct {
+	gorm.Model
+	LikedPostID uint
+	UserID      uint
+}
+
+// FindPostLikeModel finds a single postLike model matching given condition
+func FindPostLikeModel(condition interface{}) (PostLike, error) {
+	db := common.GetDatabase()
+	var postLike PostLike
+	if err := db.Where(condition).First(&postLike).Error; err != nil {
+		return postLike, err
+	}
+
+	return postLike, nil
+}
+
 // SerializeParagraphs serializes multiple paragraphs into JSON-format
 func SerializeParagraphs(paragraphs []Paragraph) []common.JSON {
 	serializedParagraphs := make([]common.JSON, len(paragraphs), len(paragraphs))

@@ -8,6 +8,6 @@ import (
 
 // Migrate models using ORM
 func Migrate(db *gorm.DB) {
-	db.AutoMigrate(&User{}, &Post{}, &Topic{}, &Paragraph{}, &Follow{}, &FollowedTopic{})
+	db.AutoMigrate(&User{}, &Post{}, &Topic{}, &Paragraph{}, &Follow{}, &FollowedTopic{}, &PostLike{})
 	fmt.Println("Auto migration has been completed")
 }
