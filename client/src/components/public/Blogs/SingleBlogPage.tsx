@@ -5,7 +5,6 @@ import { getPostById, updatePost } from '../../../store/posts/reducer';
 import { Post, ParagraphAction } from '../../../interfaces/post.interfaces';
 import { Loading } from '../Misc/Loading';
 import { getPostById as servicePostById } from '../../../services/post';
-import Prism from 'prismjs';
 import formatDate from '../../../utils/formatData';
 
 type Props = {
@@ -32,7 +31,7 @@ const SingleBlogPage: React.FC<Props> = ({
     const data = await servicePostById(id);
     console.log(data);
     setPost(data);
-  }, [id]) ;
+  }, [id]);
 
   console.log(post);
 
@@ -60,22 +59,25 @@ const SingleBlogPage: React.FC<Props> = ({
     <div className="container mt-4">
       {post !== undefined && (
         <div>
-          <div className="text-center">
-            <h2 style={{ fontSize: '36px' }}>
+          <div>
+            <h2 className="text-gray-800 font-mono m-auto w-1/2 text-2xl">
               <strong>{post.post.title}</strong>
             </h2>
-            <h6 className="text-gray-600">{post.post.description}</h6>
+            <p className="text-sm m-auto w-1/2 text-gray-600">
+              published: {formatDate(post.post.created_at)}
+            </p>
+            <hr className="my-4 mx-4 m-auto w-1/2"></hr>
+            <div className="mt-2">
+              <h6 className="text-gray-600 m-auto w-1/2">
+                {post.post.description}
+              </h6>
+            </div>
           </div>
-          <div className="m-auto w-1/2 flex">
-            <p className="text-muted">{formatDate(post.post.created_at)}</p>
-            <p className="mt-4">{post.post.likes} &#128077;</p>
-          </div>
-          <div className="text-center">
-            <img
-              alt="post"
-              className="m-auto w-1/2"
-              src={post.post.image_url}
-            />
+          <div>
+            <p>{post.post.likes} likes</p>
+            <button className="bg-blue-500 font-mono hover:bg-blue-700 text-white font-bold py-2 px-4 text-sm mt-2 rounded">
+              like
+            </button>
           </div>
           {post.paragraphs.map((paragraph: ParagraphAction) => (
             <div className="m-auto w-1/2 mt-4 mb-4">
@@ -115,8 +117,6 @@ const SingleBlogPage: React.FC<Props> = ({
     </div>
   );
 };
-
-setTimeout(() => Prism.highlightAll(), 0);
 
 export default connect(mapStateToProps, { getPostById, updatePost })(
   SingleBlogPage

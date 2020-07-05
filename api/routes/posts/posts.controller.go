@@ -184,7 +184,6 @@ func handleLike(c *gin.Context) {
 }
 
 func remove(c *gin.Context) {
-	db := common.GetDatabase()
 	postID := c.Param("id")
 	user := c.MustGet("user").(User)
 

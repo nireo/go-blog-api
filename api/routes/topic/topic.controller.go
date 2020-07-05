@@ -27,7 +27,6 @@ type RequestBody struct {
 }
 
 func createTopic(c *gin.Context) {
-	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 
 	var body RequestBody
@@ -55,7 +54,6 @@ func createTopic(c *gin.Context) {
 }
 
 func deleteTopic(c *gin.Context) {
-	db := common.GetDatabase()
 	user := c.MustGet("user").(User)
 	topicID := c.Param("id")
 
