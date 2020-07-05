@@ -10,6 +10,7 @@ import {
   getPostById as serviceGetPostById,
   updatePost as serviceUpdatePost,
   removePost as serviceRemovePost,
+  likePost as serviceLikePost,
 } from '../../services/post';
 
 const reducer = (state: Post[] = [], action: any) => {
@@ -26,6 +27,14 @@ const reducer = (state: Post[] = [], action: any) => {
       return state.map((post) =>
         String(post.id) === action.id ? action.data : post
       );
+    case 'LIKE_POST':
+      let likedPost = state.find((post: Post) => post.uuid === action.id);
+      if (!likedPost) {
+        return state;
+      }
+
+      likedPost = { ...likedPost, likes: likedPost.likes + 1 };
+      return state.map((post: Post) => post.uuid === action.id);
     default:
       return state;
   }
@@ -77,6 +86,16 @@ export const removePost = (id: string) => {
     await serviceRemovePost(id);
     dispatch({
       type: 'REMOVE_POST',
+      id: id,
+    });
+  };
+};
+
+export const likePost = (id: string) => {
+  return async (dispatch: Dispatch) => {
+    await serviceLikePost(id);
+    dispatch({
+      type: 'LIKE_POST',
       id: id,
     });
   };

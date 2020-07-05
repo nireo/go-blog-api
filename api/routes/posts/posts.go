@@ -16,6 +16,7 @@ func ApplyRoutes(r *gin.RouterGroup) {
 
 		posts.POST("/", middlewares.Authorized, create)
 		posts.POST("/paragraph/:id", middlewares.Authorized, addNewParagraph)
+		posts.POST("/like/:postID", middlewares.Authorized, handleLike)
 
 		posts.PATCH("/:id", middlewares.Authorized, update)
 

@@ -46,6 +46,10 @@ export const getDashboardData = async () => {
 
 export const searchPost = async (search: string) => {
   const response = await axios.get(`${baseUrl}/search/${search}`);
-  console.log(response.data);
+  return response.data;
+};
+
+export const likePost = async (id: string) => {
+  const response = await axios.post(`${baseUrl}/like/${id}`, getConfig());
   return response.data;
 };

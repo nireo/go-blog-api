@@ -1,39 +1,51 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
-import { getPostById, updatePost } from '../../../store/posts/reducer';
+import {
+  getPostById,
+  updatePost,
+  likePost,
+} from '../../../store/posts/reducer';
 import { Post, ParagraphAction } from '../../../interfaces/post.interfaces';
 import { Loading } from '../Misc/Loading';
 import { getPostById as servicePostById } from '../../../services/post';
 import formatDate from '../../../utils/formatData';
+import { User } from '../../../interfaces/user.interfaces';
 
 type Props = {
   id: string;
   posts: Post[];
   getPostById: (id: string) => Promise<void>;
   updatePost: (post: Post, id: string) => Promise<void>;
+  likePost: (id: string) => Promise<void>;
+  user: User | null;
 };
 
 const mapStateToProps = (state: AppState) => ({
   posts: state.post,
+  user: state.user,
 });
 
 const SingleBlogPage: React.FC<Props> = ({
   id,
   posts,
   getPostById,
-  updatePost,
+  likePost,
+  user,
 }) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [post, setPost] = useState<any>(undefined);
 
   const loadPost = useCallback(async () => {
     const data = await servicePostById(id);
-    console.log(data);
     setPost(data);
   }, [id]);
 
-  console.log(post);
+  const handleLike = () => {
+    if (user !== null) {
+      likePost(id);
+    }
+  };
 
   useEffect(() => {
     if (loaded === false) {
@@ -75,7 +87,10 @@ const SingleBlogPage: React.FC<Props> = ({
           </div>
           <div>
             <p>{post.post.likes} likes</p>
-            <button className="bg-blue-500 font-mono hover:bg-blue-700 text-white font-bold py-2 px-4 text-sm mt-2 rounded">
+            <button
+              onClick={() => handleLike()}
+              className="bg-blue-500 font-mono hover:bg-blue-700 text-white font-bold py-2 px-4 text-sm mt-2 rounded"
+            >
               like
             </button>
           </div>
@@ -118,6 +133,6 @@ const SingleBlogPage: React.FC<Props> = ({
   );
 };
 
-export default connect(mapStateToProps, { getPostById, updatePost })(
+export default connect(mapStateToProps, { getPostById, updatePost, likePost })(
   SingleBlogPage
 );
